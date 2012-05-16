@@ -40,7 +40,7 @@ import javax.swing.JFrame;
 
 import com.kauri.gatetris.Tetromino.Shape;
 import com.kauri.gatetris.sequence.PieceSequence;
-import com.kauri.gatetris.sequence.ShufflePieceSequence;
+import com.kauri.gatetris.sequence.ShufflePieceSelector;
 
 /**
  * @author Eric Fritz
@@ -69,7 +69,7 @@ public class Game extends Canvas implements Runnable
 
 	private State state = State.PLAYING;
 	private Board board = new Board(10, 22);
-	private PieceSequence sequence = new ShufflePieceSequence();
+	private PieceSequence sequence = new PieceSequence(new ShufflePieceSelector());
 
 	private boolean showNextPiece = false;
 	private boolean showShadowPiece = false;

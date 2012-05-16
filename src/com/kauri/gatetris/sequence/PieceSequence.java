@@ -26,12 +26,36 @@ import com.kauri.gatetris.Tetromino;
 /**
  * @author Eric Fritz
  */
-public interface PieceSequence
+public class PieceSequence
 {
-	public void advance();
+	private Tetromino current;
+	private Tetromino preview;
 
-	public Tetromino peekCurrent();
+	private PieceSelector selector;
 
-	public Tetromino peekPreview();
+	public PieceSequence(PieceSelector selector)
+	{
+		this.selector = selector;
+	}
 
+	public final void advance()
+	{
+		if (current == null) {
+			current = selector.getNextPiece();
+			preview = selector.getNextPiece();
+		} else {
+			current = preview;
+			preview = selector.getNextPiece();
+		}
+	}
+
+	public final Tetromino peekCurrent()
+	{
+		return current;
+	}
+
+	public final Tetromino peekPreview()
+	{
+		return preview;
+	}
 }

@@ -21,23 +21,19 @@
 
 package com.kauri.gatetris.sequence;
 
-import java.util.Random;
-
 import com.kauri.gatetris.Tetromino;
 import com.kauri.gatetris.Tetromino.Shape;
 
 /**
  * @author Eric Fritz
  */
-public class RandomPieceSequence extends AbstractPieceSequence
+public class SZPieceSelector implements PieceSelector
 {
-	private static Shape[] shapes = new Shape[] { Shape.I, Shape.J, Shape.L, Shape.O, Shape.S, Shape.T, Shape.Z };
-
-	private Random random = new Random();
+	private int counter = 0;
 
 	@Override
-	protected Tetromino getNextPiece()
+	public Tetromino getNextPiece()
 	{
-		return Tetromino.tetrominoes.get(shapes[random.nextInt(shapes.length)]);
+		return Tetromino.tetrominoes.get(counter++ % 2 == 0 ? Shape.S : Shape.Z);
 	}
 }

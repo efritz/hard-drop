@@ -21,9 +21,6 @@
 
 package com.kauri.gatetris.sequence;
 
-import java.util.Collections;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Random;
 
 import com.kauri.gatetris.Tetromino;
@@ -32,24 +29,25 @@ import com.kauri.gatetris.Tetromino.Shape;
 /**
  * @author Eric Fritz
  */
-public class ShufflePieceSequence extends AbstractPieceSequence
+public class RandomPieceSelector implements PieceSelector
 {
 	private static Shape[] shapes = new Shape[] { Shape.I, Shape.J, Shape.L, Shape.O, Shape.S, Shape.T, Shape.Z };
 
-	private Random random = new Random();
-	private List<Shape> bag = new LinkedList<Shape>();
+	private Random random;
+
+	public RandomPieceSelector()
+	{
+		this(System.nanoTime());
+	}
+
+	public RandomPieceSelector(long seed)
+	{
+		random = new Random(seed);
+	}
 
 	@Override
-	protected Tetromino getNextPiece()
+	public Tetromino getNextPiece()
 	{
-		if (bag.size() == 0) {
-			for (Shape shape : shapes) {
-				bag.add(shape);
-			}
-
-			Collections.shuffle(bag, random);
-		}
-
-		return Tetromino.tetrominoes.get(bag.remove(0));
+		return Tetromino.tetrominoes.get(shapes[random.nextInt(shapes.length)]);
 	}
 }

@@ -21,27 +21,12 @@
 
 package com.kauri.gatetris.sequence;
 
-import java.util.LinkedList;
-import java.util.Queue;
-
 import com.kauri.gatetris.Tetromino;
-import com.kauri.gatetris.Tetromino.Shape;
 
 /**
  * @author Eric Fritz
  */
-public class QueuePieceSequence extends AbstractPieceSequence
+public interface PieceSelector
 {
-	private Queue<Shape> queue = new LinkedList<Shape>();
-
-	public void push(Shape shape)
-	{
-		queue.add(shape);
-	}
-
-	@Override
-	protected Tetromino getNextPiece()
-	{
-		return Tetromino.tetrominoes.get(queue.remove());
-	}
+	abstract Tetromino getNextPiece();
 }

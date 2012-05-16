@@ -22,38 +22,16 @@
 package com.kauri.gatetris.sequence;
 
 import com.kauri.gatetris.Tetromino;
+import com.kauri.gatetris.Tetromino.Shape;
 
 /**
  * @author Eric Fritz
  */
-abstract public class AbstractPieceSequence implements PieceSequence
+public class LinePieceSelector implements PieceSelector
 {
-	private Tetromino current;
-	private Tetromino preview;
-
 	@Override
-	public final void advance()
+	public Tetromino getNextPiece()
 	{
-		if (current == null) {
-			current = getNextPiece();
-			preview = getNextPiece();
-		} else {
-			current = preview;
-			preview = getNextPiece();
-		}
+		return Tetromino.tetrominoes.get(Shape.I);
 	}
-
-	@Override
-	public final Tetromino peekCurrent()
-	{
-		return current;
-	}
-
-	@Override
-	public final Tetromino peekPreview()
-	{
-		return preview;
-	}
-
-	abstract protected Tetromino getNextPiece();
 }
