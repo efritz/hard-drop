@@ -30,13 +30,14 @@ import com.kauri.gatetris.Tetromino.Shape;
  */
 public class DefaultAi implements Strategy
 {
+	private Board dummy1 = null;
+	private Board dummy2 = null;
+
 	@Override
 	public Move getBestMove(Board board, Tetromino current, Tetromino preview, int x, int y)
 	{
 		int bestRotationDelta = 0;
 		int bestTranslationDelta = 0;
-
-		Board dummy = null;
 
 		double max = Double.NEGATIVE_INFINITY;
 
@@ -46,14 +47,14 @@ public class DefaultAi implements Strategy
 		//
 
 		for (int rotationDelta = 0; rotationDelta < 4; rotationDelta++) {
-			int minTranslation = getMinTranslation(board, current, x, y);
-			int maxTranslation = getMaxTranslation(board, current, x, y);
+			int minTranslationDelta = getMinTranslationDelta(board, current, x, y);
+			int maxTranslationDelta = getMaxTranslationDelta(board, current, x, y);
 
-			for (int translationDelta = minTranslation; translationDelta <= maxTranslation; translationDelta++) {
-				dummy = board.tryClone(dummy);
+			for (int translationDelta = minTranslationDelta; translationDelta <= maxTranslationDelta; translationDelta++) {
+				dummy1 = board.tryClone(dummy1);
 
-				if (dummy.tryMove(current, x + translationDelta, dummy.dropHeight(current, x + translationDelta))) {
-					double score = score(dummy);
+				if (dummy1.tryMove(current, x + translationDelta, dummy1.dropHeight(current, x + translationDelta))) {
+					double score = score(dummy1);
 
 					if (score > max) {
 						max = score;
@@ -69,12 +70,7 @@ public class DefaultAi implements Strategy
 		return new Move(bestRotationDelta, bestTranslationDelta);
 	}
 
-	//
-	// TODO - instead of running O(|min|+|max|), combine the methods and make it O(max{|min|,
-	// |max|}), if that can keep the readability of the separate methods.
-	//
-
-	private int getMinTranslation(Board board, Tetromino piece, int x, int y)
+	private int getMinTranslationDelta(Board board, Tetromino piece, int x, int y)
 	{
 		int translation = 0;
 		while (board.canMove(piece, x + translation, y)) {
@@ -84,7 +80,7 @@ public class DefaultAi implements Strategy
 		return translation;
 	}
 
-	private int getMaxTranslation(Board board, Tetromino piece, int x, int y)
+	private int getMaxTranslationDelta(Board board, Tetromino piece, int x, int y)
 	{
 		int translation = 0;
 		while (board.canMove(piece, x + translation, y)) {
