@@ -126,27 +126,6 @@ public class Board implements Cloneable
 	}
 
 	/**
-	 * Add a piece to the board, if the piece can fit in the board legally.
-	 * 
-	 * @param piece
-	 *            The tetromino.
-	 * @param xPos
-	 *            The x-position.
-	 * @param yPos
-	 *            The y-position.
-	 * @return Whether the piece has been added to the board.
-	 */
-	public boolean tryMove(Tetromino piece, int xPos, int yPos)
-	{
-		if (canMove(piece, xPos, yPos)) {
-			addPiece(piece, xPos, yPos);
-			return true;
-		}
-
-		return false;
-	}
-
-	/**
 	 * Determines if a tetromino can be placed at the given x and y-coordinates without collision.
 	 * 
 	 * @param piece
@@ -176,6 +155,27 @@ public class Board implements Cloneable
 	}
 
 	/**
+	 * Add a piece to the board, if the piece can fit in the board legally.
+	 * 
+	 * @param piece
+	 *            The tetromino.
+	 * @param xPos
+	 *            The x-position.
+	 * @param yPos
+	 *            The y-position.
+	 * @return Whether the piece has been added to the board.
+	 */
+	public boolean tryMove(Tetromino piece, int xPos, int yPos)
+	{
+		if (!canMove(piece, xPos, yPos)) {
+			return false;
+		}
+
+		addPiece(piece, xPos, yPos);
+		return true;
+	}
+
+	/**
 	 * Adds the blocks of a tetromino onto this board.
 	 * 
 	 * @param piece
@@ -185,7 +185,7 @@ public class Board implements Cloneable
 	 * @param yPos
 	 *            The y-position.
 	 */
-	public void addPiece(Tetromino piece, int xPos, int yPos)
+	private void addPiece(Tetromino piece, int xPos, int yPos)
 	{
 		for (int i = 0; i < piece.getSize(); i++) {
 			int x = xPos + piece.getX(i);

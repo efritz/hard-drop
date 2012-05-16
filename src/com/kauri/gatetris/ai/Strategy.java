@@ -33,6 +33,12 @@ public interface Strategy
 	{
 		public int rotationDelta;
 		public int translationDelta;
+
+		public Move(int rotationDelta, int translationDelta)
+		{
+			this.rotationDelta = rotationDelta;
+			this.translationDelta = translationDelta;
+		}
 	}
 
 	public Move getBestMove(Board board, Tetromino current, Tetromino preview, int x, int y);

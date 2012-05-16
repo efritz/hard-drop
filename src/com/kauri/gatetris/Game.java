@@ -39,6 +39,9 @@ import java.util.Map;
 import javax.swing.JFrame;
 
 import com.kauri.gatetris.Tetromino.Shape;
+import com.kauri.gatetris.ai.DefaultAi;
+import com.kauri.gatetris.ai.Strategy;
+import com.kauri.gatetris.ai.Strategy.Move;
 import com.kauri.gatetris.sequence.PieceSequence;
 import com.kauri.gatetris.sequence.ShufflePieceSelector;
 
@@ -48,6 +51,8 @@ import com.kauri.gatetris.sequence.ShufflePieceSelector;
 public class Game extends Canvas implements Runnable
 {
 	private static final long serialVersionUID = 1L;
+
+	Strategy ai = new DefaultAi();
 
 	private static Map<Shape, Color> colors = new HashMap<Shape, Color>();
 
@@ -71,8 +76,12 @@ public class Game extends Canvas implements Runnable
 	private Board board = new Board(10, 22);
 	private PieceSequence sequence = new PieceSequence(new ShufflePieceSelector());
 
+	private boolean autoRestart = false;
+	private boolean runningAi = false;
 	private boolean showNextPiece = false;
 	private boolean showShadowPiece = false;
+
+	private long aidelay = 128;
 
 	private long score = 0;
 	private long level = 1;
@@ -96,24 +105,26 @@ public class Game extends Canvas implements Runnable
 		{
 			int keyCode = ke.getKeyCode();
 
-			if (keyCode == KeyEvent.VK_LEFT) {
-				moveLeft();
-			}
+			if (!runningAi) {
+				if (keyCode == KeyEvent.VK_LEFT) {
+					moveLeft();
+				}
 
-			if (keyCode == KeyEvent.VK_RIGHT) {
-				moveRight();
-			}
+				if (keyCode == KeyEvent.VK_RIGHT) {
+					moveRight();
+				}
 
-			if (keyCode == KeyEvent.VK_UP) {
-				rotateRight();
-			}
+				if (keyCode == KeyEvent.VK_UP) {
+					rotateRight();
+				}
 
-			if (keyCode == KeyEvent.VK_DOWN) {
-				dropDownOneLine();
-			}
+				if (keyCode == KeyEvent.VK_DOWN) {
+					dropDownOneLine();
+				}
 
-			if (keyCode == KeyEvent.VK_SPACE) {
-				hardDrop();
+				if (keyCode == KeyEvent.VK_SPACE) {
+					hardDrop();
+				}
 			}
 
 			if (keyCode == KeyEvent.VK_J) {
@@ -122,6 +133,22 @@ public class Game extends Canvas implements Runnable
 
 			if (keyCode == KeyEvent.VK_ENTER) {
 				startNewGame();
+			}
+
+			if (keyCode == KeyEvent.VK_A) {
+				runningAi = !runningAi;
+			}
+
+			if (keyCode == KeyEvent.VK_U) {
+				autoRestart = !autoRestart;
+			}
+
+			if (keyCode == 61) {
+				aidelay = Math.max(1, aidelay / 2);
+			}
+
+			if (keyCode == KeyEvent.VK_MINUS) {
+				aidelay = Math.min(1000, aidelay * 2);
 			}
 
 			if (keyCode == KeyEvent.VK_N) {
@@ -199,23 +226,64 @@ public class Game extends Canvas implements Runnable
 		}
 	}
 
+	long lastAi = System.currentTimeMillis();
 	long lastCounter = System.currentTimeMillis();
 	long lastGravity = System.currentTimeMillis();
 
 	private void update()
 	{
-		long now = System.currentTimeMillis();
+		if (state == State.GAMEOVER) {
+			if (autoRestart) {
+				startNewGame();
+			}
 
-		long gravityDelay = Math.max(100, 600 - (level - 1) * 20);
-
-		if (now - gravityDelay >= lastGravity) {
-			lastGravity = now;
-			dropDownOneLine();
+			return;
 		}
+
+		long now = System.currentTimeMillis();
 
 		if (now - 1000 >= lastCounter) {
 			lastCounter = now;
 			System.out.printf("Score: %-10d Level: %-10d Lines: %-10d Drops: %-10d\n", score, level, lines, drops);
+		}
+
+		if (runningAi) {
+			if (now - aidelay >= lastAi) {
+				lastAi = now;
+
+				Move move = ai.getBestMove(board, current, preview, xPos, yPos);
+
+				for (int i = 0; i < move.rotationDelta; i++) {
+					if (!this.rotateLeft()) {
+						break;
+					}
+				}
+
+				while (move.translationDelta < 0) {
+					if (!this.moveLeft()) {
+						break;
+					}
+
+					move.translationDelta++;
+				}
+
+				while (move.translationDelta > 0) {
+					if (!this.moveRight()) {
+						break;
+					}
+
+					move.translationDelta--;
+				}
+
+				this.hardDrop();
+			}
+		} else {
+			long gravityDelay = Math.max(100, 600 - (level - 1) * 20);
+
+			if (now - gravityDelay >= lastGravity) {
+				lastGravity = now;
+				dropDownOneLine();
+			}
 		}
 	}
 
@@ -316,7 +384,7 @@ public class Game extends Canvas implements Runnable
 
 	private void dropPiece()
 	{
-		board.addPiece(current, xPos, yPos);
+		board.tryMove(current, xPos, yPos);
 
 		int numLines = board.clearLines();
 
