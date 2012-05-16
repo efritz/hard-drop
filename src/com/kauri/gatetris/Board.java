@@ -120,7 +120,7 @@ public class Board implements Cloneable
 	 * @param type
 	 *            The tetromino type.
 	 */
-	public void setShapeAt(int row, int col, Shape type)
+	private void setShapeAt(int row, int col, Shape type)
 	{
 		board[(row * width) + col] = type;
 	}
