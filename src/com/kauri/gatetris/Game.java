@@ -52,8 +52,6 @@ public class Game extends Canvas implements Runnable
 {
 	private static final long serialVersionUID = 1L;
 
-	Strategy ai = new DefaultAi();
-
 	private static Map<Shape, Color> colors = new HashMap<Shape, Color>();
 
 	static {
@@ -75,6 +73,7 @@ public class Game extends Canvas implements Runnable
 	private State state = State.PLAYING;
 	private Board board = new Board(10, 22);
 	private PieceSequence sequence = new PieceSequence(new ShufflePieceSelector());
+	private Strategy ai = new DefaultAi();
 
 	private boolean autoRestart = false;
 	private boolean runningAi = false;
@@ -424,7 +423,17 @@ public class Game extends Canvas implements Runnable
 
 	private int getSquareHeight()
 	{
-		return getAdjustedBoardHeight() / (board.getHeight() + (showNextPiece ? 2 : 0));
+		return getAdjustedBoardHeight() / (board.getHeight() + (showNextPiece ? 4 : 0));
+	}
+
+	private int getLeftMargin()
+	{
+		return (getWidth() - board.getWidth() * getSquareWidth()) / 2;
+	}
+
+	private int getTopMargin()
+	{
+		return (getHeight() - board.getHeight() * getSquareWidth()) / 2;
 	}
 
 	private void render()
@@ -441,18 +450,9 @@ public class Game extends Canvas implements Runnable
 		g.setColor(colors.get(Shape.NoShape));
 		g.fillRect(0, 0, getWidth(), getHeight());
 
-		int squareWidth = getSquareWidth();
-		int squareHeight = getSquareHeight();
-
-		int leftMargin = (getWidth() - board.getWidth() * squareWidth) / 2;
-		int topMargin = (getHeight() - board.getHeight() * squareHeight);
-
 		for (int row = 0; row < board.getHeight(); row++) {
 			for (int col = 0; col < board.getWidth(); col++) {
-				int rowOffset = topMargin + (board.getHeight() - 1 - row) * squareHeight;
-				int colOffset = leftMargin + col * squareWidth;
-
-				drawSquare(g, rowOffset, colOffset, squareWidth, squareHeight, colors.get(board.getShapeAt(row, col)));
+				drawSquare(g, translateBoardRow(row), translateBoardCol(col), colors.get(board.getShapeAt(row, col)));
 			}
 		}
 
@@ -460,11 +460,7 @@ public class Game extends Canvas implements Runnable
 			int ghostPosition = board.dropHeight(current, xPos, yPos);
 
 			if (ghostPosition < yPos) {
-				int rowOffset = topMargin + (board.getHeight() - 1 - ghostPosition) * squareHeight;
-				int colOffset = leftMargin + xPos * squareWidth;
-
-				Color color = colors.get(current.getShape());
-				drawTetromino(g, current, rowOffset, colOffset, squareWidth, squareHeight, changeAlpha(color, .3), topMargin);
+				drawTetromino(g, current, translateBoardRow(ghostPosition), translateBoardCol(xPos), changeAlpha(colors.get(current.getShape()), .3), getTopMargin());
 			}
 		} else if (showAiPiece) {
 			Move move = ai.getBestMove(board, current, preview, xPos, yPos);
@@ -478,32 +474,20 @@ public class Game extends Canvas implements Runnable
 			int ghostPosition = board.dropHeight(current2, xPos + move.translationDelta, yPos);
 
 			if (ghostPosition < yPos) {
-				int rowOffset = topMargin + (board.getHeight() - 1 - ghostPosition) * squareHeight;
-				int colOffset = leftMargin + (xPos + move.translationDelta) * squareWidth;
-
-				Color color = colors.get(current2.getShape());
-				drawTetromino(g, current2, rowOffset, colOffset, squareWidth, squareHeight, changeAlpha(color, .3), topMargin);
+				drawTetromino(g, current2, translateBoardRow(ghostPosition), translateBoardCol(xPos + move.translationDelta), changeAlpha(colors.get(current2.getShape()), .3), getTopMargin());
 			}
 		}
 
 		if (board.canMove(current, xPos, yPos)) {
-			int rowOffset = topMargin + (board.getHeight() - 1 - yPos) * squareHeight;
-			int colOffset = leftMargin + xPos * squareWidth;
-
-			Color color = colors.get(current.getShape());
-
-			drawTetromino(g, current, rowOffset, colOffset, squareWidth, squareHeight, color, topMargin);
+			drawTetromino(g, current, translateBoardRow(yPos), translateBoardCol(xPos), colors.get(current.getShape()), getTopMargin());
 		}
 
 		if (showNextPiece) {
 			int xPos = (board.getWidth() - preview.getWidth()) / 2 + Math.abs(preview.getMinX());
 
-			int rowOffset = (topMargin - (preview.getHeight() * squareHeight)) / 2;
-			int colOffset = leftMargin + xPos * squareWidth;
+			int rowOffset = (getTopMargin() - (preview.getHeight() * getSquareHeight())) / 2;
 
-			Color color = colors.get(preview.getShape());
-
-			drawTetromino(g, preview, rowOffset, colOffset, squareWidth, squareHeight, color, 0);
+			drawTetromino(g, preview, rowOffset, translateBoardCol(xPos), colors.get(preview.getShape()), 0);
 		}
 
 		if (state == State.PAUSED) {
@@ -544,15 +528,25 @@ public class Game extends Canvas implements Runnable
 		g.drawString(string, (getWidth() / 2) - (w / 2), (getHeight() / 2) - fm.getDescent());
 	}
 
-	private void drawTetromino(Graphics g, Tetromino piece, int row, int col, int width, int height, Color color, int top)
+	private int translateBoardRow(int row)
+	{
+		return getTopMargin() + (board.getHeight() - 1 - row) * getSquareHeight();
+	}
+
+	private int translateBoardCol(int col)
+	{
+		return getLeftMargin() + col * getSquareWidth();
+	}
+
+	private void drawTetromino(Graphics g, Tetromino piece, int row, int col, Color color, int top)
 	{
 		if (piece.getShape() != Shape.NoShape) {
 			for (int i = 0; i < piece.getSize(); i++) {
-				int xPos = col + piece.getX(i) * width;
-				int yPos = row + piece.getY(i) * height;
+				int xPos = col + piece.getX(i) * getSquareWidth();
+				int yPos = row + piece.getY(i) * getSquareHeight();
 
 				if (yPos >= top) {
-					drawSquare(g, yPos, xPos, width, height, color);
+					drawSquare(g, yPos, xPos, color);
 				}
 			}
 		}
@@ -572,13 +566,13 @@ public class Game extends Canvas implements Runnable
 		}
 	}
 
-	private void drawSquare(Graphics g, int row, int col, int width, int height, Color color)
+	private void drawSquare(Graphics g, int row, int col, Color color)
 	{
 		g.setColor(color.darker());
-		g.fillRect(col, row, width, height);
+		g.fillRect(col, row, getSquareWidth(), getSquareHeight());
 
 		g.setColor(color);
-		g.fillRect(col + 1, row + 1, width - 2, height - 2);
+		g.fillRect(col + 1, row + 1, getSquareWidth() - 2, getSquareHeight() - 2);
 	}
 
 	public static void main(String[] args)
