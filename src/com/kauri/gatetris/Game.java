@@ -23,18 +23,13 @@ package com.kauri.gatetris;
 
 import java.awt.BorderLayout;
 import java.awt.Canvas;
-import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.Font;
-import java.awt.FontMetrics;
 import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.RenderingHints;
+import java.awt.event.ComponentEvent;
+import java.awt.event.ComponentListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.image.BufferStrategy;
-import java.util.HashMap;
-import java.util.Map;
 
 import javax.swing.JFrame;
 
@@ -52,46 +47,33 @@ public class Game extends Canvas implements Runnable
 {
 	private static final long serialVersionUID = 1L;
 
-	private static Map<Shape, Color> colors = new HashMap<Shape, Color>();
-
-	static {
-		colors.put(Shape.I, Color.red);
-		colors.put(Shape.J, Color.blue);
-		colors.put(Shape.L, Color.orange);
-		colors.put(Shape.O, Color.yellow);
-		colors.put(Shape.S, Color.magenta);
-		colors.put(Shape.T, Color.cyan);
-		colors.put(Shape.Z, Color.green);
-		colors.put(Shape.Junk, Color.darkGray);
-		colors.put(Shape.NoShape, new Color(240, 240, 240));
-	}
-
 	public enum State {
 		PLAYING, PAUSED, GAMEOVER;
 	}
 
-	private State state = State.PLAYING;
-	private Board board = new Board(10, 22);
-	private PieceSequence sequence = new PieceSequence(new ShufflePieceSelector());
-	private Strategy ai = new DefaultAi();
+	State state = State.PLAYING;
+	Board board = new Board(10, 22);
+	PieceSequence sequence = new PieceSequence(new ShufflePieceSelector());
+	Strategy ai = new DefaultAi();
+	UI ui = new UI(this);
 
-	private boolean autoRestart = false;
-	private boolean runningAi = false;
-	private boolean showAiPiece = false;
-	private boolean showNextPiece = false;
-	private boolean showShadowPiece = false;
+	boolean autoRestart = false;
+	boolean runningAi = false;
+	boolean showAiPiece = false;
+	boolean showNextPiece = false;
+	boolean showShadowPiece = false;
 
-	private long aidelay = 128;
+	long aidelay = 128;
 
-	private long score = 0;
-	private long level = 1;
-	private long lines = 0;
-	private long drops = 0;
+	long score = 0;
+	long level = 1;
+	long lines = 0;
+	long drops = 0;
 
-	public int xPos;
-	public int yPos;
-	public Tetromino current = sequence.peekCurrent();
-	public Tetromino preview = sequence.peekPreview();
+	int xPos;
+	int yPos;
+	Tetromino current = sequence.peekCurrent();
+	Tetromino preview = sequence.peekPreview();
 
 	public void start()
 	{
@@ -203,12 +185,38 @@ public class Game extends Canvas implements Runnable
 		chooseTetromino();
 	}
 
+	private class ResizeListener implements ComponentListener
+	{
+		@Override
+		public void componentShown(ComponentEvent ce)
+		{
+		}
+
+		@Override
+		public void componentHidden(ComponentEvent ce)
+		{
+		}
+
+		@Override
+		public void componentMoved(ComponentEvent ce)
+		{
+		}
+
+		@Override
+		public void componentResized(ComponentEvent ce)
+		{
+			ui.setSize(getWidth(), getHeight());
+		}
+	}
+
 	@Override
 	public void run()
 	{
 		sequence.advance();
+		ui.setSize(getWidth(), getHeight());
 
 		this.addKeyListener(new InputHandler());
+		this.addComponentListener(new ResizeListener());
 
 		startNewGame();
 
@@ -406,36 +414,6 @@ public class Game extends Canvas implements Runnable
 		return board.canMove(current, xPos, yPos - 1);
 	}
 
-	private int getAdjustedBoardWidth()
-	{
-		return (int) Math.min(getWidth(), (double) getHeight() * board.getWidth() / board.getHeight());
-	}
-
-	private int getAdjustedBoardHeight()
-	{
-		return (int) Math.min(getHeight(), (double) getWidth() * board.getHeight() / board.getWidth());
-	}
-
-	private int getSquareWidth()
-	{
-		return getAdjustedBoardWidth() / (board.getWidth() + (showNextPiece ? 2 : 0));
-	}
-
-	private int getSquareHeight()
-	{
-		return getAdjustedBoardHeight() / (board.getHeight() + (showNextPiece ? 4 : 0));
-	}
-
-	private int getLeftMargin()
-	{
-		return (getWidth() - board.getWidth() * getSquareWidth()) / 2;
-	}
-
-	private int getTopMargin()
-	{
-		return (getHeight() - board.getHeight() * getSquareWidth()) / 2;
-	}
-
 	private void render()
 	{
 		BufferStrategy bs = getBufferStrategy();
@@ -447,114 +425,10 @@ public class Game extends Canvas implements Runnable
 
 		Graphics g = bs.getDrawGraphics();
 
-		g.setColor(colors.get(Shape.NoShape));
-		g.fillRect(0, 0, getWidth(), getHeight());
-
-		for (int row = 0; row < board.getHeight(); row++) {
-			for (int col = 0; col < board.getWidth(); col++) {
-				drawSquare(g, translateBoardRow(row), translateBoardCol(col), colors.get(board.getShapeAt(row, col)));
-			}
-		}
-
-		if (showShadowPiece) {
-			int ghostPosition = board.dropHeight(current, xPos, yPos);
-
-			if (ghostPosition < yPos) {
-				drawTetromino(g, current, translateBoardRow(ghostPosition), translateBoardCol(xPos), changeAlpha(colors.get(current.getShape()), .3), getTopMargin());
-			}
-		} else if (showAiPiece) {
-			Move move = ai.getBestMove(board, current, preview, xPos, yPos);
-
-			Tetromino current2 = current;
-
-			for (int i = 0; i < move.rotationDelta; i++) {
-				current2 = Tetromino.rotateLeft(current2);
-			}
-
-			int ghostPosition = board.dropHeight(current2, xPos + move.translationDelta, yPos);
-
-			if (ghostPosition < yPos) {
-				drawTetromino(g, current2, translateBoardRow(ghostPosition), translateBoardCol(xPos + move.translationDelta), changeAlpha(colors.get(current2.getShape()), .3), getTopMargin());
-			}
-		}
-
-		if (board.canMove(current, xPos, yPos)) {
-			drawTetromino(g, current, translateBoardRow(yPos), translateBoardCol(xPos), colors.get(current.getShape()), getTopMargin());
-		}
-
-		if (showNextPiece) {
-			int xPos = (board.getWidth() - preview.getWidth()) / 2 + Math.abs(preview.getMinX());
-
-			int rowOffset = (getTopMargin() - (preview.getHeight() * getSquareHeight())) / 2;
-
-			drawTetromino(g, preview, rowOffset, translateBoardCol(xPos), colors.get(preview.getShape()), 0);
-		}
-
-		if (state == State.PAUSED) {
-			drawString(g, "paused");
-		}
-
-		if (state == State.GAMEOVER) {
-			drawString(g, "game over");
-		}
+		ui.render(g);
 
 		g.dispose();
 		bs.show();
-	}
-
-	private Color changeAlpha(Color color, double percent)
-	{
-		return new Color(color.getRed(), color.getGreen(), color.getBlue(), Math.min(255, Math.max(1, (int) (color.getAlpha() * percent))));
-	}
-
-	private void drawString(Graphics g, String string)
-	{
-		((Graphics2D) g).setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
-
-		//
-		// NASTY NASTY NASTY
-		//
-
-		int points = 20;
-		int targetThreshold = (int) (getWidth() * .75);
-		FontMetrics fm;
-
-		do {
-			Font font = new Font("Arial", Font.PLAIN, points++);
-			g.setFont(font);
-
-			fm = g.getFontMetrics();
-		} while (fm.stringWidth(string) < targetThreshold);
-
-		g.setColor(new Color(0, 0, 0, (int) (255 * .5)));
-		g.fillRect(0, 0, getWidth(), getHeight());
-
-		g.setColor(new Color(255, 255, 255));
-		g.drawString(string, (getWidth() / 2) - (fm.stringWidth(string) / 2), (getHeight() / 2) + fm.getDescent());
-	}
-
-	private int translateBoardRow(int row)
-	{
-		return getTopMargin() + (board.getHeight() - 1 - row) * getSquareHeight();
-	}
-
-	private int translateBoardCol(int col)
-	{
-		return getLeftMargin() + col * getSquareWidth();
-	}
-
-	private void drawTetromino(Graphics g, Tetromino piece, int row, int col, Color color, int top)
-	{
-		if (piece.getShape() != Shape.NoShape) {
-			for (int i = 0; i < piece.getSize(); i++) {
-				int xPos = col + piece.getX(i) * getSquareWidth();
-				int yPos = row + piece.getY(i) * getSquareHeight();
-
-				if (yPos >= top) {
-					drawSquare(g, yPos, xPos, color);
-				}
-			}
-		}
 	}
 
 	private void chooseTetromino()
@@ -569,15 +443,6 @@ public class Game extends Canvas implements Runnable
 		if (!board.canMove(current, xPos, yPos)) {
 			state = State.GAMEOVER;
 		}
-	}
-
-	private void drawSquare(Graphics g, int row, int col, Color color)
-	{
-		g.setColor(color.darker());
-		g.fillRect(col, row, getSquareWidth(), getSquareHeight());
-
-		g.setColor(color);
-		g.fillRect(col + 1, row + 1, getSquareWidth() - 2, getSquareHeight() - 2);
 	}
 
 	public static void main(String[] args)
