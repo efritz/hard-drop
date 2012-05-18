@@ -78,6 +78,7 @@ public class Game extends Canvas implements Runnable
 
 	private boolean autoRestart = false;
 	private boolean runningAi = false;
+	private boolean showAiPiece = false;
 	private boolean showNextPiece = false;
 	private boolean showShadowPiece = false;
 
@@ -474,6 +475,25 @@ public class Game extends Canvas implements Runnable
 
 				Color color = colors.get(current.getShape());
 				drawTetromino(g, current, rowOffset, colOffset, squareWidth, squareHeight, changeAlpha(color, .3), topMargin);
+			}
+		} else if (showAiPiece) {
+			Move move = ai.getBestMove(board, current, preview, xPos, yPos);
+
+			Tetromino current2 = current;
+
+			for (int i = 0; i < move.rotationDelta; i++) {
+				current2 = Tetromino.rotateLeft(current2);
+			}
+
+			int ghostPosition = board.dropHeight(current2, xPos + move.translationDelta, yPos);
+
+			if (ghostPosition < yPos) {
+				int rowOffset = topMargin + (board.getHeight() - 1 - ghostPosition) * squareHeight;
+				int colOffset = leftMargin + (xPos + move.translationDelta) * squareWidth;
+
+				Color color = colors.get(current2.getShape());
+				color = new Color(color.getRed(), color.getGreen(), color.getBlue(), 255 / 3);
+				drawTetromino(g, current2, rowOffset, colOffset, squareWidth, squareHeight, color, topMargin);
 			}
 		}
 
