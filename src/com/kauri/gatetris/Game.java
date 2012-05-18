@@ -473,8 +473,7 @@ public class Game extends Canvas implements Runnable
 				int colOffset = leftMargin + xPos * squareWidth;
 
 				Color color = colors.get(current.getShape());
-				color = new Color(color.getRed(), color.getGreen(), color.getBlue(), 255 / 3);
-				drawTetromino(g, current, rowOffset, colOffset, squareWidth, squareHeight, color, topMargin);
+				drawTetromino(g, current, rowOffset, colOffset, squareWidth, squareHeight, changeAlpha(color, .3), topMargin);
 			}
 		}
 
@@ -511,6 +510,11 @@ public class Game extends Canvas implements Runnable
 	}
 
 	private final Font font = new Font("Arial", Font.PLAIN, 40);
+
+	private Color changeAlpha(Color color, double percent)
+	{
+		return new Color(color.getRed(), color.getGreen(), color.getBlue(), Math.min(255, Math.max(1, (int) (color.getAlpha() * percent))));
+	}
 
 	private void drawString(Graphics g, String string)
 	{
