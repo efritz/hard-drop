@@ -407,6 +407,26 @@ public class Game extends Canvas implements Runnable
 		return board.canMove(current, xPos, yPos - 1);
 	}
 
+	private int getAdjustedBoardWidth()
+	{
+		return (int) Math.min(getWidth(), (double) getHeight() * board.getWidth() / board.getHeight());
+	}
+
+	private int getAdjustedBoardHeight()
+	{
+		return (int) Math.min(getHeight(), (double) getWidth() * board.getHeight() / board.getWidth());
+	}
+
+	private int getSquareWidth()
+	{
+		return getAdjustedBoardWidth() / (board.getWidth() + (showNextPiece ? 2 : 0));
+	}
+
+	private int getSquareHeight()
+	{
+		return getAdjustedBoardHeight() / (board.getHeight() + (showNextPiece ? 2 : 0));
+	}
+
 	private void render()
 	{
 		BufferStrategy bs = getBufferStrategy();
@@ -421,41 +441,11 @@ public class Game extends Canvas implements Runnable
 		g.setColor(colors.get(Shape.NoShape));
 		g.fillRect(0, 0, getWidth(), getHeight());
 
-		int padding = 0;
+		int squareWidth = getSquareWidth();
+		int squareHeight = getSquareHeight();
 
-		int boardWidthCells = board.getWidth();
-		int boardHeightCells = board.getHeight();
-
-		int fullDrawingWidth = getWidth() - padding * 2;
-		int fullDrawingHeight = getHeight() - padding * 2;
-
-		int squareWidth;
-		int squareHeight;
-
-		double targetAspectRatio = boardWidthCells / (double) boardHeightCells;
-
-		int targetDrawingWidth, targetDrawingHeight;
-
-		if (fullDrawingWidth > (targetAspectRatio * fullDrawingHeight)) {
-			// fit to height
-			targetDrawingWidth = (int) (fullDrawingHeight * targetAspectRatio);
-			targetDrawingHeight = fullDrawingHeight;
-		} else {
-			// fit to width
-			targetDrawingWidth = fullDrawingWidth;
-			targetDrawingHeight = (int) (fullDrawingWidth / targetAspectRatio);
-		}
-
-		if (showNextPiece) {
-			squareWidth = targetDrawingWidth / (boardWidthCells + 3);
-			squareHeight = targetDrawingHeight / (boardHeightCells + 4);
-		} else {
-			squareWidth = targetDrawingWidth / boardWidthCells;
-			squareHeight = targetDrawingHeight / boardHeightCells;
-		}
-
-		int leftMargin = (getWidth() - boardWidthCells * squareWidth) / 2;
-		int topMargin = (getHeight() - boardHeightCells * squareHeight) / 2;
+		int leftMargin = (getWidth() - board.getWidth() * squareWidth) / 2;
+		int topMargin = (getHeight() - board.getHeight() * squareHeight);
 
 		for (int row = 0; row < board.getHeight(); row++) {
 			for (int col = 0; col < board.getWidth(); col++) {
@@ -492,8 +482,7 @@ public class Game extends Canvas implements Runnable
 				int colOffset = leftMargin + (xPos + move.translationDelta) * squareWidth;
 
 				Color color = colors.get(current2.getShape());
-				color = new Color(color.getRed(), color.getGreen(), color.getBlue(), 255 / 3);
-				drawTetromino(g, current2, rowOffset, colOffset, squareWidth, squareHeight, color, topMargin);
+				drawTetromino(g, current2, rowOffset, colOffset, squareWidth, squareHeight, changeAlpha(color, .3), topMargin);
 			}
 		}
 
@@ -507,7 +496,7 @@ public class Game extends Canvas implements Runnable
 		}
 
 		if (showNextPiece) {
-			int xPos = (boardWidthCells - preview.getWidth()) / 2 + Math.abs(preview.getMinX());
+			int xPos = (board.getWidth() - preview.getWidth()) / 2 + Math.abs(preview.getMinX());
 
 			int rowOffset = (topMargin - (preview.getHeight() * squareHeight)) / 2;
 			int colOffset = leftMargin + xPos * squareWidth;
