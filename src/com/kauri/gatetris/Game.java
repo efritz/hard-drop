@@ -502,8 +502,6 @@ public class Game extends Canvas implements Runnable
 		bs.show();
 	}
 
-	private final Font font = new Font("Arial", Font.PLAIN, 40);
-
 	private Color changeAlpha(Color color, double percent)
 	{
 		return new Color(color.getRed(), color.getGreen(), color.getBlue(), Math.min(255, Math.max(1, (int) (color.getAlpha() * percent))));
@@ -512,20 +510,27 @@ public class Game extends Canvas implements Runnable
 	private void drawString(Graphics g, String string)
 	{
 		((Graphics2D) g).setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
-		g.setFont(font);
 
-		FontMetrics fm = g.getFontMetrics();
+		//
+		// NASTY NASTY NASTY
+		//
 
-		int w = fm.stringWidth(string);
-		int h = fm.getAscent();
+		int points = 20;
+		int targetThreshold = (int) (getWidth() * .75);
+		FontMetrics fm;
 
-		int borderPadding = h / 3;
+		do {
+			Font font = new Font("Arial", Font.PLAIN, points++);
+			g.setFont(font);
 
-		g.setColor(new Color(0, 0, 0, (int) (255 * .75)));
-		g.fillRect(0, (getHeight() / 2) - h - borderPadding, getWidth(), h + borderPadding * 2);
+			fm = g.getFontMetrics();
+		} while (fm.stringWidth(string) < targetThreshold);
+
+		g.setColor(new Color(0, 0, 0, (int) (255 * .5)));
+		g.fillRect(0, 0, getWidth(), getHeight());
 
 		g.setColor(new Color(255, 255, 255));
-		g.drawString(string, (getWidth() / 2) - (w / 2), (getHeight() / 2) - fm.getDescent());
+		g.drawString(string, (getWidth() / 2) - (fm.stringWidth(string) / 2), (getHeight() / 2) + fm.getDescent());
 	}
 
 	private int translateBoardRow(int row)
