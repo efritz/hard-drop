@@ -27,9 +27,9 @@ import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
 import java.awt.image.BufferStrategy;
+import java.util.LinkedList;
+import java.util.List;
 
 import javax.swing.JFrame;
 
@@ -37,6 +37,7 @@ import com.kauri.gatetris.Tetromino.Shape;
 import com.kauri.gatetris.ai.DefaultAi;
 import com.kauri.gatetris.ai.Strategy;
 import com.kauri.gatetris.ai.Strategy.Move;
+import com.kauri.gatetris.command.Command;
 import com.kauri.gatetris.sequence.PieceSequence;
 import com.kauri.gatetris.sequence.ShufflePieceSelector;
 
@@ -50,6 +51,8 @@ public class Game extends Canvas implements Runnable
 	public enum State {
 		PLAYING, PAUSED, GAMEOVER;
 	}
+
+	private List<Command> history = new LinkedList<Command>();
 
 	State state = State.PLAYING;
 	Board board = new Board(10, 22);
@@ -77,100 +80,17 @@ public class Game extends Canvas implements Runnable
 	Tetromino current = sequence.peekCurrent();
 	Tetromino preview = sequence.peekPreview();
 
+	public void storeAndExecute(Command command)
+	{
+		this.history.add(command);
+		command.execute();
+
+		System.out.printf("History is %d commands long...\n", history.size());
+	}
+
 	public void start()
 	{
 		new Thread(this).start();
-	}
-
-	private class InputHandler implements KeyListener
-	{
-		@Override
-		public void keyPressed(KeyEvent ke)
-		{
-			int keyCode = ke.getKeyCode();
-
-			if (!runningAi) {
-				if (keyCode == KeyEvent.VK_LEFT) {
-					moveLeft();
-				}
-
-				if (keyCode == KeyEvent.VK_RIGHT) {
-					moveRight();
-				}
-
-				if (keyCode == KeyEvent.VK_UP) {
-					rotateRight();
-				}
-
-				if (keyCode == KeyEvent.VK_DOWN) {
-					dropDownOneLine();
-				}
-
-				if (keyCode == KeyEvent.VK_SPACE) {
-					hardDrop();
-				}
-			}
-
-			if (keyCode == KeyEvent.VK_J) {
-				addJunkLine();
-			}
-
-			if (keyCode == KeyEvent.VK_ENTER) {
-				startNewGame();
-			}
-
-			if (keyCode == KeyEvent.VK_A) {
-				runningAi = !runningAi;
-			}
-
-			if (keyCode == KeyEvent.VK_U) {
-				autoRestart = !autoRestart;
-			}
-
-			if (keyCode == 61) {
-				aidelay = Math.max(1, aidelay / 2);
-			}
-
-			if (keyCode == KeyEvent.VK_MINUS) {
-				aidelay = Math.min(1000, aidelay * 2);
-			}
-
-			if (keyCode == KeyEvent.VK_N) {
-				showNextPiece = !showNextPiece;
-			}
-
-			if (keyCode == KeyEvent.VK_S) {
-				showShadowPiece = !showShadowPiece;
-			}
-
-			if (keyCode == KeyEvent.VK_P) {
-				if (state != State.GAMEOVER) {
-					state = state == State.PAUSED ? State.PLAYING : State.PAUSED;
-				}
-			}
-
-			if (keyCode == KeyEvent.VK_PAGE_UP) {
-				int width = Math.min(200, Math.max(4, board.getWidth() + 1));
-				board = new Board(width, width * 2);
-				startNewGame();
-			}
-
-			if (keyCode == KeyEvent.VK_PAGE_DOWN) {
-				int width = Math.min(200, Math.max(4, board.getWidth() - 1));
-				board = new Board(width, width * 2);
-				startNewGame();
-			}
-		}
-
-		@Override
-		public void keyReleased(KeyEvent ke)
-		{
-		}
-
-		@Override
-		public void keyTyped(KeyEvent ke)
-		{
-		}
 	}
 
 	public void startNewGame()
@@ -183,6 +103,7 @@ public class Game extends Canvas implements Runnable
 		drops = 0;
 
 		board.clear();
+		history.clear();
 
 		chooseTetromino();
 	}
@@ -217,7 +138,7 @@ public class Game extends Canvas implements Runnable
 		sequence.advance();
 		ui.setSize(getWidth(), getHeight());
 
-		this.addKeyListener(new InputHandler());
+		this.addKeyListener(new InputHandler(this));
 		this.addComponentListener(new ResizeListener());
 
 		startNewGame();
