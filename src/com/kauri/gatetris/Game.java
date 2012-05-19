@@ -65,6 +65,8 @@ public class Game extends Canvas implements Runnable
 
 	long aidelay = 128;
 
+	long pieceValue;
+
 	long score = 0;
 	long level = 1;
 	long lines = 0;
@@ -317,7 +319,12 @@ public class Game extends Canvas implements Runnable
 			return hardDrop();
 		}
 
-		return tryMove(current, xPos, yPos - 1);
+		if (tryMove(current, xPos, yPos - 1)) {
+			pieceValue = Math.max(0, pieceValue - 1);
+			return true;
+		}
+
+		return false;
 	}
 
 	public boolean hardDrop()
@@ -396,11 +403,11 @@ public class Game extends Canvas implements Runnable
 		lines = lines + numLines;
 		level = Math.min(10, drops / 10 + 1);
 
-		score += 24 + 3 * (level - 1);
-
 		if (numLines >= 0) {
 			score += 40 * Math.pow(3, numLines - 1);
 		}
+
+		score += pieceValue;
 
 		chooseTetromino();
 	}
@@ -439,6 +446,8 @@ public class Game extends Canvas implements Runnable
 		if (!board.canMove(current, xPos, yPos)) {
 			state = State.GAMEOVER;
 		}
+
+		pieceValue = 24 + 3 * (level - 1);
 	}
 
 	public static void main(String[] args)
