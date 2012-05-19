@@ -38,6 +38,13 @@ public class SoftDropCommand implements Command
 	@Override
 	public void execute()
 	{
-		game.dropDownOneLine();
+		if (!game.isFalling()) {
+			// TODO - repeated code - try to register hard drop command?
+			game.tryMove(game.current, game.xPos, game.board.dropHeight(game.current, game.xPos, game.yPos), true);
+		} else {
+			if (game.tryMove(game.current, game.xPos, game.yPos - 1)) {
+				game.pieceValue = Math.max(0, game.pieceValue - 1);
+			}
+		}
 	}
 }

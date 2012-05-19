@@ -38,6 +38,6 @@ public class MoveRightCommand implements Command
 	@Override
 	public void execute()
 	{
-		game.moveRight();
+		game.tryMove(game.current, game.xPos + 1, game.yPos);
 	}
 }

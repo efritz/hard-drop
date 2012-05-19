@@ -22,6 +22,7 @@
 package com.kauri.gatetris.command;
 
 import com.kauri.gatetris.Game;
+import com.kauri.gatetris.Tetromino;
 
 /**
  * @author Eric Fritz
@@ -38,6 +39,6 @@ public class RotateRightCommand implements Command
 	@Override
 	public void execute()
 	{
-		game.rotateRight();
+		game.tryMove(Tetromino.rotateRight(game.current), game.xPos, game.yPos);
 	}
 }

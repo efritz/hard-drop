@@ -38,6 +38,6 @@ public class HardDropCommand implements Command
 	@Override
 	public void execute()
 	{
-		game.hardDrop();
+		game.tryMove(game.current, game.xPos, game.board.dropHeight(game.current, game.xPos, game.yPos), true);
 	}
 }

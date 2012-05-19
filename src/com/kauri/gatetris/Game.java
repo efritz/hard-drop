@@ -38,6 +38,12 @@ import com.kauri.gatetris.ai.DefaultAi;
 import com.kauri.gatetris.ai.Strategy;
 import com.kauri.gatetris.ai.Strategy.Move;
 import com.kauri.gatetris.command.Command;
+import com.kauri.gatetris.command.HardDropCommand;
+import com.kauri.gatetris.command.MoveLeftCommand;
+import com.kauri.gatetris.command.MoveRightCommand;
+import com.kauri.gatetris.command.RotateLeftCommand;
+import com.kauri.gatetris.command.RotateRightCommand;
+import com.kauri.gatetris.command.SoftDropCommand;
 import com.kauri.gatetris.sequence.PieceSequence;
 import com.kauri.gatetris.sequence.ShufflePieceSelector;
 
@@ -55,7 +61,7 @@ public class Game extends Canvas implements Runnable
 	private List<Command> history = new LinkedList<Command>();
 
 	State state = State.PLAYING;
-	Board board = new Board(10, 22);
+	public Board board = new Board(10, 22);
 	PieceSequence sequence = new PieceSequence(new ShufflePieceSelector());
 	Strategy ai = new DefaultAi();
 	UI ui = new UI(this);
@@ -68,24 +74,22 @@ public class Game extends Canvas implements Runnable
 
 	long aidelay = 128;
 
-	long pieceValue;
+	public long pieceValue;
 
 	long score = 0;
 	long level = 1;
 	long lines = 0;
 	long drops = 0;
 
-	int xPos;
-	int yPos;
-	Tetromino current = sequence.peekCurrent();
-	Tetromino preview = sequence.peekPreview();
+	public int xPos;
+	public int yPos;
+	public Tetromino current = sequence.peekCurrent();
+	public Tetromino preview = sequence.peekPreview();
 
 	public void storeAndExecute(Command command)
 	{
 		this.history.add(command);
 		command.execute();
-
-		System.out.printf("History is %d commands long...\n", history.size());
 	}
 
 	public void start()
@@ -168,27 +172,19 @@ public class Game extends Canvas implements Runnable
 
 				if (move.rotationDelta > 0) {
 					if (move.rotationDelta == 3) {
-						if (!this.rotateRight()) {
-							this.hardDrop();
-						}
+						this.storeAndExecute(new RotateRightCommand(this));
 					} else {
-						if (!this.rotateLeft()) {
-							this.hardDrop();
-						}
+						this.storeAndExecute(new RotateLeftCommand(this));
 					}
 				} else if (move.translationDelta < 0) {
-					if (!this.moveLeft()) {
-						this.hardDrop();
-					}
+					this.storeAndExecute(new MoveLeftCommand(this));
 				} else if (move.translationDelta > 0) {
-					if (!this.moveRight()) {
-						this.hardDrop();
-					}
+					this.storeAndExecute(new MoveRightCommand(this));
 				} else {
 					if (hardDrops) {
-						this.hardDrop();
+						this.storeAndExecute(new HardDropCommand(this));
 					} else {
-						this.dropDownOneLine();
+						this.storeAndExecute(new SoftDropCommand(this));
 					}
 				}
 			}
@@ -197,7 +193,7 @@ public class Game extends Canvas implements Runnable
 
 			if (now - gravityDelay >= lastGravity) {
 				lastGravity = now;
-				dropDownOneLine();
+				this.storeAndExecute(new SoftDropCommand(this));
 			}
 		}
 	}
@@ -217,45 +213,6 @@ public class Game extends Canvas implements Runnable
 
 		g.dispose();
 		bs.show();
-	}
-
-	public boolean moveLeft()
-	{
-		return tryMove(current, xPos - 1, yPos);
-	}
-
-	public boolean moveRight()
-	{
-		return tryMove(current, xPos + 1, yPos);
-	}
-
-	public boolean rotateLeft()
-	{
-		return tryMove(Tetromino.rotateLeft(current), xPos, yPos);
-	}
-
-	public boolean rotateRight()
-	{
-		return tryMove(Tetromino.rotateRight(current), xPos, yPos);
-	}
-
-	public boolean dropDownOneLine()
-	{
-		if (!isFalling()) {
-			return hardDrop();
-		}
-
-		if (tryMove(current, xPos, yPos - 1)) {
-			pieceValue = Math.max(0, pieceValue - 1);
-			return true;
-		}
-
-		return false;
-	}
-
-	public boolean hardDrop()
-	{
-		return tryMove(current, xPos, board.dropHeight(current, xPos, yPos), true);
 	}
 
 	/**
@@ -293,12 +250,12 @@ public class Game extends Canvas implements Runnable
 		board.addLine(0, line);
 	}
 
-	private boolean tryMove(Tetromino piece, int xPos, int yPos)
+	public boolean tryMove(Tetromino piece, int xPos, int yPos)
 	{
 		return tryMove(piece, xPos, yPos, false);
 	}
 
-	private boolean tryMove(Tetromino piece, int xPos, int yPos, boolean drop)
+	public boolean tryMove(Tetromino piece, int xPos, int yPos, boolean drop)
 	{
 		if (state != State.PLAYING) {
 			return false;
@@ -323,6 +280,8 @@ public class Game extends Canvas implements Runnable
 	{
 		board.tryMove(current, xPos, yPos);
 
+		// TODO - make a command for this so it's reversible
+
 		int numLines = board.clearLines();
 
 		drops = drops + 1;
@@ -338,7 +297,7 @@ public class Game extends Canvas implements Runnable
 		chooseTetromino();
 	}
 
-	private boolean isFalling()
+	public boolean isFalling()
 	{
 		return board.canMove(current, xPos, yPos - 1);
 	}
