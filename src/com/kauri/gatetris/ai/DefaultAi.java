@@ -47,8 +47,8 @@ public class DefaultAi implements Strategy
 		//
 
 		for (int rotationDelta = 0; rotationDelta < 4; rotationDelta++) {
-			int minTranslationDelta = getMinTranslationDelta(board, current, x, y);
-			int maxTranslationDelta = getMaxTranslationDelta(board, current, x, y);
+			int minTranslationDelta = getMaxTranslationDelta(board, current, x, y, -1);
+			int maxTranslationDelta = getMaxTranslationDelta(board, current, x, y, +1);
 
 			for (int translationDelta = minTranslationDelta; translationDelta <= maxTranslationDelta; translationDelta++) {
 				dummy1 = board.tryClone(dummy1);
@@ -70,21 +70,11 @@ public class DefaultAi implements Strategy
 		return new Move(bestRotationDelta, bestTranslationDelta);
 	}
 
-	private int getMinTranslationDelta(Board board, Tetromino piece, int x, int y)
+	private int getMaxTranslationDelta(Board board, Tetromino piece, int x, int y, int step)
 	{
 		int translation = 0;
-		while (board.canMove(piece, x + translation, y)) {
-			translation--;
-		}
-
-		return translation;
-	}
-
-	private int getMaxTranslationDelta(Board board, Tetromino piece, int x, int y)
-	{
-		int translation = 0;
-		while (board.canMove(piece, x + translation, y)) {
-			translation++;
+		while (board.canMove(piece, x + translation + step, y)) {
+			translation += step;
 		}
 
 		return translation;

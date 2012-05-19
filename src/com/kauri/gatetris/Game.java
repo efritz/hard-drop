@@ -264,6 +264,8 @@ public class Game extends Canvas implements Runnable
 				lastAi = now;
 
 				// TODO - cache this
+				// TODO - need AI to be able to make the move it's given (sometimes the rotation
+				// delta given is impossible - translation delta usually seems to be okay).
 
 				Move move = ai.getBestMove(board, current, preview, xPos, yPos);
 
