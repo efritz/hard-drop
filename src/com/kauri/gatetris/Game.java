@@ -108,30 +108,6 @@ public class Game extends Canvas implements Runnable
 		chooseTetromino();
 	}
 
-	private class ResizeListener implements ComponentListener
-	{
-		@Override
-		public void componentShown(ComponentEvent ce)
-		{
-		}
-
-		@Override
-		public void componentHidden(ComponentEvent ce)
-		{
-		}
-
-		@Override
-		public void componentMoved(ComponentEvent ce)
-		{
-		}
-
-		@Override
-		public void componentResized(ComponentEvent ce)
-		{
-			ui.setSize(getWidth(), getHeight());
-		}
-	}
-
 	@Override
 	public void run()
 	{
@@ -224,6 +200,23 @@ public class Game extends Canvas implements Runnable
 				dropDownOneLine();
 			}
 		}
+	}
+
+	private void render()
+	{
+		BufferStrategy bs = getBufferStrategy();
+		if (bs == null) {
+			requestFocus();
+			createBufferStrategy(3);
+			return;
+		}
+
+		Graphics g = bs.getDrawGraphics();
+
+		ui.render(g);
+
+		g.dispose();
+		bs.show();
 	}
 
 	public boolean moveLeft()
@@ -350,23 +343,6 @@ public class Game extends Canvas implements Runnable
 		return board.canMove(current, xPos, yPos - 1);
 	}
 
-	private void render()
-	{
-		BufferStrategy bs = getBufferStrategy();
-		if (bs == null) {
-			requestFocus();
-			createBufferStrategy(3);
-			return;
-		}
-
-		Graphics g = bs.getDrawGraphics();
-
-		ui.render(g);
-
-		g.dispose();
-		bs.show();
-	}
-
 	private void chooseTetromino()
 	{
 		sequence.advance();
@@ -381,6 +357,30 @@ public class Game extends Canvas implements Runnable
 		}
 
 		pieceValue = 24 + 3 * (level - 1);
+	}
+
+	private class ResizeListener implements ComponentListener
+	{
+		@Override
+		public void componentShown(ComponentEvent ce)
+		{
+		}
+
+		@Override
+		public void componentHidden(ComponentEvent ce)
+		{
+		}
+
+		@Override
+		public void componentMoved(ComponentEvent ce)
+		{
+		}
+
+		@Override
+		public void componentResized(ComponentEvent ce)
+		{
+			ui.setSize(getWidth(), getHeight());
+		}
 	}
 
 	public static void main(String[] args)
