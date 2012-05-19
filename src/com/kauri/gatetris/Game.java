@@ -238,6 +238,8 @@ public class Game extends Canvas implements Runnable
 	long lastCounter = System.currentTimeMillis();
 	long lastGravity = System.currentTimeMillis();
 
+	private boolean hardDrops = false;
+
 	private void update()
 	{
 		if (state == State.GAMEOVER) {
@@ -259,31 +261,25 @@ public class Game extends Canvas implements Runnable
 			if (now - aidelay >= lastAi) {
 				lastAi = now;
 
+				// TODO - cache this
+
 				Move move = ai.getBestMove(board, current, preview, xPos, yPos);
 
-				for (int i = 0; i < move.rotationDelta; i++) {
-					if (!this.rotateLeft()) {
-						break;
-					}
-				}
-
-				while (move.translationDelta < 0) {
-					if (!this.moveLeft()) {
-						break;
-					}
-
+				if (move.rotationDelta-- > 0) {
+					this.rotateLeft();
+				} else if (move.translationDelta < 0) {
+					this.moveLeft();
 					move.translationDelta++;
-				}
-
-				while (move.translationDelta > 0) {
-					if (!this.moveRight()) {
-						break;
-					}
-
+				} else if (move.translationDelta > 0) {
+					this.moveRight();
 					move.translationDelta--;
+				} else {
+					if (hardDrops) {
+						this.hardDrop();
+					} else {
+						this.dropDownOneLine();
+					}
 				}
-
-				this.hardDrop();
 			}
 		} else {
 			long gravityDelay = Math.max(100, 600 - (level - 1) * 20);
