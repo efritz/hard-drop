@@ -52,7 +52,6 @@ public class UI
 		colors.put(Shape.Junk, Color.darkGray);
 		colors.put(Shape.NoShape, new Color(240, 240, 240));
 	}
-	private boolean fontIsDirty = true;
 	private int width;
 	private int height;
 	private Game game;
@@ -66,10 +65,6 @@ public class UI
 	{
 		this.width = width;
 		this.height = height;
-
-		fontIsDirty = true;
-
-		// TODO - also change font size
 	}
 
 	private int getWidth()
@@ -172,32 +167,11 @@ public class UI
 		return new Color(color.getRed(), color.getGreen(), color.getBlue(), Math.min(255, Math.max(1, (int) (color.getAlpha() * percent))));
 	}
 
-	Font font;
-
 	private void drawString(Graphics g, String string)
 	{
 		((Graphics2D) g).setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
 
-		//
-		// NASTY NASTY NASTY
-		//
-
-		if (fontIsDirty) {
-			int points = 20;
-			int targetThreshold = (int) (getWidth() * .75);
-			FontMetrics fm;
-
-			do {
-				font = new Font("Arial", Font.PLAIN, points++);
-				g.setFont(font);
-
-				fm = g.getFontMetrics();
-			} while (fm.stringWidth(string) < targetThreshold);
-
-			fontIsDirty = false;
-		}
-
-		g.setFont(font);
+		g.setFont(scaleFont(g, new Font("Arial", Font.PLAIN, 20), string, (int) (getWidth() * .85)));
 		FontMetrics fm = g.getFontMetrics();
 
 		g.setColor(new Color(0, 0, 0, (int) (255 * .5)));
@@ -205,6 +179,14 @@ public class UI
 
 		g.setColor(new Color(255, 255, 255));
 		g.drawString(string, (getWidth() / 2) - (fm.stringWidth(string) / 2), (getHeight() / 2) + fm.getDescent());
+	}
+
+	/**
+	 * @see http://stackoverflow.com/questions/876234/need-a-way-to-scale-a-font-to-fit-a-rectangle
+	 */
+	public Font scaleFont(Graphics g, Font font, String text, int width)
+	{
+		return g.getFont().deriveFont(font.getSize2D() * width / g.getFontMetrics(font).stringWidth(text));
 	}
 
 	private int translateBoardRow(int row)
