@@ -267,14 +267,24 @@ public class Game extends Canvas implements Runnable
 
 				Move move = ai.getBestMove(board, current, preview, xPos, yPos);
 
-				if (move.rotationDelta-- > 0) {
-					this.rotateLeft();
+				if (move.rotationDelta > 0) {
+					if (move.rotationDelta == 3) {
+						if (!this.rotateRight()) {
+							this.hardDrop();
+						}
+					} else {
+						if (!this.rotateLeft()) {
+							this.hardDrop();
+						}
+					}
 				} else if (move.translationDelta < 0) {
-					this.moveLeft();
-					move.translationDelta++;
+					if (!this.moveLeft()) {
+						this.hardDrop();
+					}
 				} else if (move.translationDelta > 0) {
-					this.moveRight();
-					move.translationDelta--;
+					if (!this.moveRight()) {
+						this.hardDrop();
+					}
 				} else {
 					if (hardDrops) {
 						this.hardDrop();
