@@ -31,7 +31,6 @@ import com.kauri.gatetris.Tetromino.Shape;
 public class DefaultAi implements Strategy
 {
 	private Board dummy1 = null;
-	private Board dummy2 = null;
 
 	@Override
 	public Move getBestMove(Board board, Tetromino current, Tetromino preview, int x, int y)
