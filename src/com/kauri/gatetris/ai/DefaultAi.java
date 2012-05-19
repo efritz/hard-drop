@@ -21,14 +21,28 @@
 
 package com.kauri.gatetris.ai;
 
+import java.util.Comparator;
+
 import com.kauri.gatetris.Board;
 import com.kauri.gatetris.Tetromino;
 
 /**
  * @author Eric Fritz
  */
-public class DefaultAi implements Strategy
+public class DefaultAi
 {
+	public static class Move
+	{
+		public int rotationDelta;
+		public int translationDelta;
+
+		public Move(int rotationDelta, int translationDelta)
+		{
+			this.rotationDelta = rotationDelta;
+			this.translationDelta = translationDelta;
+		}
+	}
+
 	//
 	// TODO - Somehow evolve the scoring system between rounds. I'm not sure where this logic should
 	// really go. Interface for basic GA algorithm, and then the ai will do what it wants at that
@@ -39,13 +53,23 @@ public class DefaultAi implements Strategy
 
 	private Board dummy1 = null;
 
-	@Override
 	public Move getBestMove(Board board, Tetromino current, Tetromino preview, int x, int y)
+	{
+		return getBestMove(board, current, preview, x, y, new Comparator<Double>() {
+			@Override
+			public int compare(Double d1, Double d2)
+			{
+				return (d1 == d2) ? 0 : ((d1 > d2) ? 1 : -1);
+			}
+		});
+	}
+
+	public Move getBestMove(Board board, Tetromino current, Tetromino preview, int x, int y, Comparator<Double> comp)
 	{
 		int bestRotationDelta = 0;
 		int bestTranslationDelta = 0;
 
-		double max = Double.NEGATIVE_INFINITY;
+		double bestScore = Double.NEGATIVE_INFINITY;
 
 		//
 		// TODO - also test for preview piece. I'm not sure what is best here to move into their own
@@ -62,8 +86,8 @@ public class DefaultAi implements Strategy
 				if (dummy1.tryMove(current, x + translationDelta, dummy1.dropHeight(current, x + translationDelta))) {
 					double score = scoring.score(dummy1);
 
-					if (score > max) {
-						max = score;
+					if (comp.compare(score, bestScore) > 0) {
+						bestScore = score;
 						bestTranslationDelta = translationDelta;
 						bestRotationDelta = rotationDelta;
 					}

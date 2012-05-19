@@ -35,8 +35,7 @@ import javax.swing.JFrame;
 
 import com.kauri.gatetris.Tetromino.Shape;
 import com.kauri.gatetris.ai.DefaultAi;
-import com.kauri.gatetris.ai.Strategy;
-import com.kauri.gatetris.ai.Strategy.Move;
+import com.kauri.gatetris.ai.DefaultAi.Move;
 import com.kauri.gatetris.command.Command;
 import com.kauri.gatetris.command.HardDropCommand;
 import com.kauri.gatetris.command.MoveLeftCommand;
@@ -63,7 +62,7 @@ public class Game extends Canvas implements Runnable
 	State state = State.PLAYING;
 	public Board board = new Board(10, 22);
 	PieceSequence sequence = new PieceSequence(new ShufflePieceSelector());
-	Strategy ai = new DefaultAi();
+	DefaultAi ai = new DefaultAi();
 	UI ui = new UI(this);
 
 	boolean autoRestart = false;
