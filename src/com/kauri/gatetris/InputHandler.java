@@ -103,6 +103,12 @@ class InputHandler implements KeyListener
 			game.ui.showAiPiece = !game.ui.showAiPiece;
 		}
 
+		// TESTING
+
+		if (keyCode == KeyEvent.VK_SEMICOLON) {
+			game.undo();
+		}
+
 		if (keyCode == KeyEvent.VK_P) {
 			if (game.data.getState() != State.GAMEOVER) {
 				game.data.setState((game.data.getState() == State.PAUSED) ? State.PLAYING : State.PAUSED);

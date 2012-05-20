@@ -28,8 +28,7 @@ import java.awt.Graphics;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
 import java.awt.image.BufferStrategy;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.Stack;
 
 import javax.swing.JFrame;
 
@@ -54,7 +53,7 @@ public class Game extends Canvas implements Runnable
 {
 	private static final long serialVersionUID = 1L;
 
-	private List<Command> history = new LinkedList<Command>();
+	private Stack<Command> history = new Stack<Command>();
 
 	public GameData data;
 
@@ -68,8 +67,17 @@ public class Game extends Canvas implements Runnable
 
 	public void storeAndExecute(Command command)
 	{
-		this.history.add(command);
 		command.execute();
+		this.history.add(command);
+	}
+
+	public void undo()
+	{
+		Command command = this.history.pop();
+
+		if (command != null) {
+			command.unexecute();
+		}
 	}
 
 	public void start()
