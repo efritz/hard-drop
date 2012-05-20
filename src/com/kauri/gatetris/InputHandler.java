@@ -92,11 +92,15 @@ class InputHandler implements KeyListener
 		}
 
 		if (keyCode == KeyEvent.VK_N) {
-			game.showNextPiece = !game.showNextPiece;
+			game.ui.showNextPiece = !game.ui.showNextPiece;
 		}
 
 		if (keyCode == KeyEvent.VK_S) {
-			game.showShadowPiece = !game.showShadowPiece;
+			game.ui.showShadowPiece = !game.ui.showShadowPiece;
+		}
+
+		if (keyCode == KeyEvent.VK_Q) {
+			game.ui.showAiPiece = !game.ui.showAiPiece;
 		}
 
 		if (keyCode == KeyEvent.VK_P) {

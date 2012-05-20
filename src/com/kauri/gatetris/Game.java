@@ -56,20 +56,15 @@ public class Game extends Canvas implements Runnable
 
 	private List<Command> history = new LinkedList<Command>();
 
+	public GameData data;
+
 	DefaultAi ai = new DefaultAi();
 	UI ui = new UI(this);
 
-	boolean autoRestart = false;
-	boolean runningAi = false;
-	boolean showAiPiece = false;
-	boolean showNextPiece = false;
-	boolean showShadowPiece = false;
-
 	long aidelay = 128;
-
 	public long pieceValue;
-
-	public GameData data;
+	boolean runningAi = false;
+	boolean autoRestart = false;
 
 	public void storeAndExecute(Command command)
 	{

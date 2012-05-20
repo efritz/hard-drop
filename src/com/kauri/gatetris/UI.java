@@ -52,6 +52,11 @@ public class UI
 		colors.put(Shape.Junk, Color.darkGray);
 		colors.put(Shape.NoShape, new Color(240, 240, 240));
 	}
+
+	boolean showAiPiece = false;
+	boolean showNextPiece = false;
+	boolean showShadowPiece = false;
+
 	private int width;
 	private int height;
 	private Game game;
@@ -89,12 +94,12 @@ public class UI
 
 	private int getSquareWidth()
 	{
-		return getAdjustedBoardWidth() / (game.data.getBoard().getWidth() + (game.showNextPiece ? 2 : 0));
+		return getAdjustedBoardWidth() / (game.data.getBoard().getWidth() + (showNextPiece ? 2 : 0));
 	}
 
 	private int getSquareHeight()
 	{
-		return getAdjustedBoardHeight() / (game.data.getBoard().getHeight() + (game.showNextPiece ? 4 : 0));
+		return getAdjustedBoardHeight() / (game.data.getBoard().getHeight() + (showNextPiece ? 4 : 0));
 	}
 
 	private int getLeftMargin()
@@ -118,13 +123,13 @@ public class UI
 			}
 		}
 
-		if (game.showShadowPiece) {
+		if (showShadowPiece) {
 			int ghostPosition = game.data.getBoard().dropHeight(game.data.getCurrent(), game.data.getxPos(), game.data.getyPos());
 
 			if (ghostPosition < game.data.getyPos()) {
 				drawTetromino(g, game.data.getCurrent(), translateBoardRow(ghostPosition), translateBoardCol(game.data.getxPos()), changeAlpha(colors.get(game.data.getCurrent().getShape()), .3), getTopMargin());
 			}
-		} else if (game.showAiPiece) {
+		} else if (showAiPiece) {
 			Move move = game.ai.getBestMove(game.data.getBoard(), game.data.getCurrent(), game.data.getPreview(), game.data.getxPos(), game.data.getyPos());
 
 			Tetromino current2 = game.data.getCurrent();
@@ -144,7 +149,7 @@ public class UI
 			drawTetromino(g, game.data.getCurrent(), translateBoardRow(game.data.getyPos()), translateBoardCol(game.data.getxPos()), colors.get(game.data.getCurrent().getShape()), getTopMargin());
 		}
 
-		if (game.showNextPiece) {
+		if (showNextPiece) {
 			int xPos = (game.data.getBoard().getWidth() - game.data.getPreview().getWidth()) / 2 + Math.abs(game.data.getPreview().getMinX());
 
 			int rowOffset = (getTopMargin() - (game.data.getPreview().getHeight() * getSquareHeight())) / 2;
