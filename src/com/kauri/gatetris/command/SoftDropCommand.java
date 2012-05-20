@@ -47,4 +47,9 @@ public class SoftDropCommand implements Command
 			}
 		}
 	}
+
+	@Override
+	public void unexecute()
+	{
+	}
 }
