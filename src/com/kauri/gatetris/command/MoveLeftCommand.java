@@ -29,6 +29,7 @@ import com.kauri.gatetris.Game;
 public class MoveLeftCommand implements Command
 {
 	private Game game;
+	private boolean success = false;
 
 	public MoveLeftCommand(Game game)
 	{
@@ -38,11 +39,14 @@ public class MoveLeftCommand implements Command
 	@Override
 	public void execute()
 	{
-		game.tryMove(game.data.getCurrent(), game.data.getxPos() - 1, game.data.getyPos());
+		success = game.tryMove(game.data.getCurrent(), game.data.getxPos() - 1, game.data.getyPos());
 	}
 
 	@Override
 	public void unexecute()
 	{
+		if (success) {
+			game.tryMove(game.data.getCurrent(), game.data.getxPos() + 1, game.data.getyPos());
+		}
 	}
 }

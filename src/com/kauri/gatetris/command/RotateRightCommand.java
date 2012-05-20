@@ -30,6 +30,7 @@ import com.kauri.gatetris.Tetromino;
 public class RotateRightCommand implements Command
 {
 	private Game game;
+	private boolean success = false;
 
 	public RotateRightCommand(Game game)
 	{
@@ -39,11 +40,14 @@ public class RotateRightCommand implements Command
 	@Override
 	public void execute()
 	{
-		game.tryMove(Tetromino.rotateRight(game.data.getCurrent()), game.data.getxPos(), game.data.getyPos());
+		success = game.tryMove(Tetromino.rotateRight(game.data.getCurrent()), game.data.getxPos(), game.data.getyPos());
 	}
 
 	@Override
 	public void unexecute()
 	{
+		if (success) {
+			game.tryMove(Tetromino.rotateLeft(game.data.getCurrent()), game.data.getxPos(), game.data.getyPos());
+		}
 	}
 }
