@@ -38,7 +38,7 @@ public class MoveLeftCommand implements Command
 	@Override
 	public void execute()
 	{
-		game.tryMove(game.current, game.xPos - 1, game.yPos);
+		game.tryMove(game.data.getCurrent(), game.data.getxPos() - 1, game.data.getyPos());
 	}
 
 	@Override

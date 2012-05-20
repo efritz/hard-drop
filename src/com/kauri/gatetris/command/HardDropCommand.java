@@ -38,7 +38,7 @@ public class HardDropCommand implements Command
 	@Override
 	public void execute()
 	{
-		game.tryMove(game.current, game.xPos, game.board.dropHeight(game.current, game.xPos, game.yPos), true);
+		game.tryMove(game.data.getCurrent(), game.data.getxPos(), game.data.getBoard().dropHeight(game.data.getCurrent(), game.data.getxPos(), game.data.getyPos()), true);
 	}
 
 	@Override

@@ -39,7 +39,7 @@ public class RotateRightCommand implements Command
 	@Override
 	public void execute()
 	{
-		game.tryMove(Tetromino.rotateRight(game.current), game.xPos, game.yPos);
+		game.tryMove(Tetromino.rotateRight(game.data.getCurrent()), game.data.getxPos(), game.data.getyPos());
 	}
 
 	@Override

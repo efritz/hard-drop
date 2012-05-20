@@ -40,9 +40,9 @@ public class SoftDropCommand implements Command
 	{
 		if (!game.isFalling()) {
 			// TODO - repeated code - try to register hard drop command?
-			game.tryMove(game.current, game.xPos, game.board.dropHeight(game.current, game.xPos, game.yPos), true);
+			game.tryMove(game.data.getCurrent(), game.data.getxPos(), game.data.getBoard().dropHeight(game.data.getCurrent(), game.data.getxPos(), game.data.getyPos()), true);
 		} else {
-			if (game.tryMove(game.current, game.xPos, game.yPos - 1)) {
+			if (game.tryMove(game.data.getCurrent(), game.data.getxPos(), game.data.getyPos() - 1)) {
 				game.pieceValue = Math.max(0, game.pieceValue - 1);
 			}
 		}

@@ -33,6 +33,7 @@ import java.util.List;
 
 import javax.swing.JFrame;
 
+import com.kauri.gatetris.GameData.State;
 import com.kauri.gatetris.Tetromino.Shape;
 import com.kauri.gatetris.ai.DefaultAi;
 import com.kauri.gatetris.ai.DefaultAi.Move;
@@ -53,15 +54,8 @@ public class Game extends Canvas implements Runnable
 {
 	private static final long serialVersionUID = 1L;
 
-	public enum State {
-		PLAYING, PAUSED, GAMEOVER;
-	}
-
 	private List<Command> history = new LinkedList<Command>();
 
-	State state = State.PLAYING;
-	public Board board = new Board(10, 22);
-	PieceSequence sequence = new PieceSequence(new ShufflePieceSelector());
 	DefaultAi ai = new DefaultAi();
 	UI ui = new UI(this);
 
@@ -75,15 +69,7 @@ public class Game extends Canvas implements Runnable
 
 	public long pieceValue;
 
-	long score = 0;
-	long level = 1;
-	long lines = 0;
-	long drops = 0;
-
-	public int xPos;
-	public int yPos;
-	public Tetromino current = sequence.peekCurrent();
-	public Tetromino preview = sequence.peekPreview();
+	public GameData data;
 
 	public void storeAndExecute(Command command)
 	{
@@ -98,15 +84,8 @@ public class Game extends Canvas implements Runnable
 
 	public void startNewGame()
 	{
-		state = State.PLAYING;
-
-		score = 0;
-		level = 1;
-		lines = 0;
-		drops = 0;
-
-		board.clear();
 		history.clear();
+		data = new GameData(State.PLAYING, new Board(10, 22), new PieceSequence(new ShufflePieceSelector()), 0, 1, 0, 0);
 
 		chooseTetromino();
 	}
@@ -114,9 +93,7 @@ public class Game extends Canvas implements Runnable
 	@Override
 	public void run()
 	{
-		sequence.advance();
-		ui.setSize(getWidth(), getHeight());
-
+		refreshSize();
 		this.addKeyListener(new InputHandler(this));
 		this.addComponentListener(new ResizeListener());
 
@@ -136,6 +113,11 @@ public class Game extends Canvas implements Runnable
 		}
 	}
 
+	private void refreshSize()
+	{
+		ui.setSize(getWidth(), getHeight());
+	}
+
 	long lastAi = System.currentTimeMillis();
 	long lastCounter = System.currentTimeMillis();
 	long lastGravity = System.currentTimeMillis();
@@ -144,7 +126,7 @@ public class Game extends Canvas implements Runnable
 
 	private void update()
 	{
-		if (state == State.GAMEOVER) {
+		if (data.getState() == State.GAMEOVER) {
 			if (autoRestart) {
 				startNewGame();
 			}
@@ -156,7 +138,7 @@ public class Game extends Canvas implements Runnable
 
 		if (now - 1000 >= lastCounter) {
 			lastCounter = now;
-			System.out.printf("Score: %-10d Level: %-10d Lines: %-10d Drops: %-10d\n", score, level, lines, drops);
+			System.out.printf("Score: %-10d Level: %-10d Lines: %-10d Drops: %-10d\n", data.getScore(), data.getLevel(), data.getLines(), data.getDrops());
 		}
 
 		if (runningAi) {
@@ -167,7 +149,7 @@ public class Game extends Canvas implements Runnable
 				// TODO - need AI to be able to make the move it's given (sometimes the rotation
 				// delta given is impossible - translation delta usually seems to be okay).
 
-				Move move = ai.getBestMove(board, current, preview, xPos, yPos);
+				Move move = ai.getBestMove(data.getBoard(), data.getCurrent(), data.getPreview(), data.getxPos(), data.getyPos());
 
 				if (move.rotationDelta > 0) {
 					if (move.rotationDelta == 3) {
@@ -188,7 +170,7 @@ public class Game extends Canvas implements Runnable
 				}
 			}
 		} else {
-			long gravityDelay = Math.max(100, 600 - (level - 1) * 20);
+			long gravityDelay = Math.max(100, 600 - (data.getLevel() - 1) * 20);
 
 			if (now - gravityDelay >= lastGravity) {
 				lastGravity = now;
@@ -221,20 +203,20 @@ public class Game extends Canvas implements Runnable
 	 */
 	public void addJunkLine()
 	{
-		if (state == State.GAMEOVER) {
+		if (data.getState() == State.GAMEOVER) {
 			return;
 		}
 
-		Shape[] line = new Shape[board.getWidth()];
+		Shape[] line = new Shape[data.getBoard().getWidth()];
 
-		for (int i = 0; i < board.getWidth(); i++) {
+		for (int i = 0; i < data.getBoard().getWidth(); i++) {
 			line[i] = Shape.Junk;
 		}
 
-		int holes = (int) (Math.random() * (board.getWidth() - 1) + 1);
+		int holes = (int) (Math.random() * (data.getBoard().getWidth() - 1) + 1);
 
 		while (holes > 0) {
-			int index = (int) (Math.random() * board.getWidth());
+			int index = (int) (Math.random() * data.getBoard().getWidth());
 
 			if (line[index] != Shape.NoShape) {
 				line[index] = Shape.NoShape;
@@ -242,11 +224,11 @@ public class Game extends Canvas implements Runnable
 			}
 		}
 
-		if (!board.canMove(current, xPos, yPos - 1)) {
+		if (!data.getBoard().canMove(data.getCurrent(), data.getxPos(), data.getyPos() - 1)) {
 			dropPiece();
 		}
 
-		board.addLine(0, line);
+		data.getBoard().addLine(0, line);
 	}
 
 	public boolean tryMove(Tetromino piece, int xPos, int yPos)
@@ -256,14 +238,14 @@ public class Game extends Canvas implements Runnable
 
 	public boolean tryMove(Tetromino piece, int xPos, int yPos, boolean drop)
 	{
-		if (state != State.PLAYING) {
+		if (data.getState() != State.PLAYING) {
 			return false;
 		}
 
-		if (board.canMove(piece, xPos, yPos)) {
-			this.xPos = xPos;
-			this.yPos = yPos;
-			this.current = piece;
+		if (data.getBoard().canMove(piece, xPos, yPos)) {
+			this.data.setxPos(xPos);
+			this.data.setyPos(yPos);
+			this.data.setCurrent(piece);
 
 			if (drop) {
 				dropPiece();
@@ -277,44 +259,44 @@ public class Game extends Canvas implements Runnable
 
 	private void dropPiece()
 	{
-		board.tryMove(current, xPos, yPos);
+		data.getBoard().tryMove(data.getCurrent(), data.getxPos(), data.getyPos());
 
 		// TODO - make a command for this so it's reversible
 
-		int numLines = board.clearLines();
+		int numLines = data.getBoard().clearLines();
 
-		drops = drops + 1;
-		lines = lines + numLines;
-		level = Math.min(10, drops / 10 + 1);
+		data.setDrops(data.getDrops() + 1);
+		data.setLines(data.getLines() + numLines);
+		data.setLevel(Math.min(10, data.getDrops() / 10 + 1));
 
 		if (numLines >= 0) {
-			score += 40 * Math.pow(3, numLines - 1);
+			data.setScore(data.getScore() + (int) (40 * Math.pow(3, numLines - 1)));
 		}
 
-		score += pieceValue;
+		data.setScore(pieceValue);
 
 		chooseTetromino();
 	}
 
 	public boolean isFalling()
 	{
-		return board.canMove(current, xPos, yPos - 1);
+		return data.getBoard().canMove(data.getCurrent(), data.getxPos(), data.getyPos() - 1);
 	}
 
 	private void chooseTetromino()
 	{
-		sequence.advance();
-		current = sequence.peekCurrent();
-		preview = sequence.peekPreview();
+		data.getSequence().advance();
+		data.setCurrent(data.getSequence().peekCurrent());
+		data.setPreview(data.getSequence().peekPreview());
 
-		xPos = (board.getWidth() - current.getWidth()) / 2 + Math.abs(current.getMinX());
-		yPos = board.getHeight() - 1 - current.getMinY();
+		data.setxPos((data.getBoard().getWidth() - data.getCurrent().getWidth()) / 2 + Math.abs(data.getCurrent().getMinX()));
+		data.setyPos(data.getBoard().getHeight() - 1 - data.getCurrent().getMinY());
 
-		if (!board.canMove(current, xPos, yPos)) {
-			state = State.GAMEOVER;
+		if (!data.getBoard().canMove(data.getCurrent(), data.getxPos(), data.getyPos())) {
+			data.setState(State.GAMEOVER);
 		}
 
-		pieceValue = 24 + 3 * (level - 1);
+		pieceValue = 24 + 3 * (data.getLevel() - 1);
 	}
 
 	private class ResizeListener implements ComponentListener
@@ -337,7 +319,7 @@ public class Game extends Canvas implements Runnable
 		@Override
 		public void componentResized(ComponentEvent ce)
 		{
-			ui.setSize(getWidth(), getHeight());
+			refreshSize();
 		}
 	}
 

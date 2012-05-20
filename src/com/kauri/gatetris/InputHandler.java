@@ -24,7 +24,7 @@ package com.kauri.gatetris;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
-import com.kauri.gatetris.Game.State;
+import com.kauri.gatetris.GameData.State;
 import com.kauri.gatetris.command.HardDropCommand;
 import com.kauri.gatetris.command.MoveLeftCommand;
 import com.kauri.gatetris.command.MoveRightCommand;
@@ -100,20 +100,20 @@ class InputHandler implements KeyListener
 		}
 
 		if (keyCode == KeyEvent.VK_P) {
-			if (game.state != State.GAMEOVER) {
-				game.state = (game.state == State.PAUSED) ? State.PLAYING : State.PAUSED;
+			if (game.data.getState() != State.GAMEOVER) {
+				game.data.setState((game.data.getState() == State.PAUSED) ? State.PLAYING : State.PAUSED);
 			}
 		}
 
 		if (keyCode == KeyEvent.VK_PAGE_UP) {
-			int width = Math.min(200, Math.max(4, game.board.getWidth() + 1));
-			game.board = new Board(width, width * 2);
+			int width = Math.min(200, Math.max(4, game.data.getBoard().getWidth() + 1));
+			game.data.setBoard(new Board(width, width * 2));
 			game.startNewGame();
 		}
 
 		if (keyCode == KeyEvent.VK_PAGE_DOWN) {
-			int width = Math.min(200, Math.max(4, game.board.getWidth() - 1));
-			game.board = new Board(width, width * 2);
+			int width = Math.min(200, Math.max(4, game.data.getBoard().getWidth() - 1));
+			game.data.setBoard(new Board(width, width * 2));
 			game.startNewGame();
 		}
 	}
