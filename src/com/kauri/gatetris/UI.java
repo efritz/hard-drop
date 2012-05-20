@@ -124,13 +124,13 @@ public class UI
 		}
 
 		if (showShadowPiece) {
-			int ghostPosition = game.data.getBoard().dropHeight(game.data.getCurrent(), game.data.getxPos(), game.data.getyPos());
+			int ghostPosition = game.data.getBoard().dropHeight(game.data.getCurrent(), game.data.getX(), game.data.getY());
 
-			if (ghostPosition < game.data.getyPos()) {
-				drawTetromino(g, game.data.getCurrent(), translateBoardRow(ghostPosition), translateBoardCol(game.data.getxPos()), changeAlpha(colors.get(game.data.getCurrent().getShape()), .3), getTopMargin());
+			if (ghostPosition < game.data.getY()) {
+				drawTetromino(g, game.data.getCurrent(), translateBoardRow(ghostPosition), translateBoardCol(game.data.getX()), changeAlpha(colors.get(game.data.getCurrent().getShape()), .3), getTopMargin());
 			}
 		} else if (showAiPiece) {
-			Move move = game.ai.getBestMove(game.data.getBoard(), game.data.getCurrent(), game.data.getPreview(), game.data.getxPos(), game.data.getyPos());
+			Move move = game.ai.getBestMove(game.data.getBoard(), game.data.getCurrent(), game.data.getPreview(), game.data.getX(), game.data.getY());
 
 			Tetromino current2 = game.data.getCurrent();
 
@@ -138,15 +138,15 @@ public class UI
 				current2 = Tetromino.rotateLeft(current2);
 			}
 
-			int ghostPosition = game.data.getBoard().dropHeight(current2, game.data.getxPos() + move.translationDelta, game.data.getyPos());
+			int ghostPosition = game.data.getBoard().dropHeight(current2, game.data.getX() + move.translationDelta, game.data.getY());
 
-			if (ghostPosition < game.data.getyPos()) {
-				drawTetromino(g, current2, translateBoardRow(ghostPosition), translateBoardCol(game.data.getxPos() + move.translationDelta), changeAlpha(colors.get(current2.getShape()), .3), getTopMargin());
+			if (ghostPosition < game.data.getY()) {
+				drawTetromino(g, current2, translateBoardRow(ghostPosition), translateBoardCol(game.data.getX() + move.translationDelta), changeAlpha(colors.get(current2.getShape()), .3), getTopMargin());
 			}
 		}
 
-		if (game.data.getBoard().canMove(game.data.getCurrent(), game.data.getxPos(), game.data.getyPos())) {
-			drawTetromino(g, game.data.getCurrent(), translateBoardRow(game.data.getyPos()), translateBoardCol(game.data.getxPos()), colors.get(game.data.getCurrent().getShape()), getTopMargin());
+		if (game.data.getBoard().canMove(game.data.getCurrent(), game.data.getX(), game.data.getY())) {
+			drawTetromino(g, game.data.getCurrent(), translateBoardRow(game.data.getY()), translateBoardCol(game.data.getX()), colors.get(game.data.getCurrent().getShape()), getTopMargin());
 		}
 
 		if (showNextPiece) {

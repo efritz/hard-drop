@@ -127,22 +127,22 @@ public class GameData
 		this.drops = drops;
 	}
 
-	public int getxPos()
+	public int getX()
 	{
 		return xPos;
 	}
 
-	public void setxPos(int xPos)
+	public void setX(int xPos)
 	{
 		this.xPos = xPos;
 	}
 
-	public int getyPos()
+	public int getY()
 	{
 		return yPos;
 	}
 
-	public void setyPos(int yPos)
+	public void setY(int yPos)
 	{
 		this.yPos = yPos;
 	}

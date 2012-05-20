@@ -152,7 +152,7 @@ public class Game extends Canvas implements Runnable
 				// TODO - need AI to be able to make the move it's given (sometimes the rotation
 				// delta given is impossible - translation delta usually seems to be okay).
 
-				Move move = ai.getBestMove(data.getBoard(), data.getCurrent(), data.getPreview(), data.getxPos(), data.getyPos());
+				Move move = ai.getBestMove(data.getBoard(), data.getCurrent(), data.getPreview(), data.getX(), data.getY());
 
 				if (move.rotationDelta > 0) {
 					if (move.rotationDelta == 3) {
@@ -227,7 +227,7 @@ public class Game extends Canvas implements Runnable
 			}
 		}
 
-		if (!data.getBoard().canMove(data.getCurrent(), data.getxPos(), data.getyPos() - 1)) {
+		if (!data.getBoard().canMove(data.getCurrent(), data.getX(), data.getY() - 1)) {
 			dropPiece();
 		}
 
@@ -246,8 +246,8 @@ public class Game extends Canvas implements Runnable
 		}
 
 		if (data.getBoard().canMove(piece, xPos, yPos)) {
-			this.data.setxPos(xPos);
-			this.data.setyPos(yPos);
+			this.data.setX(xPos);
+			this.data.setY(yPos);
 			this.data.setCurrent(piece);
 
 			if (drop) {
@@ -262,7 +262,7 @@ public class Game extends Canvas implements Runnable
 
 	private void dropPiece()
 	{
-		data.getBoard().tryMove(data.getCurrent(), data.getxPos(), data.getyPos());
+		data.getBoard().tryMove(data.getCurrent(), data.getX(), data.getY());
 
 		// TODO - make a command for this so it's reversible
 
@@ -283,7 +283,7 @@ public class Game extends Canvas implements Runnable
 
 	public boolean isFalling()
 	{
-		return data.getBoard().canMove(data.getCurrent(), data.getxPos(), data.getyPos() - 1);
+		return data.getBoard().canMove(data.getCurrent(), data.getX(), data.getY() - 1);
 	}
 
 	private void chooseTetromino()
@@ -292,10 +292,10 @@ public class Game extends Canvas implements Runnable
 		data.setCurrent(data.getSequence().peekCurrent());
 		data.setPreview(data.getSequence().peekPreview());
 
-		data.setxPos((data.getBoard().getWidth() - data.getCurrent().getWidth()) / 2 + Math.abs(data.getCurrent().getMinX()));
-		data.setyPos(data.getBoard().getHeight() - 1 - data.getCurrent().getMinY());
+		data.setX((data.getBoard().getWidth() - data.getCurrent().getWidth()) / 2 + Math.abs(data.getCurrent().getMinX()));
+		data.setY(data.getBoard().getHeight() - 1 - data.getCurrent().getMinY());
 
-		if (!data.getBoard().canMove(data.getCurrent(), data.getxPos(), data.getyPos())) {
+		if (!data.getBoard().canMove(data.getCurrent(), data.getX(), data.getY())) {
 			data.setState(State.GAMEOVER);
 		}
 
