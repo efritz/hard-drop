@@ -199,6 +199,10 @@ public class Game extends Canvas implements Runnable
 		bs.show();
 	}
 
+	//
+	// TODO - this needs to be a command as well
+	//
+
 	/**
 	 * Inserts a randomly generated junk line at the very bottom of the board. The line will consist
 	 * of `Shape.Junk` blocks and will contain a random number of holes (normalized to be between 1
@@ -234,6 +238,10 @@ public class Game extends Canvas implements Runnable
 		data.getBoard().addLine(0, line);
 	}
 
+	//
+	// TODO - add to abstract command class, or game data?
+	//
+
 	public boolean tryMove(Tetromino piece, int xPos, int yPos)
 	{
 		return tryMove(piece, xPos, yPos, false);
@@ -264,7 +272,7 @@ public class Game extends Canvas implements Runnable
 	{
 		data.getBoard().tryMove(data.getCurrent(), data.getX(), data.getY());
 
-		// TODO - make a command for this so it's reversible
+		// TODO - make a command for this so it's reversible.
 
 		int numLines = data.getBoard().clearLines();
 
@@ -285,6 +293,10 @@ public class Game extends Canvas implements Runnable
 	{
 		return data.getBoard().canMove(data.getCurrent(), data.getX(), data.getY() - 1);
 	}
+
+	//
+	// TODO - move this to appropriate place.
+	//
 
 	private void chooseTetromino()
 	{
