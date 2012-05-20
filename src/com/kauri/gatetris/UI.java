@@ -32,7 +32,7 @@ import java.util.Map;
 
 import com.kauri.gatetris.GameData.State;
 import com.kauri.gatetris.Tetromino.Shape;
-import com.kauri.gatetris.ai.DefaultAi.Move;
+import com.kauri.gatetris.ai.AI.Move;
 
 /**
  * @author efritz

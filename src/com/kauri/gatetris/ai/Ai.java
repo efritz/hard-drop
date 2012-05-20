@@ -29,7 +29,7 @@ import com.kauri.gatetris.Tetromino;
 /**
  * @author Eric Fritz
  */
-public class DefaultAi
+public class AI
 {
 	public static class Move
 	{
