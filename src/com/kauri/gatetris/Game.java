@@ -68,15 +68,18 @@ public class Game extends Canvas implements Runnable
 	public void storeAndExecute(Command command)
 	{
 		command.execute();
-		this.history.add(command);
+		history.add(command);
 	}
 
 	public void undo()
 	{
-		Command command = this.history.pop();
+		undo(1);
+	}
 
-		if (command != null) {
-			command.unexecute();
+	public void undo(int num)
+	{
+		while (num-- > 0 && history.size() > 0) {
+			history.pop().unexecute();
 		}
 	}
 
