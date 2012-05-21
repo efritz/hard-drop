@@ -198,32 +198,6 @@ public class Board implements Cloneable
 	}
 
 	/**
-	 * Inserts a given line into the board. All rows that lie above this index will be pushed up by
-	 * one. The blocks in the highest row will be pushed off of the board.
-	 * 
-	 * @param row
-	 *            The row index.
-	 * @param line
-	 *            The row to add.
-	 */
-	public void addLine(int row, Shape[] line)
-	{
-		if (line.length != width) {
-			throw new IllegalArgumentException("Cannot add line to board with non-matching dimensions.");
-		}
-
-		for (int i = height - 1; i > row; i--) {
-			for (int col = 0; col < width; col++) {
-				setShapeAt(i, col, getShapeAt(i - 1, col));
-			}
-		}
-
-		for (int col = 0; col < width; col++) {
-			setShapeAt(row, col, line[col]);
-		}
-	}
-
-	/**
 	 * Removes full lines and compacts the board downwards.
 	 * 
 	 * @return The number of lines that were removed.

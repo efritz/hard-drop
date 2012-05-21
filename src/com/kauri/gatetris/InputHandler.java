@@ -67,10 +67,6 @@ class InputHandler implements KeyListener
 			}
 		}
 
-		if (keyCode == KeyEvent.VK_J) {
-			game.addJunkLine();
-		}
-
 		if (keyCode == KeyEvent.VK_ENTER) {
 			game.startNewGame();
 		}

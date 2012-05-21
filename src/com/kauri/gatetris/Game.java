@@ -33,7 +33,6 @@ import java.util.Stack;
 import javax.swing.JFrame;
 
 import com.kauri.gatetris.GameData.State;
-import com.kauri.gatetris.Tetromino.Shape;
 import com.kauri.gatetris.ai.AI;
 import com.kauri.gatetris.ai.AI.Move;
 import com.kauri.gatetris.command.Command;
@@ -200,45 +199,6 @@ public class Game extends Canvas implements Runnable
 
 		g.dispose();
 		bs.show();
-	}
-
-	//
-	// TODO - this needs to be a command as well
-	//
-
-	/**
-	 * Inserts a randomly generated junk line at the very bottom of the board. The line will consist
-	 * of `Shape.Junk` blocks and will contain a random number of holes (normalized to be between 1
-	 * and width - 1).
-	 */
-	public void addJunkLine()
-	{
-		if (data.getState() == State.GAMEOVER) {
-			return;
-		}
-
-		Shape[] line = new Shape[data.getBoard().getWidth()];
-
-		for (int i = 0; i < data.getBoard().getWidth(); i++) {
-			line[i] = Shape.Junk;
-		}
-
-		int holes = (int) (Math.random() * (data.getBoard().getWidth() - 1) + 1);
-
-		while (holes > 0) {
-			int index = (int) (Math.random() * data.getBoard().getWidth());
-
-			if (line[index] != Shape.NoShape) {
-				line[index] = Shape.NoShape;
-				holes--;
-			}
-		}
-
-		if (!data.getBoard().canMove(data.getCurrent(), data.getX(), data.getY() - 1)) {
-			dropPiece();
-		}
-
-		data.getBoard().addLine(0, line);
 	}
 
 	//
