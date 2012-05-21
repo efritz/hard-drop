@@ -1,7 +1,7 @@
 /*
  * This file is part of the ga-tetris package.
  *
- * Copyright (C) 2012, Eric Fritz
+ * Copyright (C) 2012, efritz
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software 
  * and associated documentation files (the "Software"), to deal in the Software without 
@@ -24,17 +24,13 @@ package com.kauri.gatetris.command;
 import com.kauri.gatetris.Game;
 
 /**
- * @author Eric Fritz
+ * @author efritz
  */
-public class HardDropCommand implements Command
+public class ClearCommand implements Command
 {
 	private Game game;
-	private int y;
-	private boolean success = false;
-	private Command subcommand1;
-	private Command subcommand2;
 
-	public HardDropCommand(Game game)
+	public ClearCommand(Game game)
 	{
 		this.game = game;
 	}
@@ -42,31 +38,12 @@ public class HardDropCommand implements Command
 	@Override
 	public void execute()
 	{
-		y = game.data.getY();
-
-		success = game.tryMove(game.data.getCurrent(), game.data.getX(), game.data.getBoard().dropHeight(game.data.getCurrent(), game.data.getX(), y));
-
-		if (success) {
-			game.data.getBoard().addPiece(game.data.getCurrent(), game.data.getX(), game.data.getY());
-
-			subcommand1 = new ClearCommand(game);
-			subcommand1.execute();
-
-			subcommand2 = new NewTetrominoCommand(game);
-			subcommand2.execute();
-		}
+		game.data.getBoard().clearLines();
 	}
 
 	@Override
 	public void unexecute()
 	{
-		if (success) {
-			subcommand2.unexecute();
-			subcommand1.unexecute();
-
-			game.data.getBoard().removePiece(game.data.getCurrent(), game.data.getX(), game.data.getY());
-
-			game.tryMove(game.data.getCurrent(), game.data.getX(), y);
-		}
+		// TOOD
 	}
 }
