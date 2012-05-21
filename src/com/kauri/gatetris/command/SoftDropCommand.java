@@ -29,6 +29,8 @@ import com.kauri.gatetris.Game;
 public class SoftDropCommand implements Command
 {
 	private Game game;
+	private Command subcommand;
+	private boolean success = false;
 
 	public SoftDropCommand(Game game)
 	{
@@ -39,16 +41,22 @@ public class SoftDropCommand implements Command
 	public void execute()
 	{
 		if (!game.isFalling()) {
-			game.storeAndExecute(new HardDropCommand(game));
+			subcommand = new HardDropCommand(game);
+			subcommand.execute();
 		} else {
-			if (game.tryMove(game.data.getCurrent(), game.data.getX(), game.data.getY() - 1)) {
-				game.pieceValue = Math.max(0, game.pieceValue - 1);
-			}
+			success = game.tryMove(game.data.getCurrent(), game.data.getX(), game.data.getY() - 1);
 		}
 	}
 
 	@Override
 	public void unexecute()
 	{
+		if (success) {
+			game.tryMove(game.data.getCurrent(), game.data.getX(), game.data.getY() + 1);
+		}
+
+		if (subcommand != null) {
+			subcommand.unexecute();
+		}
 	}
 }
