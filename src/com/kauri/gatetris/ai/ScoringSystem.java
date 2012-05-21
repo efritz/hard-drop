@@ -61,7 +61,7 @@ public class ScoringSystem
 	 */
 	public double score(Board board)
 	{
-		double score = weightClear * board.clearLines();
+		double score = weightClear * 0; // board.clearLines();
 
 		int[] heights = getHeights(board);
 

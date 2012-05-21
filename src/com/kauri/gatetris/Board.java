@@ -208,31 +208,13 @@ public class Board implements Cloneable
 	}
 
 	/**
-	 * Removes full lines and compacts the board downwards.
-	 * 
-	 * @return The number of lines that were removed.
-	 */
-	public int clearLines()
-	{
-		int lines = 0;
-		for (int row = height - 1; row >= 0; row--) {
-			if (isRowFull(row)) {
-				lines++;
-				collapseLine(row);
-			}
-		}
-
-		return lines;
-	}
-
-	/**
 	 * Determines if a row is filled horizontally.
 	 * 
 	 * @param row
 	 *            The row index.
 	 * @return Whether the row is full.
 	 */
-	private boolean isRowFull(int row)
+	public boolean isRowFull(int row)
 	{
 		for (int col = 0; col < width; col++) {
 			if (getShapeAt(row, col) == Shape.NoShape) {
@@ -243,13 +225,50 @@ public class Board implements Cloneable
 		return true;
 	}
 
+	public Shape[] getRow(int row)
+	{
+		Shape[] shapes = new Shape[width];
+
+		for (int col = 0; col < width; col++) {
+			shapes[col] = getShapeAt(row, col);
+		}
+
+		return shapes;
+	}
+
 	/**
-	 * Remove a line by collapsing the lines above it down by one.
+	 * Inserts a given row into the board. All rows that lie above this index will be pushed up by
+	 * one. The blocks in the highest row will be pushed off of the board.
+	 * 
+	 * @param row
+	 *            The row index.
+	 * @param shapes
+	 *            The row to add.
+	 */
+	public void addRow(int row, Shape[] shapes)
+	{
+		if (shapes.length != width) {
+			throw new IllegalArgumentException("Cannot add row to board with non-matching dimensions.");
+		}
+
+		for (int i = height - 1; i > row; i--) {
+			for (int col = 0; col < width; col++) {
+				setShapeAt(i, col, getShapeAt(i - 1, col));
+			}
+		}
+
+		for (int col = 0; col < width; col++) {
+			setShapeAt(row, col, shapes[col]);
+		}
+	}
+
+	/**
+	 * Remove a row by collapsing the rows above it down by one.
 	 * 
 	 * @param row
 	 *            The row index.
 	 */
-	private void collapseLine(int row)
+	public void removeRow(int row)
 	{
 		for (int i = row; i < height - 1; i++) {
 			for (int col = 0; col < width; col++) {

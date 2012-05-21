@@ -21,7 +21,12 @@
 
 package com.kauri.gatetris.command;
 
+import java.util.Map.Entry;
+import java.util.SortedMap;
+import java.util.TreeMap;
+
 import com.kauri.gatetris.Game;
+import com.kauri.gatetris.Tetromino.Shape;
 
 /**
  * @author efritz
@@ -29,6 +34,7 @@ import com.kauri.gatetris.Game;
 public class ClearCommand implements Command
 {
 	private Game game;
+	private SortedMap<Integer, Shape[]> map = new TreeMap<Integer, Shape[]>();
 
 	public ClearCommand(Game game)
 	{
@@ -38,12 +44,19 @@ public class ClearCommand implements Command
 	@Override
 	public void execute()
 	{
-		game.data.getBoard().clearLines();
+		for (int row = game.data.getBoard().getHeight() - 1; row >= 0; row--) {
+			if (game.data.getBoard().isRowFull(row)) {
+				map.put(row, game.data.getBoard().getRow(row));
+				game.data.getBoard().removeRow(row);
+			}
+		}
 	}
 
 	@Override
 	public void unexecute()
 	{
-		// TOOD
+		for (Entry<Integer, Shape[]> e : map.entrySet()) {
+			game.data.getBoard().addRow(e.getKey(), e.getValue());
+		}
 	}
 }
