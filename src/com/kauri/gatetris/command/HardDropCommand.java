@@ -29,6 +29,9 @@ import com.kauri.gatetris.Game;
 public class HardDropCommand implements Command
 {
 	private Game game;
+	private int y;
+	private boolean success = false;
+	private Command subcommand;
 
 	public HardDropCommand(Game game)
 	{
@@ -38,17 +41,29 @@ public class HardDropCommand implements Command
 	@Override
 	public void execute()
 	{
-		if (game.tryMove(game.data.getCurrent(), game.data.getX(), game.data.getBoard().dropHeight(game.data.getCurrent(), game.data.getX(), game.data.getY()))) {
-			game.data.getBoard().tryMove(game.data.getCurrent(), game.data.getX(), game.data.getY());
+		y = game.data.getY();
 
-			game.data.getBoard().clearLines();
-			// TODO - this should be a sub action
-			game.storeAndExecute(new NewTetrominoCommand(game));
+		success = game.tryMove(game.data.getCurrent(), game.data.getX(), game.data.getBoard().dropHeight(game.data.getCurrent(), game.data.getX(), y));
+
+		if (success) {
+			game.data.getBoard().addPiece(game.data.getCurrent(), game.data.getX(), game.data.getY());
+
+			// TODO - clear lines
+
+			subcommand = new NewTetrominoCommand(game);
+			subcommand.execute();
 		}
 	}
 
 	@Override
 	public void unexecute()
 	{
+		if (success) {
+			subcommand.unexecute();
+
+			game.data.getBoard().removePiece(game.data.getCurrent(), game.data.getX(), game.data.getY());
+
+			game.tryMove(game.data.getCurrent(), game.data.getX(), y);
+		}
 	}
 }

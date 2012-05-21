@@ -23,6 +23,7 @@ package com.kauri.gatetris.command;
 
 import com.kauri.gatetris.Game;
 import com.kauri.gatetris.GameData.State;
+import com.kauri.gatetris.Tetromino;
 
 /**
  * @author efritz
@@ -30,6 +31,10 @@ import com.kauri.gatetris.GameData.State;
 public class NewTetrominoCommand implements Command
 {
 	private Game game;
+	private Tetromino current;
+	private Tetromino preview;
+	private int x;
+	private int y;
 
 	public NewTetrominoCommand(Game game)
 	{
@@ -39,12 +44,20 @@ public class NewTetrominoCommand implements Command
 	@Override
 	public void execute()
 	{
+		current = game.data.getCurrent();
+		preview = game.data.getPreview();
+
+		x = game.data.getX();
+		y = game.data.getY();
+
 		game.data.getSequence().advance();
 		game.data.setCurrent(game.data.getSequence().peekCurrent());
 		game.data.setPreview(game.data.getSequence().peekPreview());
 
 		game.data.setX((game.data.getBoard().getWidth() - game.data.getCurrent().getWidth()) / 2 + Math.abs(game.data.getCurrent().getMinX()));
 		game.data.setY(game.data.getBoard().getHeight() - 1 - game.data.getCurrent().getMinY());
+
+		// TODO - move this somewhere else
 
 		if (!game.data.getBoard().canMove(game.data.getCurrent(), game.data.getX(), game.data.getY())) {
 			game.data.setState(State.GAMEOVER);
@@ -54,6 +67,14 @@ public class NewTetrominoCommand implements Command
 	@Override
 	public void unexecute()
 	{
-		// TODO
+		// TODO - this won't replay the same values, because the piece sequence will now be out of
+		// sync. There should be a rewind method or something that can roll back the pieces being
+		// served.
+
+		game.data.setCurrent(current);
+		game.data.setPreview(preview);
+
+		game.data.setX(x);
+		game.data.setY(y);
 	}
 }

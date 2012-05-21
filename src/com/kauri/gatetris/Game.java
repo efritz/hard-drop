@@ -90,10 +90,11 @@ public class Game extends Canvas implements Runnable
 
 	public void startNewGame()
 	{
-		history.clear();
 		data = new GameData(State.PLAYING, new Board(10, 22), new PieceSequence(new ShufflePieceSelector()), 0, 1, 0, 0);
 
 		this.storeAndExecute(new NewTetrominoCommand(this));
+
+		history.clear();
 	}
 
 	@Override
@@ -180,7 +181,7 @@ public class Game extends Canvas implements Runnable
 
 			if (now - gravityDelay >= lastGravity) {
 				lastGravity = now;
-				this.storeAndExecute(new SoftDropCommand(this));
+				// this.storeAndExecute(new SoftDropCommand(this));
 			}
 		}
 	}

@@ -185,14 +185,24 @@ public class Board implements Cloneable
 	 * @param yPos
 	 *            The y-position.
 	 */
-	private void addPiece(Tetromino piece, int xPos, int yPos)
+	public void addPiece(Tetromino piece, int xPos, int yPos)
+	{
+		fillTetromino(piece, xPos, yPos, piece.getShape());
+	}
+
+	public void removePiece(Tetromino piece, int xPos, int yPos)
+	{
+		fillTetromino(piece, xPos, yPos, Shape.NoShape);
+	}
+
+	private void fillTetromino(Tetromino piece, int xPos, int yPos, Shape shape)
 	{
 		for (int i = 0; i < piece.getSize(); i++) {
-			int x = xPos + piece.getX(i);
-			int y = yPos - piece.getY(i);
+			int col = xPos + piece.getX(i);
+			int row = yPos - piece.getY(i);
 
-			if (x >= 0 && x < width && y >= 0 && y < height) {
-				setShapeAt(y, x, piece.getShape());
+			if (col >= 0 && col < width && row >= 0 && row < height) {
+				setShapeAt(row, col, shape);
 			}
 		}
 	}
