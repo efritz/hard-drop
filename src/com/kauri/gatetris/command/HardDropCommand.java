@@ -38,7 +38,12 @@ public class HardDropCommand implements Command
 	@Override
 	public void execute()
 	{
-		game.tryMove(game.data.getCurrent(), game.data.getX(), game.data.getBoard().dropHeight(game.data.getCurrent(), game.data.getX(), game.data.getY()), true);
+		if (game.tryMove(game.data.getCurrent(), game.data.getX(), game.data.getBoard().dropHeight(game.data.getCurrent(), game.data.getX(), game.data.getY()))) {
+			game.data.getBoard().tryMove(game.data.getCurrent(), game.data.getX(), game.data.getY());
+
+			game.data.getBoard().clearLines();
+			game.chooseTetromino();
+		}
 	}
 
 	@Override

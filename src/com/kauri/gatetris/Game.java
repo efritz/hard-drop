@@ -201,16 +201,7 @@ public class Game extends Canvas implements Runnable
 		bs.show();
 	}
 
-	//
-	// TODO - add to abstract command class, or game data?
-	//
-
 	public boolean tryMove(Tetromino piece, int xPos, int yPos)
-	{
-		return tryMove(piece, xPos, yPos, false);
-	}
-
-	public boolean tryMove(Tetromino piece, int xPos, int yPos, boolean drop)
 	{
 		if (data.getState() != State.PLAYING) {
 			return false;
@@ -221,35 +212,10 @@ public class Game extends Canvas implements Runnable
 			this.data.setY(yPos);
 			this.data.setCurrent(piece);
 
-			if (drop) {
-				dropPiece();
-			}
-
 			return true;
 		}
 
 		return false;
-	}
-
-	private void dropPiece()
-	{
-		data.getBoard().tryMove(data.getCurrent(), data.getX(), data.getY());
-
-		// TODO - make a command for this so it's reversible.
-
-		int numLines = data.getBoard().clearLines();
-
-		data.setDrops(data.getDrops() + 1);
-		data.setLines(data.getLines() + numLines);
-		data.setLevel(Math.min(10, data.getDrops() / 10 + 1));
-
-		if (numLines >= 0) {
-			data.setScore(data.getScore() + (int) (40 * Math.pow(3, numLines - 1)));
-		}
-
-		data.setScore(pieceValue);
-
-		chooseTetromino();
 	}
 
 	public boolean isFalling()
@@ -261,7 +227,7 @@ public class Game extends Canvas implements Runnable
 	// TODO - move this to appropriate place.
 	//
 
-	private void chooseTetromino()
+	public void chooseTetromino()
 	{
 		data.getSequence().advance();
 		data.setCurrent(data.getSequence().peekCurrent());
