@@ -1,7 +1,7 @@
 /*
  * This file is part of the ga-tetris package.
  *
- * Copyright (C) 2012, Eric Fritz
+ * Copyright (C) 2012, efritz
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software 
  * and associated documentation files (the "Software"), to deal in the Software without 
@@ -22,15 +22,16 @@
 package com.kauri.gatetris.command;
 
 import com.kauri.gatetris.Game;
+import com.kauri.gatetris.GameData.State;
 
 /**
- * @author Eric Fritz
+ * @author efritz
  */
-public class HardDropCommand implements Command
+public class NewTetrominoCommand implements Command
 {
 	private Game game;
 
-	public HardDropCommand(Game game)
+	public NewTetrominoCommand(Game game)
 	{
 		this.game = game;
 	}
@@ -38,17 +39,21 @@ public class HardDropCommand implements Command
 	@Override
 	public void execute()
 	{
-		if (game.tryMove(game.data.getCurrent(), game.data.getX(), game.data.getBoard().dropHeight(game.data.getCurrent(), game.data.getX(), game.data.getY()))) {
-			game.data.getBoard().tryMove(game.data.getCurrent(), game.data.getX(), game.data.getY());
+		game.data.getSequence().advance();
+		game.data.setCurrent(game.data.getSequence().peekCurrent());
+		game.data.setPreview(game.data.getSequence().peekPreview());
 
-			game.data.getBoard().clearLines();
-			// TODO - this should be a sub action
-			game.storeAndExecute(new NewTetrominoCommand(game));
+		game.data.setX((game.data.getBoard().getWidth() - game.data.getCurrent().getWidth()) / 2 + Math.abs(game.data.getCurrent().getMinX()));
+		game.data.setY(game.data.getBoard().getHeight() - 1 - game.data.getCurrent().getMinY());
+
+		if (!game.data.getBoard().canMove(game.data.getCurrent(), game.data.getX(), game.data.getY())) {
+			game.data.setState(State.GAMEOVER);
 		}
 	}
 
 	@Override
 	public void unexecute()
 	{
+		// TODO
 	}
 }

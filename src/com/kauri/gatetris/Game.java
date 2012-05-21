@@ -39,6 +39,7 @@ import com.kauri.gatetris.command.Command;
 import com.kauri.gatetris.command.HardDropCommand;
 import com.kauri.gatetris.command.MoveLeftCommand;
 import com.kauri.gatetris.command.MoveRightCommand;
+import com.kauri.gatetris.command.NewTetrominoCommand;
 import com.kauri.gatetris.command.RotateLeftCommand;
 import com.kauri.gatetris.command.RotateRightCommand;
 import com.kauri.gatetris.command.SoftDropCommand;
@@ -92,7 +93,7 @@ public class Game extends Canvas implements Runnable
 		history.clear();
 		data = new GameData(State.PLAYING, new Board(10, 22), new PieceSequence(new ShufflePieceSelector()), 0, 1, 0, 0);
 
-		chooseTetromino();
+		this.storeAndExecute(new NewTetrominoCommand(this));
 	}
 
 	@Override
@@ -221,26 +222,6 @@ public class Game extends Canvas implements Runnable
 	public boolean isFalling()
 	{
 		return data.getBoard().canMove(data.getCurrent(), data.getX(), data.getY() - 1);
-	}
-
-	//
-	// TODO - move this to appropriate place.
-	//
-
-	public void chooseTetromino()
-	{
-		data.getSequence().advance();
-		data.setCurrent(data.getSequence().peekCurrent());
-		data.setPreview(data.getSequence().peekPreview());
-
-		data.setX((data.getBoard().getWidth() - data.getCurrent().getWidth()) / 2 + Math.abs(data.getCurrent().getMinX()));
-		data.setY(data.getBoard().getHeight() - 1 - data.getCurrent().getMinY());
-
-		if (!data.getBoard().canMove(data.getCurrent(), data.getX(), data.getY())) {
-			data.setState(State.GAMEOVER);
-		}
-
-		pieceValue = 24 + 3 * (data.getLevel() - 1);
 	}
 
 	private class ResizeListener implements ComponentListener
