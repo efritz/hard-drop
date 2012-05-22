@@ -297,4 +297,9 @@ public class Board implements Cloneable
 
 		return yPos - diff + 1;
 	}
+
+	public boolean isFalling(Tetromino piece, int xPos, int yPos)
+	{
+		return canMove(piece, xPos, yPos - 1);
+	}
 }

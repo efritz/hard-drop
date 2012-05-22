@@ -31,6 +31,7 @@ import com.kauri.gatetris.command.MoveLeftCommand;
 import com.kauri.gatetris.command.MoveRightCommand;
 import com.kauri.gatetris.command.RotateLeftCommand;
 import com.kauri.gatetris.command.RotateRightCommand;
+import com.kauri.gatetris.command.SoftDropCommand;
 
 /**
  * @author Eric Fritz
@@ -39,6 +40,7 @@ public class AI
 {
 	private Game game;
 	private Move move;
+	private boolean useHardDrops = false;
 
 	public AI(Game game)
 	{
@@ -64,10 +66,12 @@ public class AI
 			move.translationDelta--;
 			game.storeAndExecute(new MoveRightCommand(game));
 		} else {
-			// TODO - implement soft drop
-
-			game.storeAndExecute(new HardDropCommand(game));
-			move = null;
+			if (useHardDrops || !game.data.getBoard().isFalling(game.data.getCurrent(), game.data.getX(), game.data.getY())) {
+				game.storeAndExecute(new HardDropCommand(game));
+				move = null;
+			} else {
+				game.storeAndExecute(new SoftDropCommand(game));
+			}
 		}
 	}
 

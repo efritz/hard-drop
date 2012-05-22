@@ -41,17 +41,12 @@ public class SoftDropCommand extends MovementCommand
 	@Override
 	public void execute()
 	{
-		if (!isFalling()) {
+		if (!game.data.getBoard().isFalling(game.data.getCurrent(), game.data.getX(), game.data.getY())) {
 			subcommand = new HardDropCommand(game);
 			subcommand.execute();
 		} else {
 			success = tryMove(game.data.getCurrent(), game.data.getX(), game.data.getY() - 1);
 		}
-	}
-
-	private boolean isFalling()
-	{
-		return game.data.getBoard().canMove(game.data.getCurrent(), game.data.getX(), game.data.getY() - 1);
 	}
 
 	@Override
