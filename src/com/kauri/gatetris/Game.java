@@ -91,7 +91,7 @@ public class Game extends Canvas implements Runnable
 
 	public void startNewGame()
 	{
-		data = new GameData(State.PLAYING, new Board(10, 22), new PieceSequence(new ShufflePieceSelector()), 0, 1, 0, 0);
+		data = new GameData(new Board(10, 22), new PieceSequence(new ShufflePieceSelector()));
 
 		this.storeAndExecute(new NewTetrominoCommand(this));
 

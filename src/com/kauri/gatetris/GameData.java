@@ -32,27 +32,23 @@ public class GameData
 		PLAYING, PAUSED, GAMEOVER;
 	}
 
-	private State state;
+	private State state = State.PLAYING;
 	private Board board;
 	private PieceSequence sequence;
-	private long score;
-	private long level;
-	private long lines;
-	private long drops;
+
+	private long score = 0;
+	private long lines = 0;
+	private long drops = 0;
+
 	private int xPos;
 	private int yPos;
 	private Tetromino current;
 	private Tetromino preview;
 
-	public GameData(State state, Board board, PieceSequence sequence, long score, long level, long lines, long drops)
+	public GameData(Board board, PieceSequence sequence)
 	{
-		this.state = state;
 		this.board = board;
 		this.sequence = sequence;
-		this.score = score;
-		this.level = level;
-		this.lines = lines;
-		this.drops = drops;
 
 		sequence.advance();
 	}
@@ -99,12 +95,7 @@ public class GameData
 
 	public long getLevel()
 	{
-		return level;
-	}
-
-	public void setLevel(long level)
-	{
-		this.level = level;
+		return Math.min(10, (drops / 10) + 1);
 	}
 
 	public long getLines()
