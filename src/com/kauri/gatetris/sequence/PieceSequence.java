@@ -21,6 +21,9 @@
 
 package com.kauri.gatetris.sequence;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.kauri.gatetris.Tetromino;
 
 /**
@@ -28,8 +31,9 @@ import com.kauri.gatetris.Tetromino;
  */
 public class PieceSequence
 {
-	private Tetromino current;
-	private Tetromino preview;
+	private int current = -1;
+	private int preview = +0;
+	private List<Tetromino> pieces = new ArrayList<Tetromino>();
 
 	private PieceSelector selector;
 
@@ -40,22 +44,27 @@ public class PieceSequence
 
 	public final void advance()
 	{
-		if (current == null) {
-			current = selector.getNextPiece();
-			preview = selector.getNextPiece();
-		} else {
-			current = preview;
-			preview = selector.getNextPiece();
+		current++;
+		preview++;
+
+		while (pieces.size() <= preview) {
+			pieces.add(selector.getNextPiece());
 		}
+	}
+
+	public final void rewind()
+	{
+		current--;
+		preview--;
 	}
 
 	public final Tetromino peekCurrent()
 	{
-		return current;
+		return pieces.get(current);
 	}
 
 	public final Tetromino peekPreview()
 	{
-		return preview;
+		return pieces.get(preview);
 	}
 }

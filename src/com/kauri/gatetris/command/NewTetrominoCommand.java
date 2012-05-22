@@ -67,14 +67,12 @@ public class NewTetrominoCommand implements Command
 	@Override
 	public void unexecute()
 	{
-		// TODO - this won't replay the same values, because the piece sequence will now be out of
-		// sync. There should be a rewind method or something that can roll back the pieces being
-		// served.
-
 		game.data.setCurrent(current);
 		game.data.setPreview(preview);
 
 		game.data.setX(x);
 		game.data.setY(y);
+
+		game.data.getSequence().rewind();
 	}
 }
