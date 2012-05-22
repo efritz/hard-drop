@@ -35,7 +35,6 @@ public class NewTetrominoCommand implements Command
 	private Tetromino preview;
 	private int x;
 	private int y;
-	private long pieceValue;
 
 	public NewTetrominoCommand(Game game)
 	{
@@ -58,10 +57,6 @@ public class NewTetrominoCommand implements Command
 		game.data.setX(game.data.getBoard().getSpawnX(game.data.getCurrent()));
 		game.data.setY(game.data.getBoard().getSpawnY(game.data.getCurrent()));
 
-		pieceValue = game.data.pieceValue;
-
-		game.data.pieceValue = 24 + 3 * (game.data.getLevel() - 1);
-
 		// TODO - move this somewhere else
 
 		if (!game.data.getBoard().canMove(game.data.getCurrent(), game.data.getX(), game.data.getY())) {
@@ -72,8 +67,6 @@ public class NewTetrominoCommand implements Command
 	@Override
 	public void unexecute()
 	{
-		game.data.pieceValue = pieceValue;
-
 		game.data.setCurrent(current);
 		game.data.setPreview(preview);
 

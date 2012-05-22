@@ -44,7 +44,6 @@ public class GameData
 	private int yPos;
 	private Tetromino current;
 	private Tetromino preview;
-	public long pieceValue;
 
 	public GameData(Board board, PieceSequence sequence)
 	{
@@ -94,9 +93,9 @@ public class GameData
 		this.score = score;
 	}
 
-	public long getLevel()
+	public int getLevel()
 	{
-		return Math.min(10, ((lines - 1) / 10) + 1);
+		return (int) Math.min(10, ((lines - 1) / 10) + 1);
 	}
 
 	public long getLines()
