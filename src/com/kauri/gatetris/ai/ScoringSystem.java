@@ -37,9 +37,8 @@ public class ScoringSystem
 	public double weightHoles;
 	public double weightWells;
 	public double weightBlockades;
-	public double weightClear;
 
-	public ScoringSystem(int minWellDepth, double weightSumHeight, double weightMaxHeight, double weightRelHeight, double weightAvgHeight, double weightHoles, double weightWells, double weightBlockades, double weightClear)
+	public ScoringSystem(int minWellDepth, double weightSumHeight, double weightMaxHeight, double weightRelHeight, double weightAvgHeight, double weightHoles, double weightWells, double weightBlockades)
 	{
 		this.minWellDepth = minWellDepth;
 		this.weightSumHeight = weightSumHeight;
@@ -49,7 +48,6 @@ public class ScoringSystem
 		this.weightHoles = weightHoles;
 		this.weightWells = weightWells;
 		this.weightBlockades = weightBlockades;
-		this.weightClear = weightClear;
 	}
 
 	/**
@@ -61,7 +59,7 @@ public class ScoringSystem
 	 */
 	public double score(Board board)
 	{
-		double score = weightClear * 0; // board.clearLines();
+		double score = 0;
 
 		int[] heights = getHeights(board);
 

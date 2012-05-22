@@ -49,7 +49,7 @@ public class AI
 	// point (other strategies could have different weights, etc).
 	//
 
-	ScoringSystem scoring = new ScoringSystem(2, -3, -3, -3, -3, -5, 0, -10, 40);
+	ScoringSystem scoring = new ScoringSystem(2, -3, -3, -3, -3, -5, 0, -10);
 
 	private Board dummy1 = null;
 
