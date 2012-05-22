@@ -30,6 +30,7 @@ public class HardDropCommand implements Command
 {
 	private Game game;
 	private int y;
+	private long score;
 	private boolean success = false;
 	private Command subcommand1;
 	private Command subcommand2;
@@ -47,6 +48,10 @@ public class HardDropCommand implements Command
 		success = game.tryMove(game.data.getCurrent(), game.data.getX(), game.data.getBoard().dropHeight(game.data.getCurrent(), game.data.getX(), y));
 
 		if (success) {
+			score = game.data.getScore();
+			game.data.setScore(score + game.pieceValue);
+			game.data.setDrops(game.data.getDrops() + 1);
+
 			game.data.getBoard().addPiece(game.data.getCurrent(), game.data.getX(), game.data.getY());
 
 			subcommand1 = new ClearCommand(game);
@@ -67,6 +72,9 @@ public class HardDropCommand implements Command
 			game.data.getBoard().removePiece(game.data.getCurrent(), game.data.getX(), game.data.getY());
 
 			game.tryMove(game.data.getCurrent(), game.data.getX(), y);
+
+			game.data.setScore(score);
+			game.data.setDrops(game.data.getDrops() - 1);
 		}
 	}
 }

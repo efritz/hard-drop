@@ -31,6 +31,7 @@ public class SoftDropCommand implements Command
 	private Game game;
 	private Command subcommand;
 	private boolean success = false;
+	private long pieceValue;
 
 	public SoftDropCommand(Game game)
 	{
@@ -45,6 +46,9 @@ public class SoftDropCommand implements Command
 			subcommand.execute();
 		} else {
 			success = game.tryMove(game.data.getCurrent(), game.data.getX(), game.data.getY() - 1);
+
+			pieceValue = game.pieceValue;
+			game.pieceValue = Math.max(0, game.pieceValue - 1);
 		}
 	}
 
@@ -52,6 +56,7 @@ public class SoftDropCommand implements Command
 	public void unexecute()
 	{
 		if (success) {
+			game.pieceValue = pieceValue;
 			game.tryMove(game.data.getCurrent(), game.data.getX(), game.data.getY() + 1);
 		}
 

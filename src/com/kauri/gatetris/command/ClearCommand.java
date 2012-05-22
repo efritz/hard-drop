@@ -34,6 +34,8 @@ import com.kauri.gatetris.Tetromino.Shape;
 public class ClearCommand implements Command
 {
 	private Game game;
+	private long lines;
+	private long score;
 	private SortedMap<Integer, Shape[]> map = new TreeMap<Integer, Shape[]>();
 
 	public ClearCommand(Game game)
@@ -50,6 +52,12 @@ public class ClearCommand implements Command
 				game.data.getBoard().removeRow(row);
 			}
 		}
+
+		lines = game.data.getLines();
+		score = game.data.getScore();
+
+		game.data.setLines(lines + map.size());
+		game.data.setScore(score + 40 * (long) Math.pow(3, map.size() - 1));
 	}
 
 	@Override
@@ -58,5 +66,8 @@ public class ClearCommand implements Command
 		for (Entry<Integer, Shape[]> e : map.entrySet()) {
 			game.data.getBoard().addRow(e.getKey(), e.getValue());
 		}
+
+		game.data.setLines(lines);
+		game.data.setScore(score);
 	}
 }
