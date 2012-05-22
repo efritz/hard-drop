@@ -96,7 +96,7 @@ public class GameData
 
 	public long getLevel()
 	{
-		return Math.min(10, (drops / 10) + 1);
+		return Math.min(10, ((lines - 1) / 10) + 1);
 	}
 
 	public long getLines()
