@@ -192,7 +192,7 @@ public class Game extends Canvas implements Runnable
 				}
 			}
 		} else {
-			long gravityDelay = Math.max(100, 600 - (data.getLevel() - 1) * 20);
+			long gravityDelay = (long) (((11 - data.getLevel()) * 0.05) * 1000);
 
 			if (now - gravityDelay >= lastGravity) {
 				lastGravity = now;
