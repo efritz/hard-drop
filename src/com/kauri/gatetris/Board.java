@@ -53,11 +53,6 @@ public class Board implements Cloneable
 		Arrays.fill(board, Shape.NoShape);
 	}
 
-	public void clear()
-	{
-		Arrays.fill(board, Shape.NoShape);
-	}
-
 	/**
 	 * Clone the state of the board. If `fill` is non-null and has the same dimensions, the state
 	 * will be copied into that board instance. Otherwise, a new instance will be created.
