@@ -53,8 +53,21 @@ public class Game extends Canvas implements Runnable
 {
 	private static final long serialVersionUID = 1L;
 
-	// TODO - circular stack, so that we can only undo ~50 moves?
-	private Stack<Command> history = new Stack<Command>();
+	private final int MAX_HISTORY = 50;
+
+	private Stack<Command> history = new Stack<Command>() {
+		private static final long serialVersionUID = 1L;
+
+		@Override
+		public boolean add(Command element)
+		{
+			if (this.size() > MAX_HISTORY - 1) {
+				this.remove(0);
+			}
+
+			return super.add(element);
+		}
+	};
 
 	public GameData data;
 
@@ -129,7 +142,7 @@ public class Game extends Canvas implements Runnable
 	long lastCounter = System.currentTimeMillis();
 	long lastGravity = System.currentTimeMillis();
 
-	private boolean hardDrops = false;
+	private boolean hardDrops = true;
 
 	private void update()
 	{
