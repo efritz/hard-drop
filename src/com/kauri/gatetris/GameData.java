@@ -44,6 +44,7 @@ public class GameData
 	private int yPos;
 	private Tetromino current;
 	private Tetromino preview;
+	public long pieceValue;
 
 	public GameData(Board board, PieceSequence sequence)
 	{

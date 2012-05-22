@@ -62,7 +62,6 @@ public class Game extends Canvas implements Runnable
 	UI ui = new UI(this);
 
 	long aidelay = 128;
-	public long pieceValue;
 	boolean runningAi = false;
 	boolean autoRestart = false;
 

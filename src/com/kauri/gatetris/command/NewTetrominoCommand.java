@@ -58,9 +58,9 @@ public class NewTetrominoCommand implements Command
 		game.data.setX(game.data.getBoard().getSpawnX(game.data.getCurrent()));
 		game.data.setY(game.data.getBoard().getSpawnY(game.data.getCurrent()));
 
-		pieceValue = game.pieceValue;
+		pieceValue = game.data.pieceValue;
 
-		game.pieceValue = 24 + 3 * (game.data.getLevel() - 1);
+		game.data.pieceValue = 24 + 3 * (game.data.getLevel() - 1);
 
 		// TODO - move this somewhere else
 
@@ -72,7 +72,7 @@ public class NewTetrominoCommand implements Command
 	@Override
 	public void unexecute()
 	{
-		game.pieceValue = pieceValue;
+		game.data.pieceValue = pieceValue;
 
 		game.data.setCurrent(current);
 		game.data.setPreview(preview);
