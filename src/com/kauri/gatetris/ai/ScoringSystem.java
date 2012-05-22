@@ -38,7 +38,7 @@ public class ScoringSystem
 	public double weightWells;
 	public double weightBlockades;
 
-	public ScoringSystem(int minWellDepth, double weightSumHeight, double weightMaxHeight, double weightRelHeight, double weightAvgHeight, double weightHoles, double weightWells, double weightBlockades)
+	public void setWeights(int minWellDepth, double weightSumHeight, double weightMaxHeight, double weightRelHeight, double weightAvgHeight, double weightHoles, double weightWells, double weightBlockades)
 	{
 		this.minWellDepth = minWellDepth;
 		this.weightSumHeight = weightSumHeight;

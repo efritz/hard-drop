@@ -34,7 +34,7 @@ import javax.swing.JFrame;
 
 import com.kauri.gatetris.GameData.State;
 import com.kauri.gatetris.ai.AI;
-import com.kauri.gatetris.ai.AI.Move;
+import com.kauri.gatetris.ai.Move;
 import com.kauri.gatetris.command.Command;
 import com.kauri.gatetris.command.HardDropCommand;
 import com.kauri.gatetris.command.MoveLeftCommand;

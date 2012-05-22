@@ -31,27 +31,17 @@ import com.kauri.gatetris.Tetromino;
  */
 public class AI
 {
-	public static class Move
-	{
-		public int rotationDelta;
-		public int translationDelta;
-
-		public Move(int rotationDelta, int translationDelta)
-		{
-			this.rotationDelta = rotationDelta;
-			this.translationDelta = translationDelta;
-		}
-	}
-
 	//
 	// TODO - Somehow evolve the scoring system between rounds. I'm not sure where this logic should
 	// really go. Interface for basic GA algorithm, and then the ai will do what it wants at that
 	// point (other strategies could have different weights, etc).
 	//
 
-	ScoringSystem scoring = new ScoringSystem(2, -3, -3, -3, -3, -5, 0, -10);
+	private static ScoringSystem scoring = new ScoringSystem();
 
-	private Board dummy1 = null;
+	static {
+		scoring.setWeights(2, -3, -3, -3, -3, -5, 0, -10);
+	}
 
 	public Move getBestMove(Board board, Tetromino current, Tetromino preview, int x, int y)
 	{
@@ -63,6 +53,8 @@ public class AI
 			}
 		});
 	}
+
+	private Board dummy1 = null;
 
 	public Move getBestMove(Board board, Tetromino current, Tetromino preview, int x, int y, Comparator<Double> comp)
 	{
