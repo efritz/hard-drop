@@ -181,7 +181,7 @@ public class Game extends Canvas implements Runnable
 
 			if (now - gravityDelay >= lastGravity) {
 				lastGravity = now;
-				// this.storeAndExecute(new SoftDropCommand(this));
+				this.storeAndExecute(new SoftDropCommand(this));
 			}
 		}
 	}
