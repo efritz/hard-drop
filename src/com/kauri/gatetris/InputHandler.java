@@ -45,7 +45,7 @@ class InputHandler implements KeyListener
 	{
 		int keyCode = ke.getKeyCode();
 
-		if (!this.game.runningAi) {
+		if (game.data.getState() == State.PLAYING && !game.runningAi) {
 			if (keyCode == KeyEvent.VK_LEFT) {
 				game.storeAndExecute(new MoveLeftCommand(game));
 			}

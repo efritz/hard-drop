@@ -137,7 +137,9 @@ public class Game extends Canvas implements Runnable
 			if (autoRestart) {
 				startNewGame();
 			}
+		}
 
+		if (data.getState() != State.PLAYING) {
 			return;
 		}
 
@@ -205,10 +207,6 @@ public class Game extends Canvas implements Runnable
 
 	public boolean tryMove(Tetromino piece, int xPos, int yPos)
 	{
-		if (data.getState() != State.PLAYING) {
-			return false;
-		}
-
 		if (data.getBoard().canMove(piece, xPos, yPos)) {
 			this.data.setX(xPos);
 			this.data.setY(yPos);
