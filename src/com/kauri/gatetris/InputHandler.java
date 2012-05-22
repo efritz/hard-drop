@@ -67,6 +67,12 @@ class InputHandler implements KeyListener
 			}
 		}
 
+		if (game.data.getState() != State.PAUSED && !game.runningAi) {
+			if (keyCode == KeyEvent.VK_BACK_SPACE) {
+				game.undo();
+			}
+		}
+
 		if (keyCode == KeyEvent.VK_ENTER) {
 			game.startNewGame();
 		}
@@ -97,12 +103,6 @@ class InputHandler implements KeyListener
 
 		if (keyCode == KeyEvent.VK_Q) {
 			game.ui.showAiPiece = !game.ui.showAiPiece;
-		}
-
-		// TESTING
-
-		if (keyCode == KeyEvent.VK_SEMICOLON) {
-			game.undo();
 		}
 
 		if (keyCode == KeyEvent.VK_P) {

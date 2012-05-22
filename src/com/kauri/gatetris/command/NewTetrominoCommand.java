@@ -67,6 +67,8 @@ public class NewTetrominoCommand implements Command
 	@Override
 	public void unexecute()
 	{
+		game.data.setState(State.PLAYING);
+
 		game.data.setCurrent(current);
 		game.data.setPreview(preview);
 
