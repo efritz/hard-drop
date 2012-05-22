@@ -24,28 +24,82 @@ package com.kauri.gatetris.ai;
 import java.util.Comparator;
 
 import com.kauri.gatetris.Board;
+import com.kauri.gatetris.Game;
 import com.kauri.gatetris.Tetromino;
+import com.kauri.gatetris.command.HardDropCommand;
+import com.kauri.gatetris.command.MoveLeftCommand;
+import com.kauri.gatetris.command.MoveRightCommand;
+import com.kauri.gatetris.command.RotateLeftCommand;
+import com.kauri.gatetris.command.RotateRightCommand;
 
 /**
  * @author Eric Fritz
  */
 public class AI
 {
-	//
-	// TODO - Somehow evolve the scoring system between rounds. I'm not sure where this logic should
-	// really go. Interface for basic GA algorithm, and then the ai will do what it wants at that
-	// point (other strategies could have different weights, etc).
-	//
+	private Game game;
+	private Move move;
+
+	public AI(Game game)
+	{
+		this.game = game;
+	}
+
+	public void update()
+	{
+		if (move == null) {
+			move = getBestMove(game.data.getBoard(), game.data.getCurrent(), game.data.getX(), game.data.getY());
+		}
+
+		if (move.rotationDelta < 0) {
+			move.rotationDelta++;
+			game.storeAndExecute(new RotateRightCommand(game));
+		} else if (move.rotationDelta > 0) {
+			move.rotationDelta--;
+			game.storeAndExecute(new RotateLeftCommand(game));
+		} else if (move.translationDelta < 0) {
+			move.translationDelta++;
+			game.storeAndExecute(new MoveLeftCommand(game));
+		} else if (move.translationDelta > 0) {
+			move.translationDelta--;
+			game.storeAndExecute(new MoveRightCommand(game));
+		} else {
+			// TODO - implement soft drop
+
+			game.storeAndExecute(new HardDropCommand(game));
+			move = null;
+		}
+	}
+
+	private static class Move
+	{
+		public int rotationDelta;
+		public int translationDelta;
+
+		public Move(int rotationDelta, int translationDelta)
+		{
+			this.rotationDelta = rotationDelta;
+			this.translationDelta = translationDelta;
+		}
+	}
 
 	private static ScoringSystem scoring = new ScoringSystem();
 
 	static {
+		//
+		// TODO - Somehow evolve the scoring system between rounds. I'm not sure where this logic
+		// should
+		// really go. Interface for basic GA algorithm, and then the ai will do what it wants at
+		// that
+		// point (other strategies could have different weights, etc).
+		//
+
 		scoring.setWeights(2, -3, -3, -3, -3, -5, 0, -10);
 	}
 
-	public Move getBestMove(Board board, Tetromino current, Tetromino preview, int x, int y)
+	private Move getBestMove(Board board, Tetromino current, int x, int y)
 	{
-		return getBestMove(board, current, preview, x, y, new Comparator<Double>() {
+		return getBestMove(board, current, x, y, new Comparator<Double>() {
 			@Override
 			public int compare(Double d1, Double d2)
 			{
@@ -54,9 +108,9 @@ public class AI
 		});
 	}
 
-	private Board dummy1 = null;
+	private Board dummy = null;
 
-	public Move getBestMove(Board board, Tetromino current, Tetromino preview, int x, int y, Comparator<Double> comp)
+	private Move getBestMove(Board board, Tetromino current, int x, int y, Comparator<Double> comp)
 	{
 		int bestRotationDelta = 0;
 		int bestTranslationDelta = 0;
@@ -72,19 +126,19 @@ public class AI
 			int minTranslationDelta = getMaxTranslationDelta(board, current, x, y, -1);
 			int maxTranslationDelta = getMaxTranslationDelta(board, current, x, y, +1);
 
-			dummy1 = board.tryClone(dummy1);
+			dummy = board.tryClone(dummy);
 
-			if (!dummy1.canMove(current, x, y)) {
+			if (!dummy.canMove(current, x, y)) {
 				break;
 			}
 
 			for (int translationDelta = minTranslationDelta; translationDelta <= maxTranslationDelta; translationDelta++) {
-				dummy1 = board.tryClone(dummy1);
+				dummy = board.tryClone(dummy);
 
-				if (dummy1.canMove(current, x + translationDelta, dummy1.dropHeight(current, x + translationDelta))) {
-					dummy1.addPiece(current, x + translationDelta, dummy1.dropHeight(current, x + translationDelta));
+				if (dummy.canMove(current, x + translationDelta, dummy.dropHeight(current, x + translationDelta))) {
+					dummy.addPiece(current, x + translationDelta, dummy.dropHeight(current, x + translationDelta));
 
-					double score = scoring.score(dummy1);
+					double score = scoring.score(dummy);
 
 					if (comp.compare(score, bestScore) > 0) {
 						bestScore = score;

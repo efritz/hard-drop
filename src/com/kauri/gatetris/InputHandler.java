@@ -101,10 +101,6 @@ class InputHandler implements KeyListener
 			game.ui.showShadowPiece = !game.ui.showShadowPiece;
 		}
 
-		if (keyCode == KeyEvent.VK_Q) {
-			game.ui.showAiPiece = !game.ui.showAiPiece;
-		}
-
 		if (keyCode == KeyEvent.VK_P) {
 			if (game.data.getState() != State.GAMEOVER) {
 				game.data.setState((game.data.getState() == State.PAUSED) ? State.PLAYING : State.PAUSED);

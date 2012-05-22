@@ -32,7 +32,6 @@ import java.util.Map;
 
 import com.kauri.gatetris.GameData.State;
 import com.kauri.gatetris.Tetromino.Shape;
-import com.kauri.gatetris.ai.Move;
 
 /**
  * @author efritz
@@ -53,7 +52,6 @@ public class UI
 		colors.put(Shape.NoShape, new Color(240, 240, 240));
 	}
 
-	boolean showAiPiece = false;
 	boolean showNextPiece = false;
 	boolean showShadowPiece = false;
 
@@ -128,20 +126,6 @@ public class UI
 
 			if (ghostPosition < game.data.getY()) {
 				drawTetromino(g, game.data.getCurrent(), translateBoardRow(ghostPosition), translateBoardCol(game.data.getX()), changeAlpha(colors.get(game.data.getCurrent().getShape()), .3), getTopMargin());
-			}
-		} else if (showAiPiece) {
-			Move move = game.ai.getBestMove(game.data.getBoard(), game.data.getCurrent(), game.data.getPreview(), game.data.getX(), game.data.getY());
-
-			Tetromino current2 = game.data.getCurrent();
-
-			for (int i = 0; i < move.rotationDelta; i++) {
-				current2 = Tetromino.rotateLeft(current2);
-			}
-
-			int ghostPosition = game.data.getBoard().dropHeight(current2, game.data.getX() + move.translationDelta, game.data.getY());
-
-			if (ghostPosition < game.data.getY()) {
-				drawTetromino(g, current2, translateBoardRow(ghostPosition), translateBoardCol(game.data.getX() + move.translationDelta), changeAlpha(colors.get(current2.getShape()), .3), getTopMargin());
 			}
 		}
 

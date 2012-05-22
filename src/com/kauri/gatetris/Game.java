@@ -34,14 +34,8 @@ import javax.swing.JFrame;
 
 import com.kauri.gatetris.GameData.State;
 import com.kauri.gatetris.ai.AI;
-import com.kauri.gatetris.ai.Move;
 import com.kauri.gatetris.command.Command;
-import com.kauri.gatetris.command.HardDropCommand;
-import com.kauri.gatetris.command.MoveLeftCommand;
-import com.kauri.gatetris.command.MoveRightCommand;
 import com.kauri.gatetris.command.NewTetrominoCommand;
-import com.kauri.gatetris.command.RotateLeftCommand;
-import com.kauri.gatetris.command.RotateRightCommand;
 import com.kauri.gatetris.command.SoftDropCommand;
 import com.kauri.gatetris.sequence.PieceSequence;
 import com.kauri.gatetris.sequence.ShufflePieceSelector;
@@ -71,7 +65,7 @@ public class Game extends Canvas implements Runnable
 
 	public GameData data;
 
-	AI ai = new AI();
+	AI ai = new AI(this);
 	UI ui = new UI(this);
 
 	long aidelay = 128;
@@ -142,8 +136,6 @@ public class Game extends Canvas implements Runnable
 	long lastCounter = System.currentTimeMillis();
 	long lastGravity = System.currentTimeMillis();
 
-	private boolean hardDrops = true;
-
 	private void update()
 	{
 		if (data.getState() == State.GAMEOVER) {
@@ -167,29 +159,7 @@ public class Game extends Canvas implements Runnable
 			if (now - aidelay >= lastAi) {
 				lastAi = now;
 
-				// TODO - cache this
-				// TODO - need AI to be able to make the move it's given (sometimes the rotation
-				// delta given is impossible - translation delta usually seems to be okay).
-
-				Move move = ai.getBestMove(data.getBoard(), data.getCurrent(), data.getPreview(), data.getX(), data.getY());
-
-				if (move.rotationDelta > 0) {
-					if (move.rotationDelta == 3) {
-						this.storeAndExecute(new RotateRightCommand(this));
-					} else {
-						this.storeAndExecute(new RotateLeftCommand(this));
-					}
-				} else if (move.translationDelta < 0) {
-					this.storeAndExecute(new MoveLeftCommand(this));
-				} else if (move.translationDelta > 0) {
-					this.storeAndExecute(new MoveRightCommand(this));
-				} else {
-					if (hardDrops) {
-						this.storeAndExecute(new HardDropCommand(this));
-					} else {
-						this.storeAndExecute(new SoftDropCommand(this));
-					}
-				}
+				ai.update();
 			}
 		} else {
 			long gravityDelay = (long) (((11 - data.getLevel()) * 0.05) * 1000);
