@@ -41,7 +41,7 @@ public class SoftDropCommand implements Command
 	@Override
 	public void execute()
 	{
-		if (!game.isFalling()) {
+		if (!isFalling()) {
 			subcommand = new HardDropCommand(game);
 			subcommand.execute();
 		} else {
@@ -50,6 +50,11 @@ public class SoftDropCommand implements Command
 			pieceValue = game.pieceValue;
 			game.pieceValue = Math.max(0, game.pieceValue - 1);
 		}
+	}
+
+	private boolean isFalling()
+	{
+		return game.data.getBoard().canMove(game.data.getCurrent(), game.data.getX(), game.data.getY() - 1);
 	}
 
 	@Override

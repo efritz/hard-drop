@@ -219,11 +219,6 @@ public class Game extends Canvas implements Runnable
 		return false;
 	}
 
-	public boolean isFalling()
-	{
-		return data.getBoard().canMove(data.getCurrent(), data.getX(), data.getY() - 1);
-	}
-
 	private class ResizeListener implements ComponentListener
 	{
 		@Override
