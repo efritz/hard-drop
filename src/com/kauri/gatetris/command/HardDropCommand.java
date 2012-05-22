@@ -49,7 +49,7 @@ public class HardDropCommand extends MovementCommand
 		success = tryMove(game.data.getCurrent(), game.data.getX(), game.data.getBoard().dropHeight(game.data.getCurrent(), game.data.getX(), y));
 
 		if (success) {
-			int pieceReward = ((21 + (3 * game.data.getLevel())) - (game.data.getBoard().getHeight() - y));
+			int pieceReward = ((game.data.getBoard().getHeight() + (3 * game.data.getLevel())) - (game.data.getBoard().getHeight() - y));
 
 			score = game.data.getScore();
 			game.data.setScore(score + pieceReward);
