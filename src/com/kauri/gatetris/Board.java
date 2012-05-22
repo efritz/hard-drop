@@ -277,6 +277,16 @@ public class Board implements Cloneable
 		}
 	}
 
+	public int getSpawnX(Tetromino piece)
+	{
+		return (width - piece.getWidth()) / 2 + Math.abs(piece.getMinX());
+	}
+
+	public int getSpawnY(Tetromino piece)
+	{
+		return height - 1 - piece.getMinY();
+	}
+
 	/**
 	 * Determines the column index where the given piece would come to rest if dropped straight
 	 * down. This method uses the top of the board as the starting y-position.

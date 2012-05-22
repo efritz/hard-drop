@@ -150,7 +150,7 @@ public class UI
 		}
 
 		if (showNextPiece) {
-			int xPos = (game.data.getBoard().getWidth() - game.data.getPreview().getWidth()) / 2 + Math.abs(game.data.getPreview().getMinX());
+			int xPos = game.data.getBoard().getSpawnX(game.data.getPreview());
 
 			int rowOffset = (getTopMargin() - (game.data.getPreview().getHeight() * getSquareHeight())) / 2;
 

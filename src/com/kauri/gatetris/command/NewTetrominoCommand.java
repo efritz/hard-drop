@@ -54,8 +54,8 @@ public class NewTetrominoCommand implements Command
 		game.data.setCurrent(game.data.getSequence().peekCurrent());
 		game.data.setPreview(game.data.getSequence().peekPreview());
 
-		game.data.setX((game.data.getBoard().getWidth() - game.data.getCurrent().getWidth()) / 2 + Math.abs(game.data.getCurrent().getMinX()));
-		game.data.setY(game.data.getBoard().getHeight() - 1 - game.data.getCurrent().getMinY());
+		game.data.setX(game.data.getBoard().getSpawnX(game.data.getCurrent()));
+		game.data.setY(game.data.getBoard().getSpawnY(game.data.getCurrent()));
 
 		// TODO - move this somewhere else
 
