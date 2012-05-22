@@ -27,27 +27,28 @@ import com.kauri.gatetris.Tetromino;
 /**
  * @author Eric Fritz
  */
-public class RotateLeftCommand implements Command
+public class RotateLeftCommand extends MovementCommand
 {
 	private Game game;
 	private boolean success = false;
 
 	public RotateLeftCommand(Game game)
 	{
+		super(game);
 		this.game = game;
 	}
 
 	@Override
 	public void execute()
 	{
-		success = game.tryMove(Tetromino.rotateLeft(game.data.getCurrent()), game.data.getX(), game.data.getY());
+		success = tryMove(Tetromino.rotateLeft(game.data.getCurrent()), game.data.getX(), game.data.getY());
 	}
 
 	@Override
 	public void unexecute()
 	{
 		if (success) {
-			game.tryMove(Tetromino.rotateRight(game.data.getCurrent()), game.data.getX(), game.data.getY());
+			tryMove(Tetromino.rotateRight(game.data.getCurrent()), game.data.getX(), game.data.getY());
 		}
 	}
 }

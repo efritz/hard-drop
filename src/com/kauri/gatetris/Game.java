@@ -206,19 +206,6 @@ public class Game extends Canvas implements Runnable
 		bs.show();
 	}
 
-	public boolean tryMove(Tetromino piece, int xPos, int yPos)
-	{
-		if (data.getBoard().canMove(piece, xPos, yPos)) {
-			this.data.setX(xPos);
-			this.data.setY(yPos);
-			this.data.setCurrent(piece);
-
-			return true;
-		}
-
-		return false;
-	}
-
 	private class ResizeListener implements ComponentListener
 	{
 		@Override

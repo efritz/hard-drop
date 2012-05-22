@@ -1,7 +1,7 @@
 /*
  * This file is part of the ga-tetris package.
  *
- * Copyright (C) 2012, Eric Fritz
+ * Copyright (C) 2012, efritz
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software 
  * and associated documentation files (the "Software"), to deal in the Software without 
@@ -22,60 +22,30 @@
 package com.kauri.gatetris.command;
 
 import com.kauri.gatetris.Game;
+import com.kauri.gatetris.Tetromino;
 
 /**
- * @author Eric Fritz
+ * @author efritz
  */
-public class HardDropCommand extends MovementCommand
+abstract public class MovementCommand implements Command
 {
 	private Game game;
-	private int y;
-	private long score;
-	private boolean success = false;
-	private Command subcommand1;
-	private Command subcommand2;
 
-	public HardDropCommand(Game game)
+	public MovementCommand(Game game)
 	{
-		super(game);
 		this.game = game;
 	}
 
-	@Override
-	public void execute()
+	public boolean tryMove(Tetromino piece, int xPos, int yPos)
 	{
-		y = game.data.getY();
+		if (game.data.getBoard().canMove(piece, xPos, yPos)) {
+			game.data.setX(xPos);
+			game.data.setY(yPos);
+			game.data.setCurrent(piece);
 
-		success = tryMove(game.data.getCurrent(), game.data.getX(), game.data.getBoard().dropHeight(game.data.getCurrent(), game.data.getX(), y));
-
-		if (success) {
-			score = game.data.getScore();
-			game.data.setScore(score + game.pieceValue);
-			game.data.setDrops(game.data.getDrops() + 1);
-
-			game.data.getBoard().addPiece(game.data.getCurrent(), game.data.getX(), game.data.getY());
-
-			subcommand1 = new ClearCommand(game);
-			subcommand1.execute();
-
-			subcommand2 = new NewTetrominoCommand(game);
-			subcommand2.execute();
+			return true;
 		}
-	}
 
-	@Override
-	public void unexecute()
-	{
-		if (success) {
-			subcommand2.unexecute();
-			subcommand1.unexecute();
-
-			game.data.getBoard().removePiece(game.data.getCurrent(), game.data.getX(), game.data.getY());
-
-			tryMove(game.data.getCurrent(), game.data.getX(), y);
-
-			game.data.setScore(score);
-			game.data.setDrops(game.data.getDrops() - 1);
-		}
+		return false;
 	}
 }

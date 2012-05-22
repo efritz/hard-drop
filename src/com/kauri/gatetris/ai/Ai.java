@@ -75,7 +75,9 @@ public class AI
 			for (int translationDelta = minTranslationDelta; translationDelta <= maxTranslationDelta; translationDelta++) {
 				dummy1 = board.tryClone(dummy1);
 
-				if (dummy1.tryMove(current, x + translationDelta, dummy1.dropHeight(current, x + translationDelta))) {
+				if (dummy1.canMove(current, x + translationDelta, dummy1.dropHeight(current, x + translationDelta))) {
+					dummy1.addPiece(current, x + translationDelta, dummy1.dropHeight(current, x + translationDelta));
+
 					double score = scoring.score(dummy1);
 
 					if (comp.compare(score, bestScore) > 0) {

@@ -150,27 +150,6 @@ public class Board implements Cloneable
 	}
 
 	/**
-	 * Add a piece to the board, if the piece can fit in the board legally.
-	 * 
-	 * @param piece
-	 *            The tetromino.
-	 * @param xPos
-	 *            The x-position.
-	 * @param yPos
-	 *            The y-position.
-	 * @return Whether the piece has been added to the board.
-	 */
-	public boolean tryMove(Tetromino piece, int xPos, int yPos)
-	{
-		if (!canMove(piece, xPos, yPos)) {
-			return false;
-		}
-
-		addPiece(piece, xPos, yPos);
-		return true;
-	}
-
-	/**
 	 * Adds the blocks of a tetromino onto this board.
 	 * 
 	 * @param piece
