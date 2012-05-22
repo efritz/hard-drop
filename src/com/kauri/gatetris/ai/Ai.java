@@ -72,6 +72,12 @@ public class AI
 			int minTranslationDelta = getMaxTranslationDelta(board, current, x, y, -1);
 			int maxTranslationDelta = getMaxTranslationDelta(board, current, x, y, +1);
 
+			dummy1 = board.tryClone(dummy1);
+
+			if (!dummy1.canMove(current, x, y)) {
+				break;
+			}
+
 			for (int translationDelta = minTranslationDelta; translationDelta <= maxTranslationDelta; translationDelta++) {
 				dummy1 = board.tryClone(dummy1);
 
