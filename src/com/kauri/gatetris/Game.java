@@ -53,6 +53,7 @@ public class Game extends Canvas implements Runnable
 {
 	private static final long serialVersionUID = 1L;
 
+	// TODO - circular stack, so that we can only undo ~50 moves?
 	private Stack<Command> history = new Stack<Command>();
 
 	public GameData data;
