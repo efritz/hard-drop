@@ -113,7 +113,12 @@ public class Game extends Canvas implements Runnable
 
 		if (now - 1000 >= lastCounter) {
 			lastCounter = now;
-			System.out.printf("Score: %-10d Level: %-10d Lines: %-10d Drops: %-10d\n", data.getScore(), data.getLevel(), data.getLines(), data.getDrops());
+
+			System.out.printf("Score: %-10d", data.getScore());
+			System.out.printf("Level: %-10d", data.getLevel());
+			System.out.printf("Lines: %-10d", data.getLines());
+			System.out.printf("Drops: %-10d", data.getDrops());
+			System.out.println();
 		}
 
 		if (runningAi) {
