@@ -21,7 +21,7 @@
 
 package com.kauri.gatetris.command;
 
-import com.kauri.gatetris.Game;
+import com.kauri.gatetris.GameData;
 import com.kauri.gatetris.Tetromino;
 
 /**
@@ -29,19 +29,19 @@ import com.kauri.gatetris.Tetromino;
  */
 abstract public class MovementCommand implements Command
 {
-	private Game game;
+	private GameData data;
 
-	public MovementCommand(Game game)
+	public MovementCommand(GameData data)
 	{
-		this.game = game;
+		this.data = data;
 	}
 
 	public boolean tryMove(Tetromino piece, int xPos, int yPos)
 	{
-		if (game.data.getBoard().canMove(piece, xPos, yPos)) {
-			game.data.setX(xPos);
-			game.data.setY(yPos);
-			game.data.setCurrent(piece);
+		if (data.getBoard().canMove(piece, xPos, yPos)) {
+			data.setX(xPos);
+			data.setY(yPos);
+			data.setCurrent(piece);
 
 			return true;
 		}

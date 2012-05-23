@@ -21,46 +21,46 @@
 
 package com.kauri.gatetris.command;
 
-import com.kauri.gatetris.Game;
+import com.kauri.gatetris.GameData;
 
 /**
  * @author Eric Fritz
  */
 public class HardDropCommand extends MovementCommand
 {
-	private Game game;
+	private GameData data;
 	private int y;
 	private long score;
 	private boolean success = false;
 	private Command subcommand1;
 	private Command subcommand2;
 
-	public HardDropCommand(Game game)
+	public HardDropCommand(GameData data)
 	{
-		super(game);
-		this.game = game;
+		super(data);
+		this.data = data;
 	}
 
 	@Override
 	public void execute()
 	{
-		y = game.data.getY();
+		y = data.getY();
 
-		success = tryMove(game.data.getCurrent(), game.data.getX(), game.data.getBoard().dropHeight(game.data.getCurrent(), game.data.getX(), y));
+		success = tryMove(data.getCurrent(), data.getX(), data.getBoard().dropHeight(data.getCurrent(), data.getX(), y));
 
 		if (success) {
-			int pieceReward = ((game.data.getBoard().getHeight() + (3 * game.data.getLevel())) - (game.data.getBoard().getHeight() - y));
+			int pieceReward = ((data.getBoard().getHeight() + (3 * data.getLevel())) - (data.getBoard().getHeight() - y));
 
-			score = game.data.getScore();
-			game.data.setScore(score + pieceReward);
-			game.data.setDrops(game.data.getDrops() + 1);
+			score = data.getScore();
+			data.setScore(score + pieceReward);
+			data.setDrops(data.getDrops() + 1);
 
-			game.data.getBoard().addPiece(game.data.getCurrent(), game.data.getX(), game.data.getY());
+			data.getBoard().addPiece(data.getCurrent(), data.getX(), data.getY());
 
-			subcommand1 = new ClearCommand(game);
+			subcommand1 = new ClearCommand(data);
 			subcommand1.execute();
 
-			subcommand2 = new NewTetrominoCommand(game);
+			subcommand2 = new NewTetrominoCommand(data);
 			subcommand2.execute();
 		}
 	}
@@ -72,12 +72,12 @@ public class HardDropCommand extends MovementCommand
 			subcommand2.unexecute();
 			subcommand1.unexecute();
 
-			game.data.getBoard().removePiece(game.data.getCurrent(), game.data.getX(), game.data.getY());
+			data.getBoard().removePiece(data.getCurrent(), data.getX(), data.getY());
 
-			tryMove(game.data.getCurrent(), game.data.getX(), y);
+			tryMove(data.getCurrent(), data.getX(), y);
 
-			game.data.setScore(score);
-			game.data.setDrops(game.data.getDrops() - 1);
+			data.setScore(score);
+			data.setDrops(data.getDrops() - 1);
 		}
 	}
 }

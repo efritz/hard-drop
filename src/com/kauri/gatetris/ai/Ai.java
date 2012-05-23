@@ -55,22 +55,22 @@ public class AI
 
 		if (move.rotationDelta < 0) {
 			move.rotationDelta++;
-			game.storeAndExecute(new RotateRightCommand(game));
+			game.data.storeAndExecute(new RotateRightCommand(game.data));
 		} else if (move.rotationDelta > 0) {
 			move.rotationDelta--;
-			game.storeAndExecute(new RotateLeftCommand(game));
+			game.data.storeAndExecute(new RotateLeftCommand(game.data));
 		} else if (move.translationDelta < 0) {
 			move.translationDelta++;
-			game.storeAndExecute(new MoveLeftCommand(game));
+			game.data.storeAndExecute(new MoveLeftCommand(game.data));
 		} else if (move.translationDelta > 0) {
 			move.translationDelta--;
-			game.storeAndExecute(new MoveRightCommand(game));
+			game.data.storeAndExecute(new MoveRightCommand(game.data));
 		} else {
 			if (useHardDrops || !game.data.getBoard().isFalling(game.data.getCurrent(), game.data.getX(), game.data.getY())) {
-				game.storeAndExecute(new HardDropCommand(game));
+				game.data.storeAndExecute(new HardDropCommand(game.data));
 				move = null;
 			} else {
-				game.storeAndExecute(new SoftDropCommand(game));
+				game.data.storeAndExecute(new SoftDropCommand(game.data));
 			}
 		}
 	}

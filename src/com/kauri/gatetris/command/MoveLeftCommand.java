@@ -21,33 +21,33 @@
 
 package com.kauri.gatetris.command;
 
-import com.kauri.gatetris.Game;
+import com.kauri.gatetris.GameData;
 
 /**
  * @author Eric Fritz
  */
 public class MoveLeftCommand extends MovementCommand
 {
-	private Game game;
+	private GameData data;
 	private boolean success = false;
 
-	public MoveLeftCommand(Game game)
+	public MoveLeftCommand(GameData data)
 	{
-		super(game);
-		this.game = game;
+		super(data);
+		this.data = data;
 	}
 
 	@Override
 	public void execute()
 	{
-		success = tryMove(game.data.getCurrent(), game.data.getX() - 1, game.data.getY());
+		success = tryMove(data.getCurrent(), data.getX() - 1, data.getY());
 	}
 
 	@Override
 	public void unexecute()
 	{
 		if (success) {
-			tryMove(game.data.getCurrent(), game.data.getX() + 1, game.data.getY());
+			tryMove(data.getCurrent(), data.getX() + 1, data.getY());
 		}
 	}
 }

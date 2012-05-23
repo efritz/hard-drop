@@ -28,13 +28,11 @@ import java.awt.Graphics;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
 import java.awt.image.BufferStrategy;
-import java.util.Stack;
 
 import javax.swing.JFrame;
 
 import com.kauri.gatetris.GameData.State;
 import com.kauri.gatetris.ai.AI;
-import com.kauri.gatetris.command.Command;
 import com.kauri.gatetris.command.NewTetrominoCommand;
 import com.kauri.gatetris.command.SoftDropCommand;
 import com.kauri.gatetris.sequence.PieceSequence;
@@ -47,48 +45,13 @@ public class Game extends Canvas implements Runnable
 {
 	private static final long serialVersionUID = 1L;
 
-	private final int MAX_HISTORY = 50;
-
-	private Stack<Command> history = new Stack<Command>() {
-		private static final long serialVersionUID = 1L;
-
-		@Override
-		public boolean add(Command element)
-		{
-			if (this.size() > MAX_HISTORY - 1) {
-				this.remove(0);
-			}
-
-			return super.add(element);
-		}
-	};
-
-	public GameData data;
-
 	AI ai = new AI(this);
 	UI ui = new UI(this);
+	public GameData data;
 
 	long aidelay = 128;
 	boolean runningAi = false;
 	boolean autoRestart = false;
-
-	public void storeAndExecute(Command command)
-	{
-		command.execute();
-		history.add(command);
-	}
-
-	public void undo()
-	{
-		undo(1);
-	}
-
-	public void undo(int num)
-	{
-		while (num-- > 0 && history.size() > 0) {
-			history.pop().unexecute();
-		}
-	}
 
 	public void start()
 	{
@@ -99,9 +62,7 @@ public class Game extends Canvas implements Runnable
 	{
 		data = new GameData(new Board(10, 20), new PieceSequence(new ShufflePieceSelector()));
 
-		this.storeAndExecute(new NewTetrominoCommand(this));
-
-		history.clear();
+		new NewTetrominoCommand(data).execute();
 	}
 
 	@Override
@@ -166,7 +127,7 @@ public class Game extends Canvas implements Runnable
 
 			if (now - gravityDelay >= lastGravity) {
 				lastGravity = now;
-				this.storeAndExecute(new SoftDropCommand(this));
+				data.storeAndExecute(new SoftDropCommand(data));
 			}
 		}
 	}

@@ -47,29 +47,29 @@ class InputHandler implements KeyListener
 
 		if (game.data.getState() == State.PLAYING && !game.runningAi) {
 			if (keyCode == KeyEvent.VK_LEFT) {
-				game.storeAndExecute(new MoveLeftCommand(game));
+				game.data.storeAndExecute(new MoveLeftCommand(game.data));
 			}
 
 			if (keyCode == KeyEvent.VK_RIGHT) {
-				game.storeAndExecute(new MoveRightCommand(game));
+				game.data.storeAndExecute(new MoveRightCommand(game.data));
 			}
 
 			if (keyCode == KeyEvent.VK_UP) {
-				game.storeAndExecute(new RotateRightCommand(game));
+				game.data.storeAndExecute(new RotateRightCommand(game.data));
 			}
 
 			if (keyCode == KeyEvent.VK_DOWN) {
-				game.storeAndExecute(new SoftDropCommand(game));
+				game.data.storeAndExecute(new SoftDropCommand(game.data));
 			}
 
 			if (keyCode == KeyEvent.VK_SPACE) {
-				game.storeAndExecute(new HardDropCommand(game));
+				game.data.storeAndExecute(new HardDropCommand(game.data));
 			}
 		}
 
 		if (game.data.getState() != State.PAUSED && !game.runningAi) {
 			if (keyCode == KeyEvent.VK_BACK_SPACE) {
-				game.undo();
+				game.data.undo();
 			}
 		}
 

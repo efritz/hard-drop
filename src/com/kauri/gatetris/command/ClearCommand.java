@@ -25,7 +25,7 @@ import java.util.Map.Entry;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
-import com.kauri.gatetris.Game;
+import com.kauri.gatetris.GameData;
 import com.kauri.gatetris.Tetromino.Shape;
 
 /**
@@ -33,41 +33,41 @@ import com.kauri.gatetris.Tetromino.Shape;
  */
 public class ClearCommand implements Command
 {
-	private Game game;
+	private GameData data;
 	private long lines;
 	private long score;
 	private SortedMap<Integer, Shape[]> map = new TreeMap<Integer, Shape[]>();
 
-	public ClearCommand(Game game)
+	public ClearCommand(GameData data)
 	{
-		this.game = game;
+		this.data = data;
 	}
 
 	@Override
 	public void execute()
 	{
-		for (int row = game.data.getBoard().getHeight() - 1; row >= 0; row--) {
-			if (game.data.getBoard().isRowFull(row)) {
-				map.put(row, game.data.getBoard().getRow(row));
-				game.data.getBoard().removeRow(row);
+		for (int row = data.getBoard().getHeight() - 1; row >= 0; row--) {
+			if (data.getBoard().isRowFull(row)) {
+				map.put(row, data.getBoard().getRow(row));
+				data.getBoard().removeRow(row);
 			}
 		}
 
-		lines = game.data.getLines();
-		score = game.data.getScore();
+		lines = data.getLines();
+		score = data.getScore();
 
-		game.data.setLines(lines + map.size());
-		game.data.setScore(score + 40 * (long) Math.pow(3, map.size() - 1));
+		data.setLines(lines + map.size());
+		data.setScore(score + 40 * (long) Math.pow(3, map.size() - 1));
 	}
 
 	@Override
 	public void unexecute()
 	{
 		for (Entry<Integer, Shape[]> e : map.entrySet()) {
-			game.data.getBoard().addRow(e.getKey(), e.getValue());
+			data.getBoard().addRow(e.getKey(), e.getValue());
 		}
 
-		game.data.setLines(lines);
-		game.data.setScore(score);
+		data.setLines(lines);
+		data.setScore(score);
 	}
 }

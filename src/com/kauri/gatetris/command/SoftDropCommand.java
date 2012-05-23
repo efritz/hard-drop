@@ -21,31 +21,31 @@
 
 package com.kauri.gatetris.command;
 
-import com.kauri.gatetris.Game;
+import com.kauri.gatetris.GameData;
 
 /**
  * @author Eric Fritz
  */
 public class SoftDropCommand extends MovementCommand
 {
-	private Game game;
+	private GameData data;
 	private Command subcommand;
 	private boolean success = false;
 
-	public SoftDropCommand(Game game)
+	public SoftDropCommand(GameData data)
 	{
-		super(game);
-		this.game = game;
+		super(data);
+		this.data = data;
 	}
 
 	@Override
 	public void execute()
 	{
-		if (!game.data.getBoard().isFalling(game.data.getCurrent(), game.data.getX(), game.data.getY())) {
-			subcommand = new HardDropCommand(game);
+		if (!data.getBoard().isFalling(data.getCurrent(), data.getX(), data.getY())) {
+			subcommand = new HardDropCommand(data);
 			subcommand.execute();
 		} else {
-			success = tryMove(game.data.getCurrent(), game.data.getX(), game.data.getY() - 1);
+			success = tryMove(data.getCurrent(), data.getX(), data.getY() - 1);
 		}
 	}
 
@@ -53,7 +53,7 @@ public class SoftDropCommand extends MovementCommand
 	public void unexecute()
 	{
 		if (success) {
-			tryMove(game.data.getCurrent(), game.data.getX(), game.data.getY() + 1);
+			tryMove(data.getCurrent(), data.getX(), data.getY() + 1);
 		}
 
 		if (subcommand != null) {

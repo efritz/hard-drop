@@ -21,7 +21,7 @@
 
 package com.kauri.gatetris.command;
 
-import com.kauri.gatetris.Game;
+import com.kauri.gatetris.GameData;
 import com.kauri.gatetris.GameData.State;
 import com.kauri.gatetris.Tetromino;
 
@@ -30,51 +30,51 @@ import com.kauri.gatetris.Tetromino;
  */
 public class NewTetrominoCommand implements Command
 {
-	private Game game;
+	private GameData data;
 	private Tetromino current;
 	private Tetromino preview;
 	private int x;
 	private int y;
 
-	public NewTetrominoCommand(Game game)
+	public NewTetrominoCommand(GameData data)
 	{
-		this.game = game;
+		this.data = data;
 	}
 
 	@Override
 	public void execute()
 	{
-		current = game.data.getCurrent();
-		preview = game.data.getPreview();
+		current = data.getCurrent();
+		preview = data.getPreview();
 
-		x = game.data.getX();
-		y = game.data.getY();
+		x = data.getX();
+		y = data.getY();
 
-		game.data.getSequence().advance();
-		game.data.setCurrent(game.data.getSequence().peekCurrent());
-		game.data.setPreview(game.data.getSequence().peekPreview());
+		data.getSequence().advance();
+		data.setCurrent(data.getSequence().peekCurrent());
+		data.setPreview(data.getSequence().peekPreview());
 
-		game.data.setX(game.data.getBoard().getSpawnX(game.data.getCurrent()));
-		game.data.setY(game.data.getBoard().getSpawnY(game.data.getCurrent()));
+		data.setX(data.getBoard().getSpawnX(data.getCurrent()));
+		data.setY(data.getBoard().getSpawnY(data.getCurrent()));
 
 		// TODO - move this somewhere else
 
-		if (!game.data.getBoard().canMove(game.data.getCurrent(), game.data.getX(), game.data.getY())) {
-			game.data.setState(State.GAMEOVER);
+		if (!data.getBoard().canMove(data.getCurrent(), data.getX(), data.getY())) {
+			data.setState(State.GAMEOVER);
 		}
 	}
 
 	@Override
 	public void unexecute()
 	{
-		game.data.setState(State.PLAYING);
+		data.setState(State.PLAYING);
 
-		game.data.setCurrent(current);
-		game.data.setPreview(preview);
+		data.setCurrent(current);
+		data.setPreview(preview);
 
-		game.data.setX(x);
-		game.data.setY(y);
+		data.setX(x);
+		data.setY(y);
 
-		game.data.getSequence().rewind();
+		data.getSequence().rewind();
 	}
 }

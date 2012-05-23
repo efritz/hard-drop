@@ -21,6 +21,9 @@
 
 package com.kauri.gatetris;
 
+import java.util.Stack;
+
+import com.kauri.gatetris.command.Command;
 import com.kauri.gatetris.sequence.PieceSequence;
 
 /**
@@ -156,5 +159,34 @@ public class GameData
 	public void setPreview(Tetromino preview)
 	{
 		this.preview = preview;
+	}
+
+	private final int MAX_HISTORY = 50;
+
+	private Stack<Command> history = new Stack<Command>() {
+		private static final long serialVersionUID = 1L;
+
+		@Override
+		public boolean add(Command element)
+		{
+			if (this.size() > MAX_HISTORY - 1) {
+				this.remove(0);
+			}
+
+			return super.add(element);
+		}
+	};
+
+	public void storeAndExecute(Command command)
+	{
+		command.execute();
+		history.add(command);
+	}
+
+	public void undo()
+	{
+		if (history.size() > 0) {
+			history.pop().unexecute();
+		}
 	}
 }
