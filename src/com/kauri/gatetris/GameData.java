@@ -185,7 +185,12 @@ public class GameData
 
 	public void undo()
 	{
-		if (history.size() > 0) {
+		undo(1);
+	}
+
+	public void undo(int turns)
+	{
+		while (turns-- > 0 && history.size() > 0) {
 			history.pop().unexecute();
 		}
 	}
