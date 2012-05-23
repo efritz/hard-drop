@@ -25,6 +25,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
 import com.kauri.gatetris.GameData.State;
+import com.kauri.gatetris.command.AddJunkCommand;
 import com.kauri.gatetris.command.HardDropCommand;
 import com.kauri.gatetris.command.MoveLeftCommand;
 import com.kauri.gatetris.command.MoveRightCommand;
@@ -70,6 +71,12 @@ class InputHandler implements KeyListener
 		if (game.data.getState() != State.PAUSED && !game.runningAi) {
 			if (keyCode == KeyEvent.VK_BACK_SPACE) {
 				game.data.undo();
+			}
+		}
+
+		if (game.data.getState() == State.PLAYING) {
+			if (keyCode == KeyEvent.VK_J) {
+				game.data.storeAndExecute(new AddJunkCommand(game.data));
 			}
 		}
 
