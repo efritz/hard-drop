@@ -99,7 +99,7 @@ public class Tetromino
 	public static Map<Shape, Tetromino> tetrominoes = new HashMap<Shape, Tetromino>();
 
 	/**
-	 * A lazily-filled cache of the left-rotation of tetrominoes.
+	 * A lazily-filled cache of the clockwise-rotation of tetrominoes.
 	 */
 	private static Map<Tetromino, Tetromino> rotationCache = new HashMap<Tetromino, Tetromino>();
 
@@ -219,13 +219,13 @@ public class Tetromino
 	}
 
 	/**
-	 * Creates a tetromino which is a counter-clockwise transformation of <tt>original</tt>.
+	 * Creates a tetromino which is a clockwise transformation of <tt>original</tt>.
 	 * 
 	 * @param original
 	 *            The tetromino to transform.
 	 * @return A new tetromino.
 	 */
-	public static Tetromino rotateLeft(Tetromino original)
+	public static Tetromino rotateClockwise(Tetromino original)
 	{
 		if (original.shape == Shape.O) {
 			return original;
@@ -235,7 +235,7 @@ public class Tetromino
 			List<Point> points = new ArrayList<Point>();
 
 			for (Point p : original.points) {
-				points.add(new Point(p.y, -p.x));
+				points.add(new Point(-p.y, p.x));
 			}
 
 			rotationCache.put(original, new Tetromino(original.shape, points));
@@ -245,15 +245,15 @@ public class Tetromino
 	}
 
 	/**
-	 * Creates a tetromino which is a clockwise transformation of <tt>original</tt>.
+	 * Creates a tetromino which is a counter-clockwise transformation of <tt>original</tt>.
 	 * 
 	 * @param original
 	 *            The tetromino to transform.
 	 * @return A new tetromino.
 	 */
-	public static Tetromino rotateRight(Tetromino original)
+	public static Tetromino rotateCounterClockwise(Tetromino original)
 	{
-		return rotateLeft(rotateLeft(rotateLeft(original)));
+		return rotateClockwise(rotateClockwise(rotateClockwise(original)));
 	}
 
 	@Override

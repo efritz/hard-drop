@@ -27,12 +27,12 @@ import com.kauri.gatetris.Tetromino;
 /**
  * @author Eric Fritz
  */
-public class RotateRightCommand extends MovementCommand
+public class RotateCounterClockwiseCommand extends MovementCommand
 {
 	private GameData data;
 	private boolean success = false;
 
-	public RotateRightCommand(GameData data)
+	public RotateCounterClockwiseCommand(GameData data)
 	{
 		super(data);
 		this.data = data;
@@ -41,14 +41,14 @@ public class RotateRightCommand extends MovementCommand
 	@Override
 	public void execute()
 	{
-		success = tryMove(Tetromino.rotateRight(data.getCurrent()), data.getX(), data.getY());
+		success = tryMove(Tetromino.rotateCounterClockwise(data.getCurrent()), data.getX(), data.getY());
 	}
 
 	@Override
 	public void unexecute()
 	{
 		if (success) {
-			tryMove(Tetromino.rotateLeft(data.getCurrent()), data.getX(), data.getY());
+			tryMove(Tetromino.rotateClockwise(data.getCurrent()), data.getX(), data.getY());
 		}
 	}
 }

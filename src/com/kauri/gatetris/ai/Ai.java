@@ -29,8 +29,8 @@ import com.kauri.gatetris.Tetromino;
 import com.kauri.gatetris.command.HardDropCommand;
 import com.kauri.gatetris.command.MoveLeftCommand;
 import com.kauri.gatetris.command.MoveRightCommand;
-import com.kauri.gatetris.command.RotateLeftCommand;
-import com.kauri.gatetris.command.RotateRightCommand;
+import com.kauri.gatetris.command.RotateClockwiseCommand;
+import com.kauri.gatetris.command.RotateCounterClockwiseCommand;
 import com.kauri.gatetris.command.SoftDropCommand;
 
 /**
@@ -55,10 +55,10 @@ public class AI
 
 		if (move.rotationDelta < 0) {
 			move.rotationDelta++;
-			game.data.storeAndExecute(new RotateRightCommand(game.data));
+			game.data.storeAndExecute(new RotateClockwiseCommand(game.data));
 		} else if (move.rotationDelta > 0) {
 			move.rotationDelta--;
-			game.data.storeAndExecute(new RotateLeftCommand(game.data));
+			game.data.storeAndExecute(new RotateCounterClockwiseCommand(game.data));
 		} else if (move.translationDelta < 0) {
 			move.translationDelta++;
 			game.data.storeAndExecute(new MoveLeftCommand(game.data));
@@ -152,7 +152,7 @@ public class AI
 				}
 			}
 
-			current = Tetromino.rotateLeft(current);
+			current = Tetromino.rotateCounterClockwise(current);
 		}
 
 		return new Move(bestRotationDelta, bestTranslationDelta);

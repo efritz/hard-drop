@@ -29,7 +29,8 @@ import com.kauri.gatetris.command.AddJunkCommand;
 import com.kauri.gatetris.command.HardDropCommand;
 import com.kauri.gatetris.command.MoveLeftCommand;
 import com.kauri.gatetris.command.MoveRightCommand;
-import com.kauri.gatetris.command.RotateRightCommand;
+import com.kauri.gatetris.command.RotateClockwiseCommand;
+import com.kauri.gatetris.command.RotateCounterClockwiseCommand;
 import com.kauri.gatetris.command.SoftDropCommand;
 
 class InputHandler implements KeyListener
@@ -55,8 +56,12 @@ class InputHandler implements KeyListener
 				game.data.storeAndExecute(new MoveRightCommand(game.data));
 			}
 
-			if (keyCode == KeyEvent.VK_UP) {
-				game.data.storeAndExecute(new RotateRightCommand(game.data));
+			if (keyCode == KeyEvent.VK_UP || keyCode == KeyEvent.VK_Z) {
+				game.data.storeAndExecute(new RotateClockwiseCommand(game.data));
+			}
+
+			if (keyCode == KeyEvent.VK_X) {
+				game.data.storeAndExecute(new RotateCounterClockwiseCommand(game.data));
 			}
 
 			if (keyCode == KeyEvent.VK_DOWN) {
