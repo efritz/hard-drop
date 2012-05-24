@@ -54,6 +54,8 @@ public class GameData
 		this.lines = 0;
 		this.drops = 0;
 
+		state = State.PLAYING;
+
 		board.clear();
 		history.clear();
 		sequence.clear();
