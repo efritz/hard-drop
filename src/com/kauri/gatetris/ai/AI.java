@@ -21,8 +21,6 @@
 
 package com.kauri.gatetris.ai;
 
-import java.util.Comparator;
-
 import com.kauri.gatetris.Board;
 import com.kauri.gatetris.Game;
 import com.kauri.gatetris.Tetromino;
@@ -101,20 +99,9 @@ public class AI
 		scoring.setWeights(2, -3, -3, -3, -3, -5, 0, -10);
 	}
 
-	private Move getBestMove(Board board, Tetromino current, int x, int y)
-	{
-		return getBestMove(board, current, x, y, new Comparator<Double>() {
-			@Override
-			public int compare(Double d1, Double d2)
-			{
-				return (d1 == d2) ? 0 : ((d1 > d2) ? 1 : -1);
-			}
-		});
-	}
-
 	private Board dummy = null;
 
-	private Move getBestMove(Board board, Tetromino current, int x, int y, Comparator<Double> comp)
+	private Move getBestMove(Board board, Tetromino current, int x, int y)
 	{
 		int bestRotationDelta = 0;
 		int bestTranslationDelta = 0;
@@ -144,7 +131,7 @@ public class AI
 
 					double score = scoring.score(dummy);
 
-					if (comp.compare(score, bestScore) > 0) {
+					if (score > bestScore) {
 						bestScore = score;
 						bestTranslationDelta = translationDelta;
 						bestRotationDelta = rotationDelta;
