@@ -32,7 +32,7 @@ import java.awt.image.BufferStrategy;
 import javax.swing.JFrame;
 
 import com.kauri.gatetris.GameData.State;
-import com.kauri.gatetris.ai.AI;
+import com.kauri.gatetris.ai.AI2;
 import com.kauri.gatetris.command.NewTetrominoCommand;
 import com.kauri.gatetris.command.SoftDropCommand;
 import com.kauri.gatetris.sequence.PieceSequence;
@@ -45,7 +45,7 @@ public class Game extends Canvas implements Runnable
 {
 	private static final long serialVersionUID = 1L;
 
-	AI ai = new AI(this);
+	AI2 ai = new AI2(this);
 	UI ui = new UI(this);
 	public GameData data;
 

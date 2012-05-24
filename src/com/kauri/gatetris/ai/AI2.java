@@ -36,13 +36,13 @@ import com.kauri.gatetris.command.SoftDropCommand;
 /**
  * @author Eric Fritz
  */
-public class AI
+public class AI2
 {
 	private Game game;
 	private Move move;
 	private boolean useHardDrops = false;
 
-	public AI(Game game)
+	public AI2(Game game)
 	{
 		this.game = game;
 	}
