@@ -47,7 +47,7 @@ public class Game extends Canvas implements Runnable
 
 	AI ai = new AI(this);
 	UI ui = new UI(this);
-	public GameData data;
+	public GameData data = new GameData();
 
 	long aidelay = 128;
 	boolean runningAi = false;
@@ -60,7 +60,15 @@ public class Game extends Canvas implements Runnable
 
 	public void startNewGame()
 	{
-		data = new GameData(new Board(10, 20), new PieceSequence(new ShufflePieceSelector()));
+		if (data.getBoard() == null) {
+			data.setBoard(new Board(10, 20));
+		}
+
+		if (data.getSequence() == null) {
+			data.setSequence(new PieceSequence(new ShufflePieceSelector()));
+		}
+
+		data.clear();
 
 		new NewTetrominoCommand(data).execute();
 	}

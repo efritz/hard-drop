@@ -50,6 +50,11 @@ public class Board implements Cloneable
 		this.height = height;
 
 		board = new Shape[width * height];
+		clear();
+	}
+
+	public void clear()
+	{
 		Arrays.fill(board, Shape.NoShape);
 	}
 

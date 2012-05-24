@@ -48,12 +48,15 @@ public class GameData
 	private Tetromino current;
 	private Tetromino preview;
 
-	public GameData(Board board, PieceSequence sequence)
+	public void clear()
 	{
-		this.board = board;
-		this.sequence = sequence;
+		this.score = 0;
+		this.lines = 0;
+		this.drops = 0;
 
-		sequence.advance();
+		board.clear();
+		history.clear();
+		sequence.clear();
 	}
 
 	public State getState()

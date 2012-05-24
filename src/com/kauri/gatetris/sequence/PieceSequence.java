@@ -42,7 +42,15 @@ public class PieceSequence
 		this.selector = selector;
 	}
 
-	public final void advance()
+	public void clear()
+	{
+		current = -1;
+		preview = +0;
+
+		pieces.clear();
+	}
+
+	public void advance()
 	{
 		current++;
 		preview++;
@@ -52,18 +60,18 @@ public class PieceSequence
 		}
 	}
 
-	public final void rewind()
+	public void rewind()
 	{
 		current--;
 		preview--;
 	}
 
-	public final Tetromino peekCurrent()
+	public Tetromino peekCurrent()
 	{
 		return pieces.get(current);
 	}
 
-	public final Tetromino peekPreview()
+	public Tetromino peekPreview()
 	{
 		return pieces.get(preview);
 	}
