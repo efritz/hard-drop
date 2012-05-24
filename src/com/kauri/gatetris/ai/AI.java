@@ -22,7 +22,7 @@
 package com.kauri.gatetris.ai;
 
 import com.kauri.gatetris.Board;
-import com.kauri.gatetris.Game;
+import com.kauri.gatetris.GameData;
 import com.kauri.gatetris.Tetromino;
 import com.kauri.gatetris.command.HardDropCommand;
 import com.kauri.gatetris.command.MoveLeftCommand;
@@ -36,39 +36,39 @@ import com.kauri.gatetris.command.SoftDropCommand;
  */
 public class AI
 {
-	private Game game;
+	private GameData data;
 	private Move move;
 	private boolean useHardDrops = false;
 
-	public AI(Game game)
+	public AI(GameData data)
 	{
-		this.game = game;
+		this.data = data;
 	}
 
 	public void update()
 	{
 		if (move == null) {
-			move = getBestMove(game.data.getBoard(), game.data.getCurrent(), game.data.getX(), game.data.getY());
+			move = getBestMove(data.getBoard(), data.getCurrent(), data.getX(), data.getY());
 		}
 
 		if (move.rotationDelta < 0) {
 			move.rotationDelta++;
-			game.data.storeAndExecute(new RotateClockwiseCommand(game.data));
+			data.storeAndExecute(new RotateClockwiseCommand(data));
 		} else if (move.rotationDelta > 0) {
 			move.rotationDelta--;
-			game.data.storeAndExecute(new RotateCounterClockwiseCommand(game.data));
+			data.storeAndExecute(new RotateCounterClockwiseCommand(data));
 		} else if (move.translationDelta < 0) {
 			move.translationDelta++;
-			game.data.storeAndExecute(new MoveLeftCommand(game.data));
+			data.storeAndExecute(new MoveLeftCommand(data));
 		} else if (move.translationDelta > 0) {
 			move.translationDelta--;
-			game.data.storeAndExecute(new MoveRightCommand(game.data));
+			data.storeAndExecute(new MoveRightCommand(data));
 		} else {
-			if (useHardDrops || !game.data.getBoard().isFalling(game.data.getCurrent(), game.data.getX(), game.data.getY())) {
-				game.data.storeAndExecute(new HardDropCommand(game.data));
+			if (useHardDrops || !data.getBoard().isFalling(data.getCurrent(), data.getX(), data.getY())) {
+				data.storeAndExecute(new HardDropCommand(data));
 				move = null;
 			} else {
-				game.data.storeAndExecute(new SoftDropCommand(game.data));
+				data.storeAndExecute(new SoftDropCommand(data));
 			}
 		}
 	}

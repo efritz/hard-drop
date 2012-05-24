@@ -57,11 +57,11 @@ public class UI
 
 	private int width;
 	private int height;
-	private Game game;
+	private GameData data;
 
-	public UI(Game game)
+	public UI(GameData data)
 	{
-		this.game = game;
+		this.data = data;
 	}
 
 	public void setSize(int width, int height)
@@ -82,32 +82,32 @@ public class UI
 
 	private int getAdjustedBoardWidth()
 	{
-		return (int) Math.min(getWidth(), (double) getHeight() * game.data.getBoard().getWidth() / game.data.getBoard().getHeight());
+		return (int) Math.min(getWidth(), (double) getHeight() * data.getBoard().getWidth() / data.getBoard().getHeight());
 	}
 
 	private int getAdjustedBoardHeight()
 	{
-		return (int) Math.min(getHeight(), (double) getWidth() * game.data.getBoard().getHeight() / game.data.getBoard().getWidth());
+		return (int) Math.min(getHeight(), (double) getWidth() * data.getBoard().getHeight() / data.getBoard().getWidth());
 	}
 
 	private int getSquareWidth()
 	{
-		return getAdjustedBoardWidth() / (game.data.getBoard().getWidth() + (showNextPiece ? 2 : 0));
+		return getAdjustedBoardWidth() / (data.getBoard().getWidth() + (showNextPiece ? 2 : 0));
 	}
 
 	private int getSquareHeight()
 	{
-		return getAdjustedBoardHeight() / (game.data.getBoard().getHeight() + (showNextPiece ? 4 : 0));
+		return getAdjustedBoardHeight() / (data.getBoard().getHeight() + (showNextPiece ? 4 : 0));
 	}
 
 	private int getLeftMargin()
 	{
-		return (getWidth() - game.data.getBoard().getWidth() * getSquareWidth()) / 2;
+		return (getWidth() - data.getBoard().getWidth() * getSquareWidth()) / 2;
 	}
 
 	private int getTopMargin()
 	{
-		return (getHeight() - game.data.getBoard().getHeight() * getSquareWidth()) / 2;
+		return (getHeight() - data.getBoard().getHeight() * getSquareWidth()) / 2;
 	}
 
 	public void render(Graphics g)
@@ -115,37 +115,37 @@ public class UI
 		g.setColor(colors.get(Shape.NoShape));
 		g.fillRect(0, 0, getWidth(), getHeight());
 
-		for (int row = 0; row < game.data.getBoard().getHeight(); row++) {
-			for (int col = 0; col < game.data.getBoard().getWidth(); col++) {
-				drawSquare(g, translateBoardRow(row), translateBoardCol(col), colors.get(game.data.getBoard().getShapeAt(row, col)));
+		for (int row = 0; row < data.getBoard().getHeight(); row++) {
+			for (int col = 0; col < data.getBoard().getWidth(); col++) {
+				drawSquare(g, translateBoardRow(row), translateBoardCol(col), colors.get(data.getBoard().getShapeAt(row, col)));
 			}
 		}
 
 		if (showShadowPiece) {
-			int ghostPosition = game.data.getBoard().dropHeight(game.data.getCurrent(), game.data.getX(), game.data.getY());
+			int ghostPosition = data.getBoard().dropHeight(data.getCurrent(), data.getX(), data.getY());
 
-			if (ghostPosition < game.data.getY()) {
-				drawTetromino(g, game.data.getCurrent(), translateBoardRow(ghostPosition), translateBoardCol(game.data.getX()), changeAlpha(colors.get(game.data.getCurrent().getShape()), .3), getTopMargin());
+			if (ghostPosition < data.getY()) {
+				drawTetromino(g, data.getCurrent(), translateBoardRow(ghostPosition), translateBoardCol(data.getX()), changeAlpha(colors.get(data.getCurrent().getShape()), .3), getTopMargin());
 			}
 		}
 
-		if (game.data.getBoard().canMove(game.data.getCurrent(), game.data.getX(), game.data.getY())) {
-			drawTetromino(g, game.data.getCurrent(), translateBoardRow(game.data.getY()), translateBoardCol(game.data.getX()), colors.get(game.data.getCurrent().getShape()), getTopMargin());
+		if (data.getBoard().canMove(data.getCurrent(), data.getX(), data.getY())) {
+			drawTetromino(g, data.getCurrent(), translateBoardRow(data.getY()), translateBoardCol(data.getX()), colors.get(data.getCurrent().getShape()), getTopMargin());
 		}
 
 		if (showNextPiece) {
-			int xPos = game.data.getBoard().getSpawnX(game.data.getPreview());
+			int xPos = data.getBoard().getSpawnX(data.getPreview());
 
-			int rowOffset = (getTopMargin() - (game.data.getPreview().getHeight() * getSquareHeight())) / 2;
+			int rowOffset = (getTopMargin() - (data.getPreview().getHeight() * getSquareHeight())) / 2;
 
-			drawTetromino(g, game.data.getPreview(), rowOffset, translateBoardCol(xPos), colors.get(game.data.getPreview().getShape()), 0);
+			drawTetromino(g, data.getPreview(), rowOffset, translateBoardCol(xPos), colors.get(data.getPreview().getShape()), 0);
 		}
 
-		if (game.data.getState() == State.PAUSED) {
+		if (data.getState() == State.PAUSED) {
 			drawString(g, "paused");
 		}
 
-		if (game.data.getState() == State.GAMEOVER) {
+		if (data.getState() == State.GAMEOVER) {
 			drawString(g, "game over");
 		}
 
@@ -180,7 +180,7 @@ public class UI
 
 	private int translateBoardRow(int row)
 	{
-		return getTopMargin() + (game.data.getBoard().getHeight() - 1 - row) * getSquareHeight();
+		return getTopMargin() + (data.getBoard().getHeight() - 1 - row) * getSquareHeight();
 	}
 
 	private int translateBoardCol(int col)

@@ -45,9 +45,9 @@ public class Game extends Canvas implements Runnable
 {
 	private static final long serialVersionUID = 1L;
 
-	AI ai = new AI(this);
-	UI ui = new UI(this);
 	public GameData data = new GameData();
+	AI ai = new AI(data);
+	UI ui = new UI(data);
 
 	long aidelay = 128;
 	boolean runningAi = false;
