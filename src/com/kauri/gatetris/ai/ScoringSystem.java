@@ -22,6 +22,7 @@
 package com.kauri.gatetris.ai;
 
 import com.kauri.gatetris.Board;
+import com.kauri.gatetris.Tetromino;
 import com.kauri.gatetris.Tetromino.Shape;
 
 /**
@@ -50,6 +51,16 @@ public class ScoringSystem
 		this.weightBlockades = weightBlockades;
 	}
 
+	private Board dummy = null;
+
+	public double score(final Board board, Tetromino current, int xPos, int yPos)
+	{
+		dummy = board.tryClone(dummy);
+		dummy.addPiece(current, xPos, dummy.dropHeight(current, xPos, yPos));
+
+		return score(dummy);
+	}
+
 	/**
 	 * Evaluates the score of a board based on weighted factors.
 	 * 
@@ -57,9 +68,15 @@ public class ScoringSystem
 	 *            The board to evaluate.
 	 * @return The board's score.
 	 */
-	public double score(Board board)
+	public double score(final Board board)
 	{
 		double score = 0;
+
+		//
+		// TODO - implement scoring clears without having to mutate the board (just count the number
+		// of full lines and subtract the height?) - this should also have a weight attached to it,
+		// but it is easy to find the number of line clears.
+		//
 
 		int[] heights = getHeights(board);
 

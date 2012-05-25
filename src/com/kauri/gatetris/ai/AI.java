@@ -22,12 +22,10 @@
 package com.kauri.gatetris.ai;
 
 import com.kauri.gatetris.GameData;
-import com.kauri.gatetris.ai.Strategy.Move;
 import com.kauri.gatetris.command.HardDropCommand;
 import com.kauri.gatetris.command.MoveLeftCommand;
 import com.kauri.gatetris.command.MoveRightCommand;
 import com.kauri.gatetris.command.RotateClockwiseCommand;
-import com.kauri.gatetris.command.RotateCounterClockwiseCommand;
 import com.kauri.gatetris.command.SoftDropCommand;
 
 /**
@@ -37,11 +35,10 @@ public class AI
 {
 	private GameData data;
 
-	private Strategy strategy = new Strategy();
-
+	private int rDelta;
+	private int mDelta;
 	private boolean animating = false;
-	private int rotationDelta;
-	private int translationDelta;
+	private MoveEvaluator strategy = new MoveEvaluator();
 
 	public AI(GameData data)
 	{
@@ -55,10 +52,10 @@ public class AI
 		}
 
 		if (!animating) {
-			Move m = strategy.getBestMove(data.getBoard(), data.getCurrent(), data.getX(), data.getY());
+			Move move = strategy.getNextMove(data.getBoard(), data.getCurrent(), data.getX(), data.getY());
 
-			rotationDelta = m.rotationDelta;
-			translationDelta = m.translationDelta;
+			rDelta = move.getRotationDelta();
+			mDelta = move.getMovementDelta();
 
 			animating = animate();
 		}
@@ -66,17 +63,14 @@ public class AI
 
 	private boolean animate()
 	{
-		if (rotationDelta < 0) {
-			rotationDelta++;
+		if (rDelta > 0) {
+			rDelta--;
 			data.storeAndExecute(new RotateClockwiseCommand(data));
-		} else if (rotationDelta > 0) {
-			rotationDelta--;
-			data.storeAndExecute(new RotateCounterClockwiseCommand(data));
-		} else if (translationDelta < 0) {
-			translationDelta++;
+		} else if (mDelta < 0) {
+			mDelta++;
 			data.storeAndExecute(new MoveLeftCommand(data));
-		} else if (translationDelta > 0) {
-			translationDelta--;
+		} else if (mDelta > 0) {
+			mDelta--;
 			data.storeAndExecute(new MoveRightCommand(data));
 		} else if (data.getBoard().isFalling(data.getCurrent(), data.getX(), data.getY())) {
 			data.storeAndExecute(new SoftDropCommand(data));
@@ -85,7 +79,9 @@ public class AI
 			return false;
 		}
 
+		//
 		// TODO - get better "infinite speed" flag
+		//
 
 		if (data.getAiDelay() == 1) {
 			return animate();
