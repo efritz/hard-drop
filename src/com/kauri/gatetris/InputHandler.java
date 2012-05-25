@@ -120,13 +120,13 @@ class InputHandler implements KeyListener
 		}
 
 		if (keyCode == KeyEvent.VK_PAGE_UP) {
-			int width = Math.min(200, Math.max(4, game.data.getBoard().getWidth() + 1));
+			int width = Math.min(100, Math.max(4, game.data.getBoard().getWidth() + 1));
 			game.data.setBoard(new Board(width, width * 2));
 			game.startNewGame();
 		}
 
 		if (keyCode == KeyEvent.VK_PAGE_DOWN) {
-			int width = Math.min(200, Math.max(4, game.data.getBoard().getWidth() - 1));
+			int width = Math.min(100, Math.max(4, game.data.getBoard().getWidth() - 1));
 			game.data.setBoard(new Board(width, width * 2));
 			game.startNewGame();
 		}
