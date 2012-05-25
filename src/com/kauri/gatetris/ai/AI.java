@@ -21,9 +21,8 @@
 
 package com.kauri.gatetris.ai;
 
-import com.kauri.gatetris.Board;
 import com.kauri.gatetris.GameData;
-import com.kauri.gatetris.Tetromino;
+import com.kauri.gatetris.ai.Strategy.Move;
 import com.kauri.gatetris.command.HardDropCommand;
 import com.kauri.gatetris.command.MoveLeftCommand;
 import com.kauri.gatetris.command.MoveRightCommand;
@@ -37,8 +36,12 @@ import com.kauri.gatetris.command.SoftDropCommand;
 public class AI
 {
 	private GameData data;
-	private Move move;
 	private boolean useHardDrops = false;
+
+	private Strategy strategy = new Strategy();
+
+	private int rotationDelta;
+	private int translationDelta;
 
 	public AI(GameData data)
 	{
@@ -47,111 +50,41 @@ public class AI
 
 	public void update()
 	{
-		if (move == null) {
-			move = getBestMove(data.getBoard(), data.getCurrent(), data.getX(), data.getY());
+		if (animate()) {
+			return;
 		}
 
-		if (move.rotationDelta < 0) {
-			move.rotationDelta++;
+		Move m = strategy.getBestMove(data.getBoard(), data.getCurrent(), data.getX(), data.getY());
+
+		rotationDelta = m.rotationDelta;
+		translationDelta = m.translationDelta;
+
+		animate();
+	}
+
+	private boolean animate()
+	{
+		if (rotationDelta < 0) {
+			rotationDelta++;
 			data.storeAndExecute(new RotateClockwiseCommand(data));
-		} else if (move.rotationDelta > 0) {
-			move.rotationDelta--;
+		} else if (rotationDelta > 0) {
+			rotationDelta--;
 			data.storeAndExecute(new RotateCounterClockwiseCommand(data));
-		} else if (move.translationDelta < 0) {
-			move.translationDelta++;
+		} else if (translationDelta < 0) {
+			translationDelta++;
 			data.storeAndExecute(new MoveLeftCommand(data));
-		} else if (move.translationDelta > 0) {
-			move.translationDelta--;
+		} else if (translationDelta > 0) {
+			translationDelta--;
 			data.storeAndExecute(new MoveRightCommand(data));
 		} else {
 			if (useHardDrops || !data.getBoard().isFalling(data.getCurrent(), data.getX(), data.getY())) {
 				data.storeAndExecute(new HardDropCommand(data));
-				move = null;
+				return false;
 			} else {
 				data.storeAndExecute(new SoftDropCommand(data));
 			}
 		}
-	}
 
-	private static class Move
-	{
-		public int rotationDelta;
-		public int translationDelta;
-
-		public Move(int rotationDelta, int translationDelta)
-		{
-			this.rotationDelta = rotationDelta;
-			this.translationDelta = translationDelta;
-		}
-	}
-
-	private static ScoringSystem scoring = new ScoringSystem();
-
-	static {
-		//
-		// TODO - Somehow evolve the scoring system between rounds. I'm not sure where this logic
-		// should
-		// really go. Interface for basic GA algorithm, and then the ai will do what it wants at
-		// that
-		// point (other strategies could have different weights, etc).
-		//
-
-		scoring.setWeights(2, -3, -3, -3, -3, -5, 0, -10);
-	}
-
-	private Board dummy = null;
-
-	private Move getBestMove(Board board, Tetromino current, int x, int y)
-	{
-		int bestRotationDelta = 0;
-		int bestTranslationDelta = 0;
-
-		double bestScore = Double.NEGATIVE_INFINITY;
-
-		//
-		// TODO - also test for preview piece. I'm not sure what is best here to move into their own
-		// methods (it's all pretty integrated).
-		//
-
-		for (int rotationDelta = 0; rotationDelta < 4; rotationDelta++) {
-			int minTranslationDelta = getMaxTranslationDelta(board, current, x, y, -1);
-			int maxTranslationDelta = getMaxTranslationDelta(board, current, x, y, +1);
-
-			dummy = board.tryClone(dummy);
-
-			if (!dummy.canMove(current, x, y)) {
-				break;
-			}
-
-			for (int translationDelta = minTranslationDelta; translationDelta <= maxTranslationDelta; translationDelta++) {
-				dummy = board.tryClone(dummy);
-
-				if (dummy.canMove(current, x + translationDelta, dummy.dropHeight(current, x + translationDelta))) {
-					dummy.addPiece(current, x + translationDelta, dummy.dropHeight(current, x + translationDelta));
-
-					double score = scoring.score(dummy);
-
-					if (score > bestScore) {
-						bestScore = score;
-						bestTranslationDelta = translationDelta;
-						bestRotationDelta = rotationDelta;
-					}
-				}
-			}
-
-			current = Tetromino.rotateCounterClockwise(current);
-		}
-
-		return new Move(bestRotationDelta, bestTranslationDelta);
-	}
-
-	private int getMaxTranslationDelta(Board board, Tetromino piece, int x, int y, int step)
-	{
-		int translation = 0;
-		while (board.canMove(piece, x + translation + step, y)) {
-			translation += step;
-		}
-
-		return translation;
+		return true;
 	}
 }
