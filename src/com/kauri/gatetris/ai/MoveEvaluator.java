@@ -77,11 +77,11 @@ public class MoveEvaluator
 			negIsValid = negIsValid && board.canMove(current, xPos - delta, yPos);
 
 			if (posIsValid) {
-				move = updateTranslationDeltaAndScore(move, board, current, xPos, yPos, delta);
+				move = getBestMoveForTranslation(move, board, current, xPos, yPos, delta);
 			}
 
 			if (negIsValid) {
-				move = updateTranslationDeltaAndScore(move, board, current, xPos, yPos, delta * -1);
+				move = getBestMoveForTranslation(move, board, current, xPos, yPos, delta * -1);
 			}
 
 			delta++;
@@ -90,7 +90,7 @@ public class MoveEvaluator
 		return move;
 	}
 
-	private Move updateTranslationDeltaAndScore(Move move, Board board, Tetromino current, int xPos, int yPos, int translationDelta)
+	private Move getBestMoveForTranslation(Move move, Board board, Tetromino current, int xPos, int yPos, int translationDelta)
 	{
 		double score = scoring.score(board, current, xPos + translationDelta, yPos);
 
