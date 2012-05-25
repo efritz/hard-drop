@@ -21,6 +21,9 @@
 
 package com.kauri.gatetris.ai;
 
+/**
+ * @author Eric Fritz
+ */
 public class Move
 {
 	private double score;
