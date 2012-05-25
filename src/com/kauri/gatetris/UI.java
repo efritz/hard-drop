@@ -97,7 +97,7 @@ public class UI
 
 	private int getSquareHeight()
 	{
-		return getAdjustedBoardHeight() / (data.getBoard().getHeight() + (showNextPiece ? 4 : 0));
+		return getAdjustedBoardHeight() / (data.getBoard().getHeight() + (showNextPiece ? 6 : 0));
 	}
 
 	private int getLeftMargin()
@@ -107,7 +107,7 @@ public class UI
 
 	private int getTopMargin()
 	{
-		return (getHeight() - data.getBoard().getHeight() * getSquareWidth()) / 2;
+		return (getHeight() - data.getBoard().getHeight() * getSquareHeight()) / 2;
 	}
 
 	public void render(Graphics g)
