@@ -38,6 +38,11 @@ public class MoveEvaluator
 
 	public Move getNextMove(Board board, Tetromino current, int xPos, int yPos)
 	{
+		return getNextMove(board, current, xPos, yPos, null, 0, 0);
+	}
+
+	public Move getNextMove(Board board, Tetromino current, int x1, int y1, Tetromino preview, int x2, int y2)
+	{
 		//
 		// TODO - Somehow evolve the scoring system between rounds. I'm not sure where this logic
 		// should really go. Interface for basic GA algorithm, and then the AI will do what it wants
@@ -52,10 +57,10 @@ public class MoveEvaluator
 		Tetromino t4 = Tetromino.rotateClockwise(t3);
 
 		List<Move> moves = new LinkedList<Move>();
-		moves.add(getBestMoveForRotatedPiece(new Move(Double.NEGATIVE_INFINITY, 0, 0), board, t1, xPos, yPos));
-		moves.add(getBestMoveForRotatedPiece(new Move(Double.NEGATIVE_INFINITY, 1, 0), board, t2, xPos, yPos));
-		moves.add(getBestMoveForRotatedPiece(new Move(Double.NEGATIVE_INFINITY, 2, 0), board, t3, xPos, yPos));
-		moves.add(getBestMoveForRotatedPiece(new Move(Double.NEGATIVE_INFINITY, 3, 0), board, t4, xPos, yPos));
+		moves.add(getBestMoveForRotatedPiece(new Move(Double.NEGATIVE_INFINITY, 0, 0), board, t1, x1, y1));
+		moves.add(getBestMoveForRotatedPiece(new Move(Double.NEGATIVE_INFINITY, 1, 0), board, t2, x1, y1));
+		moves.add(getBestMoveForRotatedPiece(new Move(Double.NEGATIVE_INFINITY, 2, 0), board, t3, x1, y1));
+		moves.add(getBestMoveForRotatedPiece(new Move(Double.NEGATIVE_INFINITY, 3, 0), board, t4, x1, y1));
 
 		return Collections.max(moves, new Comparator<Move>() {
 			@Override

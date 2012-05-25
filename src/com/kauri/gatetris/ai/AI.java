@@ -52,7 +52,7 @@ public class AI
 		}
 
 		if (!animating) {
-			Move move = strategy.getNextMove(data.getBoard(), data.getCurrent(), data.getX(), data.getY());
+			Move move = strategy.getNextMove(data.getBoard(), data.getCurrent(), data.getX(), data.getY(), data.getPreview(), data.getBoard().getSpawnX(data.getPreview()), data.getBoard().getSpawnY(data.getPreview()));
 
 			rDelta = move.getRotationDelta();
 			mDelta = move.getMovementDelta();
