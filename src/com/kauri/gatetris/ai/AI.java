@@ -39,6 +39,7 @@ public class AI
 
 	private Strategy strategy = new Strategy();
 
+	private boolean animating = false;
 	private int rotationDelta;
 	private int translationDelta;
 
@@ -49,16 +50,18 @@ public class AI
 
 	public void update()
 	{
-		if (animate()) {
-			return;
+		if (animating) {
+			animating = animate();
 		}
 
-		Move m = strategy.getBestMove(data.getBoard(), data.getCurrent(), data.getX(), data.getY());
+		if (!animating) {
+			Move m = strategy.getBestMove(data.getBoard(), data.getCurrent(), data.getX(), data.getY());
 
-		rotationDelta = m.rotationDelta;
-		translationDelta = m.translationDelta;
+			rotationDelta = m.rotationDelta;
+			translationDelta = m.translationDelta;
 
-		animate();
+			animating = animate();
+		}
 	}
 
 	private boolean animate()
@@ -75,13 +78,11 @@ public class AI
 		} else if (translationDelta > 0) {
 			translationDelta--;
 			data.storeAndExecute(new MoveRightCommand(data));
+		} else if (data.getBoard().isFalling(data.getCurrent(), data.getX(), data.getY())) {
+			data.storeAndExecute(new SoftDropCommand(data));
 		} else {
-			if (!data.getBoard().isFalling(data.getCurrent(), data.getX(), data.getY())) {
-				data.storeAndExecute(new HardDropCommand(data));
-				return false;
-			} else {
-				data.storeAndExecute(new SoftDropCommand(data));
-			}
+			data.storeAndExecute(new HardDropCommand(data));
+			return false;
 		}
 
 		// TODO - get better "infinite speed" flag
