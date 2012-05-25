@@ -36,7 +36,6 @@ import com.kauri.gatetris.command.SoftDropCommand;
 public class AI
 {
 	private GameData data;
-	private boolean useHardDrops = false;
 
 	private Strategy strategy = new Strategy();
 
@@ -77,7 +76,7 @@ public class AI
 			translationDelta--;
 			data.storeAndExecute(new MoveRightCommand(data));
 		} else {
-			if (useHardDrops || !data.getBoard().isFalling(data.getCurrent(), data.getX(), data.getY())) {
+			if (!data.getBoard().isFalling(data.getCurrent(), data.getX(), data.getY())) {
 				data.storeAndExecute(new HardDropCommand(data));
 				return false;
 			} else {
