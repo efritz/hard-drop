@@ -30,7 +30,7 @@ import com.kauri.gatetris.Tetromino.Shape;
  */
 public class ScoringSystem
 {
-	public int minWellDepth;
+	public final int minWellDepth = 3;
 	public double weightSumHeight;
 	public double weightMaxHeight;
 	public double weightRelHeight;
@@ -39,9 +39,8 @@ public class ScoringSystem
 	public double weightWells;
 	public double weightBlockades;
 
-	public void setWeights(int minWellDepth, double weightSumHeight, double weightMaxHeight, double weightRelHeight, double weightAvgHeight, double weightHoles, double weightWells, double weightBlockades)
+	public void setWeights(double weightSumHeight, double weightMaxHeight, double weightRelHeight, double weightAvgHeight, double weightHoles, double weightWells, double weightBlockades)
 	{
-		this.minWellDepth = minWellDepth;
 		this.weightSumHeight = weightSumHeight;
 		this.weightMaxHeight = weightMaxHeight;
 		this.weightRelHeight = weightRelHeight;

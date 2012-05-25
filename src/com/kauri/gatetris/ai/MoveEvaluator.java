@@ -44,7 +44,7 @@ public class MoveEvaluator
 		// at that point (other strategies could have different weights, etc).
 		//
 
-		scoring.setWeights(2, Math.random() * 10 - 15, Math.random() * 10 - 15, Math.random() * 10 - 15, Math.random() * 10 - 15, Math.random() * 10 - 15, Math.random() * 10 - 15, Math.random() * 10 - 15);
+		scoring.setWeights(Math.random() * 10 - 15, Math.random() * 10 - 15, Math.random() * 10 - 15, Math.random() * 10 - 15, Math.random() * 10 - 15, Math.random() * 10 - 15, Math.random() * 10 - 15);
 
 		Tetromino t1 = current;
 		Tetromino t2 = Tetromino.rotateClockwise(t1);
