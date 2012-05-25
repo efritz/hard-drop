@@ -85,6 +85,12 @@ public class AI
 			}
 		}
 
+		// TODO - get better "infinite speed" flag
+
+		if (data.getAiDelay() == 1) {
+			return animate();
+		}
+
 		return true;
 	}
 }

@@ -49,7 +49,6 @@ public class Game extends Canvas implements Runnable
 	AI ai = new AI(data);
 	UI ui = new UI(data);
 
-	long aidelay = 128;
 	boolean runningAi = false;
 	boolean autoRestart = false;
 
@@ -130,7 +129,7 @@ public class Game extends Canvas implements Runnable
 		}
 
 		if (runningAi) {
-			if (now - aidelay >= lastAi) {
+			if (now - data.getAiDelay() >= lastAi) {
 				lastAi = now;
 
 				ai.update();

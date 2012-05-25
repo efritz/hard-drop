@@ -98,11 +98,11 @@ class InputHandler implements KeyListener
 		}
 
 		if (keyCode == 61) {
-			game.aidelay = Math.max(1, game.aidelay / 2);
+			game.data.setAiDelay(Math.max(1, game.data.getAiDelay() / 2));
 		}
 
 		if (keyCode == KeyEvent.VK_MINUS) {
-			game.aidelay = Math.min(1000, game.aidelay * 2);
+			game.data.setAiDelay(Math.min(1000, game.data.getAiDelay() * 2));
 		}
 
 		if (keyCode == KeyEvent.VK_N) {

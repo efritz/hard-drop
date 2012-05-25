@@ -48,6 +48,8 @@ public class GameData
 	private Tetromino current;
 	private Tetromino preview;
 
+	private int aiDelay = 128;
+
 	public void clear()
 	{
 		this.score = 0;
@@ -198,5 +200,15 @@ public class GameData
 		while (turns-- > 0 && history.size() > 0) {
 			history.pop().unexecute();
 		}
+	}
+
+	public int getAiDelay()
+	{
+		return aiDelay;
+	}
+
+	public void setAiDelay(int aiDelay)
+	{
+		this.aiDelay = aiDelay;
 	}
 }
