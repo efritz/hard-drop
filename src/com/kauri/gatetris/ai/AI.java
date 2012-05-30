@@ -49,6 +49,10 @@ public class AI
 	{
 		if (animating) {
 			animating = animate();
+
+			while (animating && data.getAiDelay() == 1) {
+				animating = animate();
+			}
 		}
 
 		if (!animating) {
@@ -57,36 +61,36 @@ public class AI
 			rDelta = move.getRotationDelta();
 			mDelta = move.getMovementDelta();
 
-			animating = animate();
+			animating = true;
 		}
 	}
 
 	private boolean animate()
 	{
-		if (rDelta > 0) {
-			rDelta--;
-			data.storeAndExecute(new RotateClockwiseCommand(data));
-		} else if (mDelta < 0) {
-			mDelta++;
-			data.storeAndExecute(new MoveLeftCommand(data));
-		} else if (mDelta > 0) {
-			mDelta--;
-			data.storeAndExecute(new MoveRightCommand(data));
-		} else if (data.getBoard().isFalling(data.getCurrent(), data.getX(), data.getY())) {
-			data.storeAndExecute(new SoftDropCommand(data));
-		} else {
+		if (!data.getBoard().isFalling(data.getCurrent(), data.getX(), data.getY())) {
 			data.storeAndExecute(new HardDropCommand(data));
 			return false;
 		}
 
-		//
-		// TODO - get better "infinite speed" flag
-		//
-
-		if (data.getAiDelay() == 1) {
-			return animate();
+		if (rDelta > 0) {
+			rDelta--;
+			data.storeAndExecute(new RotateClockwiseCommand(data));
+			return true;
 		}
 
+		if (mDelta < 0) {
+			mDelta++;
+			data.storeAndExecute(new MoveLeftCommand(data));
+			return true;
+		}
+
+		if (mDelta > 0) {
+			mDelta--;
+			data.storeAndExecute(new MoveRightCommand(data));
+			return true;
+		}
+
+		data.storeAndExecute(new SoftDropCommand(data));
 		return true;
 	}
 }
