@@ -30,8 +30,6 @@ import com.kauri.gatetris.GameData;
 import com.kauri.gatetris.Tetromino;
 import com.kauri.gatetris.Tetromino.Shape;
 import com.kauri.gatetris.ai.Move;
-import com.kauri.gatetris.ai.MoveEvaluator;
-import com.kauri.gatetris.ai.ScoringSystem;
 
 /**
  * @author Eric Fritz
@@ -41,23 +39,10 @@ public class WorstPieceSelector implements PieceSelector
 	private static Shape[] shapes = new Shape[] { Shape.I, Shape.J, Shape.L, Shape.O, Shape.S, Shape.T, Shape.Z };
 
 	private GameData data;
-	private MoveEvaluator strategy;
 
 	public WorstPieceSelector(GameData data)
 	{
 		this.data = data;
-
-		ScoringSystem scoring = new ScoringSystem();
-
-		//
-		// TODO - Somehow evolve the scoring system between rounds. I'm not sure where this logic
-		// should really go. Interface for basic GA algorithm, and then the AI will do what it wants
-		// at that point (other strategies could have different weights, etc).
-		//
-
-		scoring.setWeights(Math.random() * 10 - 15, Math.random() * 10 - 15, Math.random() * 10 - 15, Math.random() * 10 - 15, Math.random() * 10 - 15, Math.random() * 10 - 15, Math.random() * 10 - 15);
-
-		strategy = new MoveEvaluator(scoring);
 	}
 
 	@Override
@@ -67,7 +52,7 @@ public class WorstPieceSelector implements PieceSelector
 
 		for (Shape s : shapes) {
 			Tetromino tetromino = Tetromino.tetrominoes.get(s);
-			Move move = strategy.getNextMove(data.getBoard(), tetromino, data.getBoard().getSpawnX(tetromino), data.getBoard().getSpawnY(tetromino));
+			Move move = data.getEvaluator().getNextMove(data.getBoard(), tetromino, data.getBoard().getSpawnX(tetromino), data.getBoard().getSpawnY(tetromino));
 
 			moves.put(move, tetromino);
 		}

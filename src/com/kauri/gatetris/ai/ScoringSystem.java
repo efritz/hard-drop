@@ -29,16 +29,23 @@ import com.kauri.gatetris.Tetromino.Shape;
  */
 public class ScoringSystem
 {
-	public final int minWellDepth = 3;
-	public double weightSumHeight;
-	public double weightMaxHeight;
-	public double weightRelHeight;
-	public double weightAvgHeight;
-	public double weightHoles;
-	public double weightWells;
-	public double weightBlockades;
+	private final int minWellDepth = 3;
 
-	public void setWeights(double weightSumHeight, double weightMaxHeight, double weightRelHeight, double weightAvgHeight, double weightHoles, double weightWells, double weightBlockades)
+	private double weightSumHeight;
+	private double weightMaxHeight;
+	private double weightRelHeight;
+	private double weightAvgHeight;
+	private double weightHoles;
+	private double weightWells;
+	private double weightBlockades;
+	private double weightClears;
+
+	public double[] getWeights()
+	{
+		return new double[] { weightSumHeight, weightMaxHeight, weightRelHeight, weightAvgHeight, weightHoles, weightWells, weightBlockades, weightClears };
+	}
+
+	public void setWeights(double weightSumHeight, double weightMaxHeight, double weightRelHeight, double weightAvgHeight, double weightHoles, double weightWells, double weightBlockades, double weightClears)
 	{
 		this.weightSumHeight = weightSumHeight;
 		this.weightMaxHeight = weightMaxHeight;
@@ -47,6 +54,7 @@ public class ScoringSystem
 		this.weightHoles = weightHoles;
 		this.weightWells = weightWells;
 		this.weightBlockades = weightBlockades;
+		this.weightClears = weightClears;
 	}
 
 	/**
@@ -56,7 +64,7 @@ public class ScoringSystem
 	 *            The board to evaluate.
 	 * @return The board's score.
 	 */
-	public double score(final Board board)
+	public double score(Board board)
 	{
 		double score = 0;
 
@@ -65,6 +73,13 @@ public class ScoringSystem
 		// of full lines and subtract the height?) - this should also have a weight attached to it,
 		// but it is easy to find the number of line clears.
 		//
+
+		for (int row = board.getHeight() - 1; row >= 0; row--) {
+			if (board.isRowFull(row)) {
+				board.removeRow(row);
+				score += weightClears;
+			}
+		}
 
 		int[] heights = getHeights(board);
 

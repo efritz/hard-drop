@@ -67,7 +67,7 @@ public class Game extends Canvas implements Runnable
 			data.setSequence(new PieceSequence(new ShufflePieceSelector()));
 		}
 
-		data.clear();
+		data.newGame();
 
 		new NewTetrominoCommand(data).execute();
 	}
@@ -121,11 +121,11 @@ public class Game extends Canvas implements Runnable
 		if (now - 1000 >= lastCounter) {
 			lastCounter = now;
 
-			System.out.printf("Score: %-10d", data.getScore());
-			System.out.printf("Level: %-10d", data.getLevel());
-			System.out.printf("Lines: %-10d", data.getLines());
-			System.out.printf("Drops: %-10d", data.getDrops());
-			System.out.println();
+			// System.out.printf("Score: %-10d", data.getScore());
+			// System.out.printf("Level: %-10d", data.getLevel());
+			// System.out.printf("Lines: %-10d", data.getLines());
+			// System.out.printf("Drops: %-10d", data.getDrops());
+			// System.out.println();
 		}
 
 		if (runningAi) {

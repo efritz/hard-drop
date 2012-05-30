@@ -38,23 +38,10 @@ public class AI
 	private int rDelta;
 	private int mDelta;
 	private boolean animating = false;
-	private MoveEvaluator strategy;
 
 	public AI(GameData data)
 	{
 		this.data = data;
-
-		ScoringSystem scoring = new ScoringSystem();
-
-		//
-		// TODO - Somehow evolve the scoring system between rounds. I'm not sure where this logic
-		// should really go. Interface for basic GA algorithm, and then the AI will do what it wants
-		// at that point (other strategies could have different weights, etc).
-		//
-
-		scoring.setWeights(Math.random() * 10 - 15, Math.random() * 10 - 15, Math.random() * 10 - 15, Math.random() * 10 - 15, Math.random() * 10 - 15, Math.random() * 10 - 15, Math.random() * 10 - 15);
-
-		strategy = new MoveEvaluator(scoring);
 	}
 
 	public void update()
@@ -68,7 +55,7 @@ public class AI
 		}
 
 		if (!animating) {
-			Move move = strategy.getNextMove(data.getBoard(), data.getCurrent(), data.getX(), data.getY(), data.getPreview(), data.getBoard().getSpawnX(data.getPreview()), data.getBoard().getSpawnY(data.getPreview()));
+			Move move = data.getEvaluator().getNextMove(data.getBoard(), data.getCurrent(), data.getX(), data.getY(), data.getPreview(), data.getBoard().getSpawnX(data.getPreview()), data.getBoard().getSpawnY(data.getPreview()));
 
 			rDelta = move.getRotationDelta();
 			mDelta = move.getMovementDelta();

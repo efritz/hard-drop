@@ -23,6 +23,9 @@ package com.kauri.gatetris;
 
 import java.util.Stack;
 
+import com.kauri.gatetris.ai.Evolution;
+import com.kauri.gatetris.ai.MoveEvaluator;
+import com.kauri.gatetris.ai.ScoringSystem;
 import com.kauri.gatetris.command.Command;
 import com.kauri.gatetris.sequence.PieceSequence;
 
@@ -48,10 +51,19 @@ public class GameData
 	private Tetromino current;
 	private Tetromino preview;
 
+	private Evolution evo = new Evolution();
+
+	private ScoringSystem scoring = new ScoringSystem();
+	private MoveEvaluator evaluator = new MoveEvaluator(scoring);
+
 	private int aiDelay = 128;
 
-	public void clear()
+	public void newGame()
 	{
+		if (score != 0) {
+			evo.submit(lines);
+		}
+
 		this.score = 0;
 		this.lines = 0;
 		this.drops = 0;
@@ -61,6 +73,13 @@ public class GameData
 		board.clear();
 		history.clear();
 		sequence.clear();
+
+		evo.updateScoring(scoring);
+	}
+
+	public MoveEvaluator getEvaluator()
+	{
+		return evaluator;
 	}
 
 	public State getState()
