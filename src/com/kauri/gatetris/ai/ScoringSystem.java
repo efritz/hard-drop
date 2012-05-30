@@ -22,7 +22,6 @@
 package com.kauri.gatetris.ai;
 
 import com.kauri.gatetris.Board;
-import com.kauri.gatetris.Tetromino;
 import com.kauri.gatetris.Tetromino.Shape;
 
 /**
@@ -48,16 +47,6 @@ public class ScoringSystem
 		this.weightHoles = weightHoles;
 		this.weightWells = weightWells;
 		this.weightBlockades = weightBlockades;
-	}
-
-	private Board dummy = null;
-
-	public double score(final Board board, Tetromino current, int xPos, int yPos)
-	{
-		dummy = board.tryClone(dummy);
-		dummy.addPiece(current, xPos, dummy.dropHeight(current, xPos, yPos));
-
-		return score(dummy);
 	}
 
 	/**

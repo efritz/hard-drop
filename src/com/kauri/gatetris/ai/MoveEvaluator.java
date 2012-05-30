@@ -34,7 +34,12 @@ import com.kauri.gatetris.Tetromino;
  */
 public class MoveEvaluator
 {
-	private ScoringSystem scoring = new ScoringSystem();
+	private ScoringSystem scoring;
+
+	public MoveEvaluator(ScoringSystem scoring)
+	{
+		this.scoring = scoring;
+	}
 
 	public Move getNextMove(Board board, Tetromino current, int xPos, int yPos)
 	{
@@ -43,24 +48,16 @@ public class MoveEvaluator
 
 	public Move getNextMove(Board board, Tetromino current, int x1, int y1, Tetromino preview, int x2, int y2)
 	{
-		//
-		// TODO - Somehow evolve the scoring system between rounds. I'm not sure where this logic
-		// should really go. Interface for basic GA algorithm, and then the AI will do what it wants
-		// at that point (other strategies could have different weights, etc).
-		//
-
-		scoring.setWeights(Math.random() * 10 - 15, Math.random() * 10 - 15, Math.random() * 10 - 15, Math.random() * 10 - 15, Math.random() * 10 - 15, Math.random() * 10 - 15, Math.random() * 10 - 15);
-
 		Tetromino t1 = current;
 		Tetromino t2 = Tetromino.rotateClockwise(t1);
 		Tetromino t3 = Tetromino.rotateClockwise(t2);
 		Tetromino t4 = Tetromino.rotateClockwise(t3);
 
 		List<Move> moves = new LinkedList<Move>();
-		moves.add(getBestMoveForRotatedPiece(new Move(Double.NEGATIVE_INFINITY, 0, 0), board, t1, x1, y1));
-		moves.add(getBestMoveForRotatedPiece(new Move(Double.NEGATIVE_INFINITY, 1, 0), board, t2, x1, y1));
-		moves.add(getBestMoveForRotatedPiece(new Move(Double.NEGATIVE_INFINITY, 2, 0), board, t3, x1, y1));
-		moves.add(getBestMoveForRotatedPiece(new Move(Double.NEGATIVE_INFINITY, 3, 0), board, t4, x1, y1));
+		moves.add(getBestMoveForRotatedPiece(new Move(Double.NEGATIVE_INFINITY, 0, 0), board, t1, x1, y1, preview, x2, y2));
+		moves.add(getBestMoveForRotatedPiece(new Move(Double.NEGATIVE_INFINITY, 1, 0), board, t2, x1, y1, preview, x2, y2));
+		moves.add(getBestMoveForRotatedPiece(new Move(Double.NEGATIVE_INFINITY, 2, 0), board, t3, x1, y1, preview, x2, y2));
+		moves.add(getBestMoveForRotatedPiece(new Move(Double.NEGATIVE_INFINITY, 3, 0), board, t4, x1, y1, preview, x2, y2));
 
 		return Collections.max(moves, new Comparator<Move>() {
 			@Override
@@ -71,22 +68,22 @@ public class MoveEvaluator
 		});
 	}
 
-	private Move getBestMoveForRotatedPiece(Move move, Board board, Tetromino current, int xPos, int yPos)
+	private Move getBestMoveForRotatedPiece(Move move, Board board, Tetromino current, int x1, int y1, Tetromino preview, int x2, int y2)
 	{
 		boolean posIsValid = true;
 		boolean negIsValid = true;
 
 		int delta = 0;
 		while (negIsValid || posIsValid) {
-			posIsValid = posIsValid && board.canMove(current, xPos + delta, yPos);
-			negIsValid = negIsValid && board.canMove(current, xPos - delta, yPos);
+			posIsValid = posIsValid && board.canMove(current, x1 + delta, y1);
+			negIsValid = negIsValid && board.canMove(current, x1 - delta, y1);
 
 			if (posIsValid) {
-				move = getBestMoveForTranslation(move, board, current, xPos, yPos, delta);
+				move = getBetterMove(move, new Move(getScoreForDrop(move, board, current, x1 + delta, y1, preview, x2, y2), move.getRotationDelta(), delta));
 			}
 
 			if (negIsValid) {
-				move = getBestMoveForTranslation(move, board, current, xPos, yPos, delta * -1);
+				move = getBetterMove(move, new Move(getScoreForDrop(move, board, current, x1 - delta, y1, preview, x2, y2), move.getRotationDelta(), delta * -1));
 			}
 
 			delta++;
@@ -95,14 +92,29 @@ public class MoveEvaluator
 		return move;
 	}
 
-	private Move getBestMoveForTranslation(Move move, Board board, Tetromino current, int xPos, int yPos, int translationDelta)
+	private Move getBetterMove(Move m1, Move m2)
 	{
-		double score = scoring.score(board, current, xPos + translationDelta, yPos);
+		return m1.getScore() > m2.getScore() ? m1 : m2;
+	}
 
-		if (score > move.getScore()) {
-			return new Move(score, move.getRotationDelta(), translationDelta);
+	private double getScoreForDrop(Move move, Board board, Tetromino current, int x1, int y1, Tetromino preview, int x2, int y2)
+	{
+		//
+		// TODO - use commands and undo (place execution inside of move instead of inside
+		// AI.animate() and update that method to use the move update method).
+		//
+
+		Board dummy = null;
+
+		dummy = board.tryClone(dummy);
+		dummy.addPiece(current, x1, dummy.dropHeight(current, x1, y1));
+
+		double score = scoring.score(dummy);
+
+		if (preview != null) {
+			score += getNextMove(dummy, preview, x2, y2).getScore();
 		}
 
-		return move;
+		return score;
 	}
 }
