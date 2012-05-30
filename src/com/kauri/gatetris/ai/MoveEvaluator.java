@@ -109,12 +109,10 @@ public class MoveEvaluator
 		dummy = board.tryClone(dummy);
 		dummy.addPiece(current, x1, dummy.dropHeight(current, x1, y1));
 
-		double score = scoring.score(dummy);
-
 		if (preview != null) {
-			score += getNextMove(dummy, preview, x2, y2).getScore();
+			return getNextMove(dummy, preview, x2, y2).getScore();
+		} else {
+			return scoring.score(dummy);
 		}
-
-		return score;
 	}
 }
