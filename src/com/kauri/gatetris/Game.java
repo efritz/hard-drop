@@ -27,13 +27,21 @@ import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.image.BufferStrategy;
 
 import javax.swing.JFrame;
 
 import com.kauri.gatetris.GameData.State;
 import com.kauri.gatetris.ai.AI;
+import com.kauri.gatetris.command.AddJunkCommand;
+import com.kauri.gatetris.command.HardDropCommand;
+import com.kauri.gatetris.command.MoveLeftCommand;
+import com.kauri.gatetris.command.MoveRightCommand;
 import com.kauri.gatetris.command.NewTetrominoCommand;
+import com.kauri.gatetris.command.RotateClockwiseCommand;
+import com.kauri.gatetris.command.RotateCounterClockwiseCommand;
 import com.kauri.gatetris.command.SoftDropCommand;
 import com.kauri.gatetris.sequence.PieceSequence;
 import com.kauri.gatetris.sequence.ShufflePieceSelector;
@@ -76,7 +84,7 @@ public class Game extends Canvas implements Runnable
 	public void run()
 	{
 		refreshSize();
-		this.addKeyListener(new InputHandler(this));
+		this.addKeyListener(new InputHandler());
 		this.addComponentListener(new ResizeListener());
 
 		startNewGame();
@@ -95,11 +103,6 @@ public class Game extends Canvas implements Runnable
 		}
 	}
 
-	private void refreshSize()
-	{
-		ui.setSize(getWidth(), getHeight());
-	}
-
 	long lastGravity = System.currentTimeMillis();
 
 	private void update()
@@ -110,20 +113,17 @@ public class Game extends Canvas implements Runnable
 			}
 		}
 
-		if (data.getState() != State.PLAYING) {
-			return;
-		}
+		if (data.getState() == State.PLAYING) {
+			if (runningAi) {
+				ai.update();
+			} else {
+				long time = System.currentTimeMillis();
+				long wait = (long) (((11 - data.getLevel()) * 0.05) * 1000);
 
-		long now = System.currentTimeMillis();
-
-		if (runningAi) {
-			ai.update();
-		} else {
-			long gravityDelay = (long) (((11 - data.getLevel()) * 0.05) * 1000);
-
-			if (now - gravityDelay >= lastGravity) {
-				lastGravity = now;
-				data.storeAndExecute(new SoftDropCommand(data));
+				if (time - wait >= lastGravity) {
+					lastGravity = time;
+					data.storeAndExecute(new SoftDropCommand(data));
+				}
 			}
 		}
 	}
@@ -143,6 +143,130 @@ public class Game extends Canvas implements Runnable
 
 		g.dispose();
 		bs.show();
+	}
+
+	private void refreshSize()
+	{
+		ui.setSize(getWidth(), getHeight());
+	}
+
+	public static void main(String[] args)
+	{
+		Game game = new Game();
+
+		JFrame frame = new JFrame();
+		frame.setMinimumSize(new Dimension(300, 600));
+		frame.setLocationRelativeTo(null);
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+		frame.getContentPane().setLayout(new BorderLayout());
+		frame.getContentPane().add(game, BorderLayout.CENTER);
+		frame.setVisible(true);
+
+		game.start();
+	}
+
+	private class InputHandler implements KeyListener
+	{
+		@Override
+		public void keyPressed(KeyEvent ke)
+		{
+			int keyCode = ke.getKeyCode();
+
+			if (data.getState() == State.PLAYING && !runningAi) {
+				if (keyCode == KeyEvent.VK_LEFT) {
+					data.storeAndExecute(new MoveLeftCommand(data));
+				}
+
+				if (keyCode == KeyEvent.VK_RIGHT) {
+					data.storeAndExecute(new MoveRightCommand(data));
+				}
+
+				if (keyCode == KeyEvent.VK_UP || keyCode == KeyEvent.VK_Z) {
+					data.storeAndExecute(new RotateClockwiseCommand(data));
+				}
+
+				if (keyCode == KeyEvent.VK_X) {
+					data.storeAndExecute(new RotateCounterClockwiseCommand(data));
+				}
+
+				if (keyCode == KeyEvent.VK_DOWN) {
+					data.storeAndExecute(new SoftDropCommand(data));
+				}
+
+				if (keyCode == KeyEvent.VK_SPACE) {
+					data.storeAndExecute(new HardDropCommand(data));
+				}
+			}
+
+			if (data.getState() != State.PAUSED && !runningAi) {
+				if (keyCode == KeyEvent.VK_BACK_SPACE) {
+					data.undo();
+				}
+			}
+
+			if (data.getState() == State.PLAYING) {
+				if (keyCode == KeyEvent.VK_J) {
+					data.storeAndExecute(new AddJunkCommand(data));
+				}
+			}
+
+			if (keyCode == KeyEvent.VK_ENTER) {
+				startNewGame();
+			}
+
+			if (keyCode == KeyEvent.VK_A) {
+				runningAi = !runningAi;
+			}
+
+			if (keyCode == KeyEvent.VK_U) {
+				autoRestart = !autoRestart;
+			}
+
+			if (keyCode == 61) {
+				data.setAiDelay(Math.max(1, data.getAiDelay() / 2));
+			}
+
+			if (keyCode == KeyEvent.VK_MINUS) {
+				data.setAiDelay(Math.min(1000, data.getAiDelay() * 2));
+			}
+
+			if (keyCode == KeyEvent.VK_N) {
+				data.setShowNextPiece(!data.showNextPiece());
+			}
+
+			if (keyCode == KeyEvent.VK_S) {
+				data.setShowShadowPiece(!data.showShadowPiece());
+			}
+
+			if (keyCode == KeyEvent.VK_P) {
+				if (data.getState() != State.GAMEOVER) {
+					data.setState((data.getState() == State.PAUSED) ? State.PLAYING : State.PAUSED);
+				}
+			}
+
+			if (keyCode == KeyEvent.VK_PAGE_UP) {
+				int width = Math.min(100, Math.max(4, data.getBoard().getWidth() + 1));
+				data.setBoard(new Board(width, width * 2));
+				startNewGame();
+			}
+
+			if (keyCode == KeyEvent.VK_PAGE_DOWN) {
+				int width = Math.min(100, Math.max(4, data.getBoard().getWidth() - 1));
+				data.setBoard(new Board(width, width * 2));
+				startNewGame();
+			}
+		}
+
+		@Override
+		public void keyReleased(KeyEvent ke)
+		{
+		}
+
+		@Override
+		public void keyTyped(KeyEvent ke)
+		{
+		}
 	}
 
 	private class ResizeListener implements ComponentListener
@@ -167,21 +291,5 @@ public class Game extends Canvas implements Runnable
 		{
 			refreshSize();
 		}
-	}
-
-	public static void main(String[] args)
-	{
-		Game game = new Game();
-
-		JFrame frame = new JFrame();
-		frame.setMinimumSize(new Dimension(300, 600));
-		frame.setLocationRelativeTo(null);
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
-		frame.getContentPane().setLayout(new BorderLayout());
-		frame.getContentPane().add(game, BorderLayout.CENTER);
-		frame.setVisible(true);
-
-		game.start();
 	}
 }
