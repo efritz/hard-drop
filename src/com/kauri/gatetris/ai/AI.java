@@ -39,6 +39,8 @@ public class AI
 	private int mDelta;
 	private boolean animating = false;
 
+	private long lastAi = System.currentTimeMillis();
+
 	public AI(GameData data)
 	{
 		this.data = data;
@@ -46,6 +48,12 @@ public class AI
 
 	public void update()
 	{
+		long now = System.currentTimeMillis();
+
+		if (now - data.getAiDelay() < lastAi) {
+			return;
+		}
+
 		if (animating) {
 			animating = animate();
 
@@ -62,6 +70,8 @@ public class AI
 
 			animating = true;
 		}
+
+		lastAi = now;
 	}
 
 	private boolean animate()

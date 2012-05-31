@@ -100,8 +100,6 @@ public class Game extends Canvas implements Runnable
 		ui.setSize(getWidth(), getHeight());
 	}
 
-	long lastAi = System.currentTimeMillis();
-	long lastCounter = System.currentTimeMillis();
 	long lastGravity = System.currentTimeMillis();
 
 	private void update()
@@ -118,22 +116,8 @@ public class Game extends Canvas implements Runnable
 
 		long now = System.currentTimeMillis();
 
-		if (now - 1000 >= lastCounter) {
-			lastCounter = now;
-
-			// System.out.printf("Score: %-10d", data.getScore());
-			// System.out.printf("Level: %-10d", data.getLevel());
-			// System.out.printf("Lines: %-10d", data.getLines());
-			// System.out.printf("Drops: %-10d", data.getDrops());
-			// System.out.println();
-		}
-
 		if (runningAi) {
-			if (now - data.getAiDelay() >= lastAi) {
-				lastAi = now;
-
-				ai.update();
-			}
+			ai.update();
 		} else {
 			long gravityDelay = (long) (((11 - data.getLevel()) * 0.05) * 1000);
 
