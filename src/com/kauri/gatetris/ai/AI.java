@@ -33,7 +33,7 @@ import com.kauri.gatetris.command.SoftDropCommand;
  */
 public class AI
 {
-	private GameContext data;
+	private GameContext context;
 
 	private int rDelta;
 	private int mDelta;
@@ -41,28 +41,28 @@ public class AI
 
 	private long lastAi = System.currentTimeMillis();
 
-	public AI(GameContext data)
+	public AI(GameContext context)
 	{
-		this.data = data;
+		this.context = context;
 	}
 
 	public void update()
 	{
 		long time = System.currentTimeMillis();
 
-		if (time - data.getAiDelay() >= lastAi) {
+		if (time - context.getAiDelay() >= lastAi) {
 			lastAi = time;
 
 			if (animating) {
 				animating = animate();
 
-				while (animating && data.getAiDelay() == 1) {
+				while (animating && context.getAiDelay() == 1) {
 					animating = animate();
 				}
 			}
 
 			if (!animating) {
-				Move move = data.getEvaluator().getNextMove(data.getBoard(), data.getCurrent(), data.getX(), data.getY(), data.getPreview(), data.getBoard().getSpawnX(data.getPreview()), data.getBoard().getSpawnY(data.getPreview()));
+				Move move = context.getEvaluator().getNextMove(context.getBoard(), context.getCurrent(), context.getX(), context.getY(), context.getPreview(), context.getBoard().getSpawnX(context.getPreview()), context.getBoard().getSpawnY(context.getPreview()));
 
 				rDelta = move.getRotationDelta();
 				mDelta = move.getMovementDelta();
@@ -74,30 +74,30 @@ public class AI
 
 	private boolean animate()
 	{
-		if (!data.getBoard().isFalling(data.getCurrent(), data.getX(), data.getY())) {
-			data.storeAndExecute(new HardDropCommand(data));
+		if (!context.getBoard().isFalling(context.getCurrent(), context.getX(), context.getY())) {
+			context.storeAndExecute(new HardDropCommand(context));
 			return false;
 		}
 
 		if (rDelta > 0) {
 			rDelta--;
-			data.storeAndExecute(new RotateClockwiseCommand(data));
+			context.storeAndExecute(new RotateClockwiseCommand(context));
 			return true;
 		}
 
 		if (mDelta < 0) {
 			mDelta++;
-			data.storeAndExecute(new MoveLeftCommand(data));
+			context.storeAndExecute(new MoveLeftCommand(context));
 			return true;
 		}
 
 		if (mDelta > 0) {
 			mDelta--;
-			data.storeAndExecute(new MoveRightCommand(data));
+			context.storeAndExecute(new MoveRightCommand(context));
 			return true;
 		}
 
-		data.storeAndExecute(new SoftDropCommand(data));
+		context.storeAndExecute(new SoftDropCommand(context));
 		return true;
 	}
 }

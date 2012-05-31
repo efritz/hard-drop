@@ -38,11 +38,11 @@ public class WorstPieceSelector implements PieceSelector
 {
 	private static Shape[] shapes = new Shape[] { Shape.I, Shape.J, Shape.L, Shape.O, Shape.S, Shape.T, Shape.Z };
 
-	private GameContext data;
+	private GameContext context;
 
-	public WorstPieceSelector(GameContext data)
+	public WorstPieceSelector(GameContext context)
 	{
-		this.data = data;
+		this.context = context;
 	}
 
 	@Override
@@ -52,7 +52,7 @@ public class WorstPieceSelector implements PieceSelector
 
 		for (Shape s : shapes) {
 			Tetromino tetromino = Tetromino.tetrominoes.get(s);
-			Move move = data.getEvaluator().getNextMove(data.getBoard(), tetromino, data.getBoard().getSpawnX(tetromino), data.getBoard().getSpawnY(tetromino));
+			Move move = context.getEvaluator().getNextMove(context.getBoard(), tetromino, context.getBoard().getSpawnX(tetromino), context.getBoard().getSpawnY(tetromino));
 
 			moves.put(move, tetromino);
 		}

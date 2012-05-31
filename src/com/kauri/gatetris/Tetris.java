@@ -53,9 +53,9 @@ public class Tetris extends Canvas implements Runnable
 {
 	private static final long serialVersionUID = 1L;
 
-	public GameContext data = new GameContext();
-	AI ai = new AI(data);
-	UI ui = new UI(data);
+	public GameContext context = new GameContext();
+	AI ai = new AI(context);
+	UI ui = new UI(context);
 
 	boolean runningAi = false;
 	boolean autoRestart = false;
@@ -67,17 +67,17 @@ public class Tetris extends Canvas implements Runnable
 
 	public void startNewGame()
 	{
-		if (data.getBoard() == null) {
-			data.setBoard(new Board(10, 20));
+		if (context.getBoard() == null) {
+			context.setBoard(new Board(10, 20));
 		}
 
-		if (data.getSequence() == null) {
-			data.setSequence(new PieceSequence(new ShufflePieceSelector()));
+		if (context.getSequence() == null) {
+			context.setSequence(new PieceSequence(new ShufflePieceSelector()));
 		}
 
-		data.newGame();
+		context.newGame();
 
-		new NewTetrominoCommand(data).execute();
+		new NewTetrominoCommand(context).execute();
 	}
 
 	@Override
@@ -107,22 +107,22 @@ public class Tetris extends Canvas implements Runnable
 
 	private void update()
 	{
-		if (data.getState() == State.GAMEOVER) {
+		if (context.getState() == State.GAMEOVER) {
 			if (autoRestart) {
 				startNewGame();
 			}
 		}
 
-		if (data.getState() == State.PLAYING) {
+		if (context.getState() == State.PLAYING) {
 			if (runningAi) {
 				ai.update();
 			} else {
 				long time = System.currentTimeMillis();
-				long wait = (long) (((11 - data.getLevel()) * 0.05) * 1000);
+				long wait = (long) (((11 - context.getLevel()) * 0.05) * 1000);
 
 				if (time - wait >= lastGravity) {
 					lastGravity = time;
-					data.storeAndExecute(new SoftDropCommand(data));
+					context.storeAndExecute(new SoftDropCommand(context));
 				}
 			}
 		}
@@ -173,41 +173,41 @@ public class Tetris extends Canvas implements Runnable
 		{
 			int keyCode = ke.getKeyCode();
 
-			if (data.getState() == State.PLAYING && !runningAi) {
+			if (context.getState() == State.PLAYING && !runningAi) {
 				if (keyCode == KeyEvent.VK_LEFT) {
-					data.storeAndExecute(new MoveLeftCommand(data));
+					context.storeAndExecute(new MoveLeftCommand(context));
 				}
 
 				if (keyCode == KeyEvent.VK_RIGHT) {
-					data.storeAndExecute(new MoveRightCommand(data));
+					context.storeAndExecute(new MoveRightCommand(context));
 				}
 
 				if (keyCode == KeyEvent.VK_UP || keyCode == KeyEvent.VK_Z) {
-					data.storeAndExecute(new RotateClockwiseCommand(data));
+					context.storeAndExecute(new RotateClockwiseCommand(context));
 				}
 
 				if (keyCode == KeyEvent.VK_X) {
-					data.storeAndExecute(new RotateCounterClockwiseCommand(data));
+					context.storeAndExecute(new RotateCounterClockwiseCommand(context));
 				}
 
 				if (keyCode == KeyEvent.VK_DOWN) {
-					data.storeAndExecute(new SoftDropCommand(data));
+					context.storeAndExecute(new SoftDropCommand(context));
 				}
 
 				if (keyCode == KeyEvent.VK_SPACE) {
-					data.storeAndExecute(new HardDropCommand(data));
+					context.storeAndExecute(new HardDropCommand(context));
 				}
 			}
 
-			if (data.getState() != State.PAUSED && !runningAi) {
+			if (context.getState() != State.PAUSED && !runningAi) {
 				if (keyCode == KeyEvent.VK_BACK_SPACE) {
-					data.undo();
+					context.undo();
 				}
 			}
 
-			if (data.getState() == State.PLAYING) {
+			if (context.getState() == State.PLAYING) {
 				if (keyCode == KeyEvent.VK_J) {
-					data.storeAndExecute(new AddJunkCommand(data));
+					context.storeAndExecute(new AddJunkCommand(context));
 				}
 			}
 
@@ -224,36 +224,36 @@ public class Tetris extends Canvas implements Runnable
 			}
 
 			if (keyCode == 61) {
-				data.setAiDelay(Math.max(1, data.getAiDelay() / 2));
+				context.setAiDelay(Math.max(1, context.getAiDelay() / 2));
 			}
 
 			if (keyCode == KeyEvent.VK_MINUS) {
-				data.setAiDelay(Math.min(1000, data.getAiDelay() * 2));
+				context.setAiDelay(Math.min(1000, context.getAiDelay() * 2));
 			}
 
 			if (keyCode == KeyEvent.VK_N) {
-				data.setShowNextPiece(!data.showNextPiece());
+				context.setShowNextPiece(!context.showNextPiece());
 			}
 
 			if (keyCode == KeyEvent.VK_S) {
-				data.setShowShadowPiece(!data.showShadowPiece());
+				context.setShowShadowPiece(!context.showShadowPiece());
 			}
 
 			if (keyCode == KeyEvent.VK_P) {
-				if (data.getState() != State.GAMEOVER) {
-					data.setState((data.getState() == State.PAUSED) ? State.PLAYING : State.PAUSED);
+				if (context.getState() != State.GAMEOVER) {
+					context.setState((context.getState() == State.PAUSED) ? State.PLAYING : State.PAUSED);
 				}
 			}
 
 			if (keyCode == KeyEvent.VK_PAGE_UP) {
-				int width = Math.min(100, Math.max(4, data.getBoard().getWidth() + 1));
-				data.setBoard(new Board(width, width * 2));
+				int width = Math.min(100, Math.max(4, context.getBoard().getWidth() + 1));
+				context.setBoard(new Board(width, width * 2));
 				startNewGame();
 			}
 
 			if (keyCode == KeyEvent.VK_PAGE_DOWN) {
-				int width = Math.min(100, Math.max(4, data.getBoard().getWidth() - 1));
-				data.setBoard(new Board(width, width * 2));
+				int width = Math.min(100, Math.max(4, context.getBoard().getWidth() - 1));
+				context.setBoard(new Board(width, width * 2));
 				startNewGame();
 			}
 		}

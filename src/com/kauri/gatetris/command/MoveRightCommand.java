@@ -28,26 +28,26 @@ import com.kauri.gatetris.GameContext;
  */
 public class MoveRightCommand extends MovementCommand
 {
-	private GameContext data;
+	private GameContext context;
 	private boolean success = false;
 
-	public MoveRightCommand(GameContext data)
+	public MoveRightCommand(GameContext context)
 	{
-		super(data);
-		this.data = data;
+		super(context);
+		this.context = context;
 	}
 
 	@Override
 	public void execute()
 	{
-		success = tryMove(data.getCurrent(), data.getX() + 1, data.getY());
+		success = tryMove(context.getCurrent(), context.getX() + 1, context.getY());
 	}
 
 	@Override
 	public void unexecute()
 	{
 		if (success) {
-			tryMove(data.getCurrent(), data.getX() - 1, data.getY());
+			tryMove(context.getCurrent(), context.getX() - 1, context.getY());
 		}
 	}
 }

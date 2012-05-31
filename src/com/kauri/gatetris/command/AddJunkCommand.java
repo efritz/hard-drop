@@ -29,13 +29,13 @@ import com.kauri.gatetris.Tetromino.Shape;
  */
 public class AddJunkCommand implements Command
 {
-	private GameContext data;
+	private GameContext context;
 	private Shape[] overflow;
 	private Command subcommand;
 
-	public AddJunkCommand(GameContext data)
+	public AddJunkCommand(GameContext context)
 	{
-		this.data = data;
+		this.context = context;
 	}
 
 	@Override
@@ -45,18 +45,18 @@ public class AddJunkCommand implements Command
 		// TODO - also game over if overflow contains blocks?
 		//
 
-		overflow = data.getBoard().getRow(data.getBoard().getHeight() - 1);
+		overflow = context.getBoard().getRow(context.getBoard().getHeight() - 1);
 
-		Shape[] line = new Shape[data.getBoard().getWidth()];
+		Shape[] line = new Shape[context.getBoard().getWidth()];
 
-		for (int i = 0; i < data.getBoard().getWidth(); i++) {
+		for (int i = 0; i < context.getBoard().getWidth(); i++) {
 			line[i] = Shape.Junk;
 		}
 
-		int holes = (int) (Math.random() * (data.getBoard().getWidth() - 1) + 1);
+		int holes = (int) (Math.random() * (context.getBoard().getWidth() - 1) + 1);
 
 		while (holes > 0) {
-			int index = (int) (Math.random() * data.getBoard().getWidth());
+			int index = (int) (Math.random() * context.getBoard().getWidth());
 
 			if (line[index] != Shape.NoShape) {
 				line[index] = Shape.NoShape;
@@ -64,23 +64,23 @@ public class AddJunkCommand implements Command
 			}
 		}
 
-		if (!data.getBoard().canMove(data.getCurrent(), data.getX(), data.getY() - 1)) {
-			subcommand = new HardDropCommand(data);
+		if (!context.getBoard().canMove(context.getCurrent(), context.getX(), context.getY() - 1)) {
+			subcommand = new HardDropCommand(context);
 			subcommand.execute();
 		}
 
-		data.getBoard().addRow(0, line);
+		context.getBoard().addRow(0, line);
 	}
 
 	@Override
 	public void unexecute()
 	{
-		data.getBoard().removeRow(0);
+		context.getBoard().removeRow(0);
 
 		if (subcommand != null) {
 			subcommand.unexecute();
 		}
 
-		data.getBoard().addRow(data.getBoard().getHeight() - 1, overflow);
+		context.getBoard().addRow(context.getBoard().getHeight() - 1, overflow);
 	}
 }

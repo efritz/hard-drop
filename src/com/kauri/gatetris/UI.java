@@ -54,11 +54,11 @@ public class UI
 
 	private int width;
 	private int height;
-	private GameContext data;
+	private GameContext context;
 
-	public UI(GameContext data)
+	public UI(GameContext context)
 	{
-		this.data = data;
+		this.context = context;
 	}
 
 	public void setSize(int width, int height)
@@ -79,32 +79,32 @@ public class UI
 
 	private int getAdjustedBoardWidth()
 	{
-		return (int) Math.min(getWidth(), (double) getHeight() * data.getBoard().getWidth() / data.getBoard().getHeight());
+		return (int) Math.min(getWidth(), (double) getHeight() * context.getBoard().getWidth() / context.getBoard().getHeight());
 	}
 
 	private int getAdjustedBoardHeight()
 	{
-		return (int) Math.min(getHeight(), (double) getWidth() * data.getBoard().getHeight() / data.getBoard().getWidth());
+		return (int) Math.min(getHeight(), (double) getWidth() * context.getBoard().getHeight() / context.getBoard().getWidth());
 	}
 
 	private int getSquareWidth()
 	{
-		return getAdjustedBoardWidth() / (data.getBoard().getWidth() + (data.showNextPiece() ? 2 : 0));
+		return getAdjustedBoardWidth() / (context.getBoard().getWidth() + (context.showNextPiece() ? 2 : 0));
 	}
 
 	private int getSquareHeight()
 	{
-		return getAdjustedBoardHeight() / (data.getBoard().getHeight() + (data.showNextPiece() ? 6 : 0));
+		return getAdjustedBoardHeight() / (context.getBoard().getHeight() + (context.showNextPiece() ? 6 : 0));
 	}
 
 	private int getLeftMargin()
 	{
-		return (getWidth() - data.getBoard().getWidth() * getSquareWidth()) / 2;
+		return (getWidth() - context.getBoard().getWidth() * getSquareWidth()) / 2;
 	}
 
 	private int getTopMargin()
 	{
-		return (getHeight() - data.getBoard().getHeight() * getSquareHeight()) / 2;
+		return (getHeight() - context.getBoard().getHeight() * getSquareHeight()) / 2;
 	}
 
 	public void render(Graphics g)
@@ -112,37 +112,37 @@ public class UI
 		g.setColor(colors.get(Shape.NoShape));
 		g.fillRect(0, 0, getWidth(), getHeight());
 
-		for (int row = 0; row < data.getBoard().getHeight(); row++) {
-			for (int col = 0; col < data.getBoard().getWidth(); col++) {
-				drawSquare(g, translateBoardRow(row), translateBoardCol(col), colors.get(data.getBoard().getShapeAt(row, col)));
+		for (int row = 0; row < context.getBoard().getHeight(); row++) {
+			for (int col = 0; col < context.getBoard().getWidth(); col++) {
+				drawSquare(g, translateBoardRow(row), translateBoardCol(col), colors.get(context.getBoard().getShapeAt(row, col)));
 			}
 		}
 
-		if (data.showShadowPiece()) {
-			int ghostPosition = data.getBoard().dropHeight(data.getCurrent(), data.getX(), data.getY());
+		if (context.showShadowPiece()) {
+			int ghostPosition = context.getBoard().dropHeight(context.getCurrent(), context.getX(), context.getY());
 
-			if (ghostPosition < data.getY()) {
-				drawTetromino(g, data.getCurrent(), translateBoardRow(ghostPosition), translateBoardCol(data.getX()), changeAlpha(colors.get(data.getCurrent().getShape()), .3), getTopMargin());
+			if (ghostPosition < context.getY()) {
+				drawTetromino(g, context.getCurrent(), translateBoardRow(ghostPosition), translateBoardCol(context.getX()), changeAlpha(colors.get(context.getCurrent().getShape()), .3), getTopMargin());
 			}
 		}
 
-		if (data.getBoard().canMove(data.getCurrent(), data.getX(), data.getY())) {
-			drawTetromino(g, data.getCurrent(), translateBoardRow(data.getY()), translateBoardCol(data.getX()), colors.get(data.getCurrent().getShape()), getTopMargin());
+		if (context.getBoard().canMove(context.getCurrent(), context.getX(), context.getY())) {
+			drawTetromino(g, context.getCurrent(), translateBoardRow(context.getY()), translateBoardCol(context.getX()), colors.get(context.getCurrent().getShape()), getTopMargin());
 		}
 
-		if (data.showNextPiece()) {
-			int xPos = data.getBoard().getSpawnX(data.getPreview());
+		if (context.showNextPiece()) {
+			int xPos = context.getBoard().getSpawnX(context.getPreview());
 
-			int rowOffset = (getTopMargin() - (data.getPreview().getHeight() * getSquareHeight())) / 2;
+			int rowOffset = (getTopMargin() - (context.getPreview().getHeight() * getSquareHeight())) / 2;
 
-			drawTetromino(g, data.getPreview(), rowOffset, translateBoardCol(xPos), colors.get(data.getPreview().getShape()), 0);
+			drawTetromino(g, context.getPreview(), rowOffset, translateBoardCol(xPos), colors.get(context.getPreview().getShape()), 0);
 		}
 
-		if (data.getState() == State.PAUSED) {
+		if (context.getState() == State.PAUSED) {
 			drawString(g, "paused");
 		}
 
-		if (data.getState() == State.GAMEOVER) {
+		if (context.getState() == State.GAMEOVER) {
 			drawString(g, "game over");
 		}
 
@@ -177,7 +177,7 @@ public class UI
 
 	private int translateBoardRow(int row)
 	{
-		return getTopMargin() + (data.getBoard().getHeight() - 1 - row) * getSquareHeight();
+		return getTopMargin() + (context.getBoard().getHeight() - 1 - row) * getSquareHeight();
 	}
 
 	private int translateBoardCol(int col)

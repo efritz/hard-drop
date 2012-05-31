@@ -30,51 +30,51 @@ import com.kauri.gatetris.Tetromino;
  */
 public class NewTetrominoCommand implements Command
 {
-	private GameContext data;
+	private GameContext context;
 	private Tetromino current;
 	private Tetromino preview;
 	private int x;
 	private int y;
 
-	public NewTetrominoCommand(GameContext data)
+	public NewTetrominoCommand(GameContext context)
 	{
-		this.data = data;
+		this.context = context;
 	}
 
 	@Override
 	public void execute()
 	{
-		current = data.getCurrent();
-		preview = data.getPreview();
+		current = context.getCurrent();
+		preview = context.getPreview();
 
-		x = data.getX();
-		y = data.getY();
+		x = context.getX();
+		y = context.getY();
 
-		data.getSequence().advance();
-		data.setCurrent(data.getSequence().peekCurrent());
-		data.setPreview(data.getSequence().peekPreview());
+		context.getSequence().advance();
+		context.setCurrent(context.getSequence().peekCurrent());
+		context.setPreview(context.getSequence().peekPreview());
 
-		data.setX(data.getBoard().getSpawnX(data.getCurrent()));
-		data.setY(data.getBoard().getSpawnY(data.getCurrent()));
+		context.setX(context.getBoard().getSpawnX(context.getCurrent()));
+		context.setY(context.getBoard().getSpawnY(context.getCurrent()));
 
 		// TODO - move this somewhere else
 
-		if (!data.getBoard().canMove(data.getCurrent(), data.getX(), data.getY())) {
-			data.setState(State.GAMEOVER);
+		if (!context.getBoard().canMove(context.getCurrent(), context.getX(), context.getY())) {
+			context.setState(State.GAMEOVER);
 		}
 	}
 
 	@Override
 	public void unexecute()
 	{
-		data.setState(State.PLAYING);
+		context.setState(State.PLAYING);
 
-		data.setCurrent(current);
-		data.setPreview(preview);
+		context.setCurrent(current);
+		context.setPreview(preview);
 
-		data.setX(x);
-		data.setY(y);
+		context.setX(x);
+		context.setY(y);
 
-		data.getSequence().rewind();
+		context.getSequence().rewind();
 	}
 }

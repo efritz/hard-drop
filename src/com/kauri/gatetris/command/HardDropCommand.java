@@ -28,39 +28,39 @@ import com.kauri.gatetris.GameContext;
  */
 public class HardDropCommand extends MovementCommand
 {
-	private GameContext data;
+	private GameContext context;
 	private int y;
 	private long score;
 	private boolean success = false;
 	private Command subcommand1;
 	private Command subcommand2;
 
-	public HardDropCommand(GameContext data)
+	public HardDropCommand(GameContext context)
 	{
-		super(data);
-		this.data = data;
+		super(context);
+		this.context = context;
 	}
 
 	@Override
 	public void execute()
 	{
-		y = data.getY();
+		y = context.getY();
 
-		success = tryMove(data.getCurrent(), data.getX(), data.getBoard().dropHeight(data.getCurrent(), data.getX(), y));
+		success = tryMove(context.getCurrent(), context.getX(), context.getBoard().dropHeight(context.getCurrent(), context.getX(), y));
 
 		if (success) {
-			int pieceReward = ((data.getBoard().getHeight() + (3 * data.getLevel())) - (data.getBoard().getHeight() - y));
+			int pieceReward = ((context.getBoard().getHeight() + (3 * context.getLevel())) - (context.getBoard().getHeight() - y));
 
-			score = data.getScore();
-			data.setScore(score + pieceReward);
-			data.setDrops(data.getDrops() + 1);
+			score = context.getScore();
+			context.setScore(score + pieceReward);
+			context.setDrops(context.getDrops() + 1);
 
-			data.getBoard().addPiece(data.getCurrent(), data.getX(), data.getY());
+			context.getBoard().addPiece(context.getCurrent(), context.getX(), context.getY());
 
-			subcommand1 = new ClearCommand(data);
+			subcommand1 = new ClearCommand(context);
 			subcommand1.execute();
 
-			subcommand2 = new NewTetrominoCommand(data);
+			subcommand2 = new NewTetrominoCommand(context);
 			subcommand2.execute();
 		}
 	}
@@ -72,12 +72,12 @@ public class HardDropCommand extends MovementCommand
 			subcommand2.unexecute();
 			subcommand1.unexecute();
 
-			data.getBoard().removePiece(data.getCurrent(), data.getX(), data.getY());
+			context.getBoard().removePiece(context.getCurrent(), context.getX(), context.getY());
 
-			tryMove(data.getCurrent(), data.getX(), y);
+			tryMove(context.getCurrent(), context.getX(), y);
 
-			data.setScore(score);
-			data.setDrops(data.getDrops() - 1);
+			context.setScore(score);
+			context.setDrops(context.getDrops() - 1);
 		}
 	}
 }

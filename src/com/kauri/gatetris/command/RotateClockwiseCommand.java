@@ -29,26 +29,26 @@ import com.kauri.gatetris.Tetromino;
  */
 public class RotateClockwiseCommand extends MovementCommand
 {
-	private GameContext data;
+	private GameContext context;
 	private boolean success = false;
 
-	public RotateClockwiseCommand(GameContext data)
+	public RotateClockwiseCommand(GameContext context)
 	{
-		super(data);
-		this.data = data;
+		super(context);
+		this.context = context;
 	}
 
 	@Override
 	public void execute()
 	{
-		success = tryMove(Tetromino.rotateClockwise(data.getCurrent()), data.getX(), data.getY());
+		success = tryMove(Tetromino.rotateClockwise(context.getCurrent()), context.getX(), context.getY());
 	}
 
 	@Override
 	public void unexecute()
 	{
 		if (success) {
-			tryMove(Tetromino.rotateCounterClockwise(data.getCurrent()), data.getX(), data.getY());
+			tryMove(Tetromino.rotateCounterClockwise(context.getCurrent()), context.getX(), context.getY());
 		}
 	}
 }

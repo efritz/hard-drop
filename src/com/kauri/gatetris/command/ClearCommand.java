@@ -33,41 +33,41 @@ import com.kauri.gatetris.Tetromino.Shape;
  */
 public class ClearCommand implements Command
 {
-	private GameContext data;
+	private GameContext context;
 	private long lines;
 	private long score;
 	private SortedMap<Integer, Shape[]> map = new TreeMap<Integer, Shape[]>();
 
-	public ClearCommand(GameContext data)
+	public ClearCommand(GameContext context)
 	{
-		this.data = data;
+		this.context = context;
 	}
 
 	@Override
 	public void execute()
 	{
-		for (int row = data.getBoard().getHeight() - 1; row >= 0; row--) {
-			if (data.getBoard().isRowFull(row)) {
-				map.put(row, data.getBoard().getRow(row));
-				data.getBoard().removeRow(row);
+		for (int row = context.getBoard().getHeight() - 1; row >= 0; row--) {
+			if (context.getBoard().isRowFull(row)) {
+				map.put(row, context.getBoard().getRow(row));
+				context.getBoard().removeRow(row);
 			}
 		}
 
-		lines = data.getLines();
-		score = data.getScore();
+		lines = context.getLines();
+		score = context.getScore();
 
-		data.setLines(lines + map.size());
-		data.setScore(score + 40 * (long) Math.pow(3, map.size() - 1));
+		context.setLines(lines + map.size());
+		context.setScore(score + 40 * (long) Math.pow(3, map.size() - 1));
 	}
 
 	@Override
 	public void unexecute()
 	{
 		for (Entry<Integer, Shape[]> e : map.entrySet()) {
-			data.getBoard().addRow(e.getKey(), e.getValue());
+			context.getBoard().addRow(e.getKey(), e.getValue());
 		}
 
-		data.setLines(lines);
-		data.setScore(score);
+		context.setLines(lines);
+		context.setScore(score);
 	}
 }

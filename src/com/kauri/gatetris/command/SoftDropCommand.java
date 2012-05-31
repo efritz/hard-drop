@@ -28,24 +28,24 @@ import com.kauri.gatetris.GameContext;
  */
 public class SoftDropCommand extends MovementCommand
 {
-	private GameContext data;
+	private GameContext context;
 	private Command subcommand;
 	private boolean success = false;
 
-	public SoftDropCommand(GameContext data)
+	public SoftDropCommand(GameContext context)
 	{
-		super(data);
-		this.data = data;
+		super(context);
+		this.context = context;
 	}
 
 	@Override
 	public void execute()
 	{
-		if (!data.getBoard().isFalling(data.getCurrent(), data.getX(), data.getY())) {
-			subcommand = new HardDropCommand(data);
+		if (!context.getBoard().isFalling(context.getCurrent(), context.getX(), context.getY())) {
+			subcommand = new HardDropCommand(context);
 			subcommand.execute();
 		} else {
-			success = tryMove(data.getCurrent(), data.getX(), data.getY() - 1);
+			success = tryMove(context.getCurrent(), context.getX(), context.getY() - 1);
 		}
 	}
 
@@ -53,7 +53,7 @@ public class SoftDropCommand extends MovementCommand
 	public void unexecute()
 	{
 		if (success) {
-			tryMove(data.getCurrent(), data.getX(), data.getY() + 1);
+			tryMove(context.getCurrent(), context.getX(), context.getY() + 1);
 		}
 
 		if (subcommand != null) {

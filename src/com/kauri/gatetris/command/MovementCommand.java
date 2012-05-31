@@ -29,19 +29,19 @@ import com.kauri.gatetris.Tetromino;
  */
 abstract public class MovementCommand implements Command
 {
-	private GameContext data;
+	private GameContext context;
 
-	public MovementCommand(GameContext data)
+	public MovementCommand(GameContext context)
 	{
-		this.data = data;
+		this.context = context;
 	}
 
 	public boolean tryMove(Tetromino piece, int xPos, int yPos)
 	{
-		if (data.getBoard().canMove(piece, xPos, yPos)) {
-			data.setX(xPos);
-			data.setY(yPos);
-			data.setCurrent(piece);
+		if (context.getBoard().canMove(piece, xPos, yPos)) {
+			context.setX(xPos);
+			context.setY(yPos);
+			context.setCurrent(piece);
 
 			return true;
 		}
