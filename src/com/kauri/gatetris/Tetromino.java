@@ -39,8 +39,6 @@ import java.util.Map;
  */
 public class Tetromino
 {
-	private final int prime = 31;
-
 	/**
 	 * A shape represents a unique tetromino shape.
 	 * 
@@ -262,8 +260,8 @@ public class Tetromino
 		int result = shape.hashCode();
 
 		for (int i = 0; i < this.getSize(); i++) {
-			result = prime * result + this.getX(i);
-			result = prime * result + this.getY(i);
+			result = 31 * result + this.getX(i);
+			result = 31 * result + this.getY(i);
 		}
 
 		return result;
