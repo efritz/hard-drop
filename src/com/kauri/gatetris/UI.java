@@ -138,14 +138,12 @@ public class UI
 			drawTetromino(g, context.getPreview(), rowOffset, translateBoardCol(xPos), colors.get(context.getPreview().getShape()), 0);
 		}
 
-		if (context.getState() == State.PAUSED) {
-			drawString(g, "paused");
-		}
+		if (context.getState() != State.PLAYING) {
+			g.setColor(new Color(0, 0, 0, (int) (255 * .5)));
+			g.fillRect(0, 0, getWidth(), getHeight());
 
-		if (context.getState() == State.GAMEOVER) {
-			drawString(g, "game over");
+			drawString(g, String.format("%d (%d)", context.getScore(), context.getLines()), getWidth() / 2, (getHeight() / 2), (int) (getWidth() * .85));
 		}
-
 	}
 
 	private Color changeAlpha(Color color, double percent)
@@ -153,18 +151,15 @@ public class UI
 		return new Color(color.getRed(), color.getGreen(), color.getBlue(), Math.min(255, Math.max(1, (int) (color.getAlpha() * percent))));
 	}
 
-	private void drawString(Graphics g, String string)
+	private void drawString(Graphics g, String string, int x, int y, int w)
 	{
 		((Graphics2D) g).setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
 
-		g.setFont(scaleFont(g, new Font("Arial", Font.PLAIN, 20), string, (int) (getWidth() * .85)));
+		g.setFont(scaleFont(g, new Font("Arial", Font.PLAIN, 20), string, (w)));
 		FontMetrics fm = g.getFontMetrics();
 
-		g.setColor(new Color(0, 0, 0, (int) (255 * .5)));
-		g.fillRect(0, 0, getWidth(), getHeight());
-
 		g.setColor(new Color(255, 255, 255));
-		g.drawString(string, (getWidth() / 2) - (fm.stringWidth(string) / 2), (getHeight() / 2) + fm.getDescent());
+		g.drawString(string, x - (fm.stringWidth(string) / 2), y + fm.getDescent());
 	}
 
 	/**
