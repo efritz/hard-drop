@@ -99,20 +99,18 @@ public class MoveEvaluator
 
 	private double getScoreForDrop(Move move, Board board, Tetromino current, int x1, int y1, Tetromino preview, int x2, int y2)
 	{
-		//
-		// TODO - use commands and undo (place execution inside of move instead of inside
-		// AI.animate() and update that method to use the move update method).
-		//
+		int y = board.dropHeight(current, x1, y1);
+		board.addPiece(current, x1, y);
 
-		Board dummy = null;
-
-		dummy = board.tryClone(dummy);
-		dummy.addPiece(current, x1, dummy.dropHeight(current, x1, y1));
-
+		double score;
 		if (preview != null) {
-			return getNextMove(dummy, preview, x2, y2).getScore();
+			score = getNextMove(board, preview, x2, y2).getScore();
 		} else {
-			return scoring.score(dummy);
+			score = scoring.score(board.tryClone(null));
 		}
+
+		board.removePiece(current, x1, y);
+
+		return score;
 	}
 }
