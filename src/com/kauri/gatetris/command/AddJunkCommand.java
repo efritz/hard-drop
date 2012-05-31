@@ -21,7 +21,7 @@
 
 package com.kauri.gatetris.command;
 
-import com.kauri.gatetris.GameData;
+import com.kauri.gatetris.GameContext;
 import com.kauri.gatetris.Tetromino.Shape;
 
 /**
@@ -29,11 +29,11 @@ import com.kauri.gatetris.Tetromino.Shape;
  */
 public class AddJunkCommand implements Command
 {
-	private GameData data;
+	private GameContext data;
 	private Shape[] overflow;
 	private Command subcommand;
 
-	public AddJunkCommand(GameData data)
+	public AddJunkCommand(GameContext data)
 	{
 		this.data = data;
 	}

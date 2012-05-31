@@ -21,17 +21,17 @@
 
 package com.kauri.gatetris.command;
 
-import com.kauri.gatetris.GameData;
+import com.kauri.gatetris.GameContext;
 
 /**
  * @author Eric Fritz
  */
 public class MoveLeftCommand extends MovementCommand
 {
-	private GameData data;
+	private GameContext data;
 	private boolean success = false;
 
-	public MoveLeftCommand(GameData data)
+	public MoveLeftCommand(GameContext data)
 	{
 		super(data);
 		this.data = data;

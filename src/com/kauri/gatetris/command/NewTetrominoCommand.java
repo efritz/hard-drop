@@ -21,8 +21,8 @@
 
 package com.kauri.gatetris.command;
 
-import com.kauri.gatetris.GameData;
-import com.kauri.gatetris.GameData.State;
+import com.kauri.gatetris.GameContext;
+import com.kauri.gatetris.GameContext.State;
 import com.kauri.gatetris.Tetromino;
 
 /**
@@ -30,13 +30,13 @@ import com.kauri.gatetris.Tetromino;
  */
 public class NewTetrominoCommand implements Command
 {
-	private GameData data;
+	private GameContext data;
 	private Tetromino current;
 	private Tetromino preview;
 	private int x;
 	private int y;
 
-	public NewTetrominoCommand(GameData data)
+	public NewTetrominoCommand(GameContext data)
 	{
 		this.data = data;
 	}

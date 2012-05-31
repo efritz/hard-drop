@@ -21,7 +21,7 @@
 
 package com.kauri.gatetris.ai;
 
-import com.kauri.gatetris.GameData;
+import com.kauri.gatetris.GameContext;
 import com.kauri.gatetris.command.HardDropCommand;
 import com.kauri.gatetris.command.MoveLeftCommand;
 import com.kauri.gatetris.command.MoveRightCommand;
@@ -33,7 +33,7 @@ import com.kauri.gatetris.command.SoftDropCommand;
  */
 public class AI
 {
-	private GameData data;
+	private GameContext data;
 
 	private int rDelta;
 	private int mDelta;
@@ -41,7 +41,7 @@ public class AI
 
 	private long lastAi = System.currentTimeMillis();
 
-	public AI(GameData data)
+	public AI(GameContext data)
 	{
 		this.data = data;
 	}

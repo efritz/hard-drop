@@ -21,7 +21,7 @@
 
 package com.kauri.gatetris.command;
 
-import com.kauri.gatetris.GameData;
+import com.kauri.gatetris.GameContext;
 import com.kauri.gatetris.Tetromino;
 
 /**
@@ -29,10 +29,10 @@ import com.kauri.gatetris.Tetromino;
  */
 public class RotateCounterClockwiseCommand extends MovementCommand
 {
-	private GameData data;
+	private GameContext data;
 	private boolean success = false;
 
-	public RotateCounterClockwiseCommand(GameData data)
+	public RotateCounterClockwiseCommand(GameContext data)
 	{
 		super(data);
 		this.data = data;

@@ -21,7 +21,7 @@
 
 package com.kauri.gatetris.command;
 
-import com.kauri.gatetris.GameData;
+import com.kauri.gatetris.GameContext;
 import com.kauri.gatetris.Tetromino;
 
 /**
@@ -29,9 +29,9 @@ import com.kauri.gatetris.Tetromino;
  */
 abstract public class MovementCommand implements Command
 {
-	private GameData data;
+	private GameContext data;
 
-	public MovementCommand(GameData data)
+	public MovementCommand(GameContext data)
 	{
 		this.data = data;
 	}

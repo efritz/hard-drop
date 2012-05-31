@@ -32,7 +32,7 @@ import com.kauri.gatetris.sequence.PieceSequence;
 /**
  * @author Eric Fritz
  */
-public class GameData
+public class GameContext
 {
 	public enum State {
 		PLAYING, PAUSED, GAMEOVER;

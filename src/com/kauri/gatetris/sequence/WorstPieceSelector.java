@@ -26,7 +26,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.kauri.gatetris.GameData;
+import com.kauri.gatetris.GameContext;
 import com.kauri.gatetris.Tetromino;
 import com.kauri.gatetris.Tetromino.Shape;
 import com.kauri.gatetris.ai.Move;
@@ -38,9 +38,9 @@ public class WorstPieceSelector implements PieceSelector
 {
 	private static Shape[] shapes = new Shape[] { Shape.I, Shape.J, Shape.L, Shape.O, Shape.S, Shape.T, Shape.Z };
 
-	private GameData data;
+	private GameContext data;
 
-	public WorstPieceSelector(GameData data)
+	public WorstPieceSelector(GameContext data)
 	{
 		this.data = data;
 	}

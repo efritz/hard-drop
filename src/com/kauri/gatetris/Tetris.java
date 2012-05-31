@@ -33,7 +33,7 @@ import java.awt.image.BufferStrategy;
 
 import javax.swing.JFrame;
 
-import com.kauri.gatetris.GameData.State;
+import com.kauri.gatetris.GameContext.State;
 import com.kauri.gatetris.ai.AI;
 import com.kauri.gatetris.command.AddJunkCommand;
 import com.kauri.gatetris.command.HardDropCommand;
@@ -49,11 +49,11 @@ import com.kauri.gatetris.sequence.ShufflePieceSelector;
 /**
  * @author Eric Fritz
  */
-public class Game extends Canvas implements Runnable
+public class Tetris extends Canvas implements Runnable
 {
 	private static final long serialVersionUID = 1L;
 
-	public GameData data = new GameData();
+	public GameContext data = new GameContext();
 	AI ai = new AI(data);
 	UI ui = new UI(data);
 
@@ -152,7 +152,7 @@ public class Game extends Canvas implements Runnable
 
 	public static void main(String[] args)
 	{
-		Game game = new Game();
+		Tetris game = new Tetris();
 
 		JFrame frame = new JFrame();
 		frame.setMinimumSize(new Dimension(300, 600));

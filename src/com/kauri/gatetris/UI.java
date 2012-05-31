@@ -30,7 +30,7 @@ import java.awt.RenderingHints;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.kauri.gatetris.GameData.State;
+import com.kauri.gatetris.GameContext.State;
 import com.kauri.gatetris.Tetromino.Shape;
 
 /**
@@ -54,9 +54,9 @@ public class UI
 
 	private int width;
 	private int height;
-	private GameData data;
+	private GameContext data;
 
-	public UI(GameData data)
+	public UI(GameContext data)
 	{
 		this.data = data;
 	}

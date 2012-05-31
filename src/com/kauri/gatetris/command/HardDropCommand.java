@@ -21,21 +21,21 @@
 
 package com.kauri.gatetris.command;
 
-import com.kauri.gatetris.GameData;
+import com.kauri.gatetris.GameContext;
 
 /**
  * @author Eric Fritz
  */
 public class HardDropCommand extends MovementCommand
 {
-	private GameData data;
+	private GameContext data;
 	private int y;
 	private long score;
 	private boolean success = false;
 	private Command subcommand1;
 	private Command subcommand2;
 
-	public HardDropCommand(GameData data)
+	public HardDropCommand(GameContext data)
 	{
 		super(data);
 		this.data = data;

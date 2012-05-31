@@ -25,7 +25,7 @@ import java.util.Map.Entry;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
-import com.kauri.gatetris.GameData;
+import com.kauri.gatetris.GameContext;
 import com.kauri.gatetris.Tetromino.Shape;
 
 /**
@@ -33,12 +33,12 @@ import com.kauri.gatetris.Tetromino.Shape;
  */
 public class ClearCommand implements Command
 {
-	private GameData data;
+	private GameContext data;
 	private long lines;
 	private long score;
 	private SortedMap<Integer, Shape[]> map = new TreeMap<Integer, Shape[]>();
 
-	public ClearCommand(GameData data)
+	public ClearCommand(GameContext data)
 	{
 		this.data = data;
 	}
