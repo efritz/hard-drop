@@ -41,12 +41,12 @@ public class MoveEvaluator
 		this.scoring = scoring;
 	}
 
-	public Move getNextMove(Board board, Tetromino current, int xPos, int yPos)
+	public Move getNextMove(Board board, Tetromino current, int xPos, int yPos, Tetromino preview, int x2, int y2)
 	{
-		return getNextMove(board, current, xPos, yPos, null, 0, 0);
+		return getNextMove(board, current, xPos, yPos);
 	}
 
-	public Move getNextMove(Board board, Tetromino current, int x1, int y1, Tetromino preview, int x2, int y2)
+	public Move getNextMove(Board board, Tetromino current, int x1, int y1)
 	{
 		Tetromino t1 = current;
 		Tetromino t2 = Tetromino.rotateClockwise(t1);
@@ -54,10 +54,10 @@ public class MoveEvaluator
 		Tetromino t4 = Tetromino.rotateClockwise(t3);
 
 		List<Move> moves = new LinkedList<Move>();
-		moves.add(getBestMoveForRotatedPiece(new Move(Double.NEGATIVE_INFINITY, 0, 0), board, t1, x1, y1, preview, x2, y2));
-		moves.add(getBestMoveForRotatedPiece(new Move(Double.NEGATIVE_INFINITY, 1, 0), board, t2, x1, y1, preview, x2, y2));
-		moves.add(getBestMoveForRotatedPiece(new Move(Double.NEGATIVE_INFINITY, 2, 0), board, t3, x1, y1, preview, x2, y2));
-		moves.add(getBestMoveForRotatedPiece(new Move(Double.NEGATIVE_INFINITY, 3, 0), board, t4, x1, y1, preview, x2, y2));
+		moves.add(getBestMoveForRotatedPiece(new Move(Double.NEGATIVE_INFINITY, 0, 0), board, t1, x1, y1));
+		moves.add(getBestMoveForRotatedPiece(new Move(Double.NEGATIVE_INFINITY, 1, 0), board, t2, x1, y1));
+		moves.add(getBestMoveForRotatedPiece(new Move(Double.NEGATIVE_INFINITY, 2, 0), board, t3, x1, y1));
+		moves.add(getBestMoveForRotatedPiece(new Move(Double.NEGATIVE_INFINITY, 3, 0), board, t4, x1, y1));
 
 		return Collections.max(moves, new Comparator<Move>() {
 			@Override
@@ -68,7 +68,7 @@ public class MoveEvaluator
 		});
 	}
 
-	private Move getBestMoveForRotatedPiece(Move move, Board board, Tetromino current, int x1, int y1, Tetromino preview, int x2, int y2)
+	private Move getBestMoveForRotatedPiece(Move move, Board board, Tetromino current, int x1, int y1)
 	{
 		boolean posIsValid = true;
 		boolean negIsValid = true;
@@ -79,11 +79,11 @@ public class MoveEvaluator
 			negIsValid = negIsValid && board.canMove(current, x1 - delta, y1);
 
 			if (posIsValid) {
-				move = getBetterMove(move, new Move(getScoreForDrop(move, board, current, x1 + delta, y1, preview, x2, y2), move.getRotationDelta(), delta));
+				move = getBetterMove(move, new Move(getScoreForDrop(move, board, current, x1 + delta, y1), move.getRotationDelta(), delta));
 			}
 
 			if (negIsValid) {
-				move = getBetterMove(move, new Move(getScoreForDrop(move, board, current, x1 - delta, y1, preview, x2, y2), move.getRotationDelta(), delta * -1));
+				move = getBetterMove(move, new Move(getScoreForDrop(move, board, current, x1 - delta, y1), move.getRotationDelta(), delta * -1));
 			}
 
 			delta++;
@@ -97,17 +97,13 @@ public class MoveEvaluator
 		return m1.getScore() > m2.getScore() ? m1 : m2;
 	}
 
-	private double getScoreForDrop(Move move, Board board, Tetromino current, int x1, int y1, Tetromino preview, int x2, int y2)
+	private double getScoreForDrop(Move move, Board board, Tetromino current, int x1, int y1)
 	{
 		int y = board.dropHeight(current, x1, y1);
+
 		board.addPiece(current, x1, y);
 
-		double score;
-		if (preview != null) {
-			score = getNextMove(board, preview, x2, y2).getScore();
-		} else {
-			score = scoring.score(board.tryClone(null));
-		}
+		double score = scoring.score(board.tryClone(null));
 
 		board.removePiece(current, x1, y);
 
