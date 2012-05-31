@@ -66,18 +66,15 @@ public class ScoringSystem
 	 */
 	public double score(Board board)
 	{
-		double score = 0;
-
 		//
-		// TODO - implement scoring clears without having to mutate the board (just count the number
-		// of full lines and subtract the height?) - this should also have a weight attached to it,
-		// but it is easy to find the number of line clears.
+		// TODO - modify line clears so that the board is not modified.
 		//
 
+		int clears = 0;
 		for (int row = board.getHeight() - 1; row >= 0; row--) {
 			if (board.isRowFull(row)) {
+				clears++;
 				board.removeRow(row);
-				score += weightClears;
 			}
 		}
 
@@ -86,6 +83,10 @@ public class ScoringSystem
 		int sumHeight = 0;
 		int minHeight = heights[0];
 		int maxHeight = heights[0];
+
+		int holes = 0;
+		int wells = 0;
+		int blockades = 0;
 
 		for (int col = 0; col < heights.length; col++) {
 			sumHeight = sumHeight + heights[col];
@@ -101,11 +102,11 @@ public class ScoringSystem
 				if (board.getShapeAt(i, col) == Shape.NoShape) {
 					h++;
 				} else if (h > 0) {
-					score += weightBlockades;
+					blockades++;
 				}
 			}
 
-			score += weightHoles * h;
+			holes += h;
 
 			// A well exists if a column's height is at least minWellDepth less than the columns
 			// surrounding it. We compare each column's height with that of both its neighbors. The
@@ -120,10 +121,18 @@ public class ScoringSystem
 				int depth = Math.min(h1, h2) - heights[col];
 
 				if (depth >= minWellDepth) {
-					score += weightWells * depth;
+					wells += depth;
 				}
 			}
 		}
+
+		double score = 0;
+
+		score += weightClears * clears;
+
+		score += weightHoles * holes;
+		score += weightWells * wells;
+		score += weightBlockades * blockades;
 
 		score += weightSumHeight * sumHeight;
 		score += weightMaxHeight * maxHeight;
