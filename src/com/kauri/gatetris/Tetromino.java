@@ -259,11 +259,11 @@ public class Tetromino
 	@Override
 	public int hashCode()
 	{
-		int result = prime * 1 + shape.hashCode();
+		int result = shape.hashCode();
 
 		for (int i = 0; i < this.getSize(); i++) {
-			result += prime * this.getX(i);
-			result += prime * this.getY(i);
+			result = prime * result + this.getX(i);
+			result = prime * result + this.getY(i);
 		}
 
 		return result;
