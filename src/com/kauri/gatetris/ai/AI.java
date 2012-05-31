@@ -48,30 +48,28 @@ public class AI
 
 	public void update()
 	{
-		long now = System.currentTimeMillis();
+		long time = System.currentTimeMillis();
 
-		if (now - data.getAiDelay() < lastAi) {
-			return;
-		}
+		if (time - data.getAiDelay() >= lastAi) {
+			lastAi = time;
 
-		if (animating) {
-			animating = animate();
-
-			while (animating && data.getAiDelay() == 1) {
+			if (animating) {
 				animating = animate();
+
+				while (animating && data.getAiDelay() == 1) {
+					animating = animate();
+				}
+			}
+
+			if (!animating) {
+				Move move = data.getEvaluator().getNextMove(data.getBoard(), data.getCurrent(), data.getX(), data.getY(), data.getPreview(), data.getBoard().getSpawnX(data.getPreview()), data.getBoard().getSpawnY(data.getPreview()));
+
+				rDelta = move.getRotationDelta();
+				mDelta = move.getMovementDelta();
+
+				animating = true;
 			}
 		}
-
-		if (!animating) {
-			Move move = data.getEvaluator().getNextMove(data.getBoard(), data.getCurrent(), data.getX(), data.getY(), data.getPreview(), data.getBoard().getSpawnX(data.getPreview()), data.getBoard().getSpawnY(data.getPreview()));
-
-			rDelta = move.getRotationDelta();
-			mDelta = move.getMovementDelta();
-
-			animating = true;
-		}
-
-		lastAi = now;
 	}
 
 	private boolean animate()
