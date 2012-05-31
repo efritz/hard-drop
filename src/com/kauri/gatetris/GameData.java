@@ -42,6 +42,9 @@ public class GameData
 	private Board board;
 	private PieceSequence sequence;
 
+	private boolean showNextPiece = false;
+	private boolean showShadowPiece = false;
+
 	private long score = 0;
 	private long lines = 0;
 	private long drops = 0;
@@ -147,6 +150,26 @@ public class GameData
 		this.drops = drops;
 	}
 
+	public boolean showNextPiece()
+	{
+		return showNextPiece;
+	}
+
+	public void setShowNextPiece(boolean showNextPiece)
+	{
+		this.showNextPiece = showNextPiece;
+	}
+
+	public boolean showShadowPiece()
+	{
+		return showShadowPiece;
+	}
+
+	public void setShowShadowPiece(boolean showShadowPiece)
+	{
+		this.showShadowPiece = showShadowPiece;
+	}
+
 	public int getX()
 	{
 		return xPos;
@@ -187,7 +210,7 @@ public class GameData
 		this.preview = preview;
 	}
 
-	private final int MAX_HISTORY = 50;
+	private final int MAX_HISTORY = 5000;
 
 	private Stack<Command> history = new Stack<Command>() {
 		private static final long serialVersionUID = 1L;

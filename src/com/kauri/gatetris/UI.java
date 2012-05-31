@@ -52,9 +52,6 @@ public class UI
 		colors.put(Shape.NoShape, new Color(240, 240, 240));
 	}
 
-	boolean showNextPiece = false;
-	boolean showShadowPiece = false;
-
 	private int width;
 	private int height;
 	private GameData data;
@@ -92,12 +89,12 @@ public class UI
 
 	private int getSquareWidth()
 	{
-		return getAdjustedBoardWidth() / (data.getBoard().getWidth() + (showNextPiece ? 2 : 0));
+		return getAdjustedBoardWidth() / (data.getBoard().getWidth() + (data.showNextPiece() ? 2 : 0));
 	}
 
 	private int getSquareHeight()
 	{
-		return getAdjustedBoardHeight() / (data.getBoard().getHeight() + (showNextPiece ? 6 : 0));
+		return getAdjustedBoardHeight() / (data.getBoard().getHeight() + (data.showNextPiece() ? 6 : 0));
 	}
 
 	private int getLeftMargin()
@@ -121,7 +118,7 @@ public class UI
 			}
 		}
 
-		if (showShadowPiece) {
+		if (data.showShadowPiece()) {
 			int ghostPosition = data.getBoard().dropHeight(data.getCurrent(), data.getX(), data.getY());
 
 			if (ghostPosition < data.getY()) {
@@ -133,7 +130,7 @@ public class UI
 			drawTetromino(g, data.getCurrent(), translateBoardRow(data.getY()), translateBoardCol(data.getX()), colors.get(data.getCurrent().getShape()), getTopMargin());
 		}
 
-		if (showNextPiece) {
+		if (data.showNextPiece()) {
 			int xPos = data.getBoard().getSpawnX(data.getPreview());
 
 			int rowOffset = (getTopMargin() - (data.getPreview().getHeight() * getSquareHeight())) / 2;
