@@ -21,6 +21,13 @@
 
 package com.kauri.gatetris.ai;
 
+import com.kauri.gatetris.GameContext;
+import com.kauri.gatetris.command.HardDropCommand;
+import com.kauri.gatetris.command.MoveLeftCommand;
+import com.kauri.gatetris.command.MoveRightCommand;
+import com.kauri.gatetris.command.RotateClockwiseCommand;
+import com.kauri.gatetris.command.SoftDropCommand;
+
 /**
  * @author Eric Fritz
  */
@@ -29,6 +36,7 @@ public class Move
 	private double score;
 	private int rDelta = 0;
 	private int mDelta = 0;
+	private boolean animating = true;
 
 	public Move(double score, int rotationDelta, int movementDelta)
 	{
@@ -50,5 +58,29 @@ public class Move
 	public int getMovementDelta()
 	{
 		return mDelta;
+	}
+
+	public boolean canPerformUpdate()
+	{
+		return animating;
+	}
+
+	public void update(GameContext context)
+	{
+		if (rDelta > 0) {
+			rDelta--;
+			context.storeAndExecute(new RotateClockwiseCommand(context));
+		} else if (mDelta < 0) {
+			mDelta++;
+			context.storeAndExecute(new MoveLeftCommand(context));
+		} else if (mDelta > 0) {
+			mDelta--;
+			context.storeAndExecute(new MoveRightCommand(context));
+		} else if (context.getBoard().isFalling(context.getCurrent(), context.getX(), context.getY())) {
+			context.storeAndExecute(new SoftDropCommand(context));
+		} else {
+			context.storeAndExecute(new HardDropCommand(context));
+			animating = false;
+		}
 	}
 }
