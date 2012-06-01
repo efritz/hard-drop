@@ -41,12 +41,12 @@ public class MoveEvaluator
 		this.scoring = scoring;
 	}
 
-	public Move getNextMove(Board board, Tetromino current, int xPos, int yPos, Tetromino preview, int x2, int y2)
+	public Move getNextMove(Board board, Tetromino current, int x1, int y1)
 	{
-		return getNextMove(board, current, xPos, yPos);
+		return getNextMove(board, current, x1, y1, null, 0, 0);
 	}
 
-	public Move getNextMove(Board board, Tetromino current, int x1, int y1)
+	public Move getNextMove(Board board, Tetromino current, int x1, int y1, Tetromino preview, int x2, int y2)
 	{
 		Tetromino t1 = current;
 		Tetromino t2 = Tetromino.rotateClockwise(t1);
@@ -54,10 +54,10 @@ public class MoveEvaluator
 		Tetromino t4 = Tetromino.rotateClockwise(t3);
 
 		List<Move> moves = new LinkedList<Move>();
-		moves.add(getBestMoveForRotatedPiece(new Move(Double.NEGATIVE_INFINITY, 0, 0), board, t1, x1, y1));
-		moves.add(getBestMoveForRotatedPiece(new Move(Double.NEGATIVE_INFINITY, 1, 0), board, t2, x1, y1));
-		moves.add(getBestMoveForRotatedPiece(new Move(Double.NEGATIVE_INFINITY, 2, 0), board, t3, x1, y1));
-		moves.add(getBestMoveForRotatedPiece(new Move(Double.NEGATIVE_INFINITY, 3, 0), board, t4, x1, y1));
+		moves.add(getBestMoveForRotatedPiece(board, 0, t1, x1, y1, preview, x2, y2));
+		moves.add(getBestMoveForRotatedPiece(board, 1, t2, x1, y1, preview, x2, y2));
+		moves.add(getBestMoveForRotatedPiece(board, 2, t3, x1, y1, preview, x2, y2));
+		moves.add(getBestMoveForRotatedPiece(board, 3, t4, x1, y1, preview, x2, y2));
 
 		return Collections.max(moves, new Comparator<Move>() {
 			@Override
@@ -68,45 +68,48 @@ public class MoveEvaluator
 		});
 	}
 
-	private Move getBestMoveForRotatedPiece(Move move, Board board, Tetromino current, int x1, int y1)
+	public Move getBestMoveForRotatedPiece(Board board, int rot, Tetromino current, int x1, int y1, Tetromino preview, int x2, int y2)
 	{
-		boolean posIsValid = true;
-		boolean negIsValid = true;
+		double best = Double.NEGATIVE_INFINITY;
+		Move move = new Move(best, 0, 0);
 
-		int delta = 0;
-		while (negIsValid || posIsValid) {
-			posIsValid = posIsValid && board.canMove(current, x1 + delta, y1);
-			negIsValid = negIsValid && board.canMove(current, x1 - delta, y1);
+		int min = getMinTranslationDelta(board, current, x1, y1);
+		int max = getMaxTranslationDelta(board, current, x1, y1);
 
-			if (posIsValid) {
-				move = getBetterMove(move, new Move(getScoreForDrop(move, board, current, x1 + delta, y1), move.getRotationDelta(), delta));
+		for (int translation = min; translation <= max; translation++) {
+			int target = board.dropHeight(current, x1 + translation, y1);
+			board.addPiece(current, x1 + translation, target);
+
+			double score = preview == null ? scoring.score(board.tryClone(null)) : getNextMove(board, preview, x2, y2).getScore();
+
+			if (score > best) {
+				best = score;
+				move = new Move(score, rot, translation);
 			}
 
-			if (negIsValid) {
-				move = getBetterMove(move, new Move(getScoreForDrop(move, board, current, x1 - delta, y1), move.getRotationDelta(), delta * -1));
-			}
-
-			delta++;
+			board.removePiece(current, x1 + translation, target);
 		}
 
 		return move;
 	}
 
-	private Move getBetterMove(Move m1, Move m2)
+	private int getMinTranslationDelta(Board board, Tetromino current, int xPos, int yPos)
 	{
-		return m1.getScore() > m2.getScore() ? m1 : m2;
+		return getMaxTranslationDeltaMagnitude(board, current, xPos, yPos, -1);
 	}
 
-	private double getScoreForDrop(Move move, Board board, Tetromino current, int x1, int y1)
+	private int getMaxTranslationDelta(Board board, Tetromino current, int xPos, int yPos)
 	{
-		int y = board.dropHeight(current, x1, y1);
+		return getMaxTranslationDeltaMagnitude(board, current, xPos, yPos, +1);
+	}
 
-		board.addPiece(current, x1, y);
+	private int getMaxTranslationDeltaMagnitude(Board board, Tetromino current, int xPos, int yPos, int step)
+	{
+		int delta = 0;
+		while (board.canMove(current, xPos + delta + step, yPos)) {
+			delta += step;
+		}
 
-		double score = scoring.score(board.tryClone(null));
-
-		board.removePiece(current, x1, y);
-
-		return score;
+		return delta;
 	}
 }
