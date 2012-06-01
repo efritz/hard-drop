@@ -229,6 +229,8 @@ public class GameContext
 			return super.add(element);
 		}
 	};
+	private boolean runningAi = false;
+	private boolean autoRestart = false;
 
 	public void storeAndExecute(Command command)
 	{
@@ -256,5 +258,25 @@ public class GameContext
 	public void setAiDelay(int aiDelay)
 	{
 		this.aiDelay = aiDelay;
+	}
+
+	boolean isRunningAi()
+	{
+		return runningAi;
+	}
+
+	void setRunningAi(boolean runningAi)
+	{
+		this.runningAi = runningAi;
+	}
+
+	boolean isAutoRestart()
+	{
+		return autoRestart;
+	}
+
+	void setAutoRestart(boolean autoRestart)
+	{
+		this.autoRestart = autoRestart;
 	}
 }

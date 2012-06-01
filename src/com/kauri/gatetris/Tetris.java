@@ -54,9 +54,6 @@ public class Tetris extends Canvas implements Runnable
 	AI ai = new AI(context);
 	UI ui = new UI(context);
 
-	boolean runningAi = false;
-	boolean autoRestart = false;
-
 	public void start()
 	{
 		new Thread(this).start();
@@ -99,13 +96,13 @@ public class Tetris extends Canvas implements Runnable
 		}
 
 		if (context.getState() == State.GAMEOVER) {
-			if (autoRestart) {
+			if (context.isAutoRestart()) {
 				startNewGame();
 			}
 		}
 
 		if (context.getState() == State.PLAYING) {
-			if (runningAi) {
+			if (context.isRunningAi()) {
 				ai.update();
 			} else {
 				long time = System.currentTimeMillis();
@@ -164,7 +161,7 @@ public class Tetris extends Canvas implements Runnable
 		{
 			int keyCode = ke.getKeyCode();
 
-			if (context.getState() == State.PLAYING && !runningAi) {
+			if (context.getState() == State.PLAYING && !context.isRunningAi()) {
 				if (keyCode == KeyEvent.VK_LEFT) {
 					context.storeAndExecute(new MoveLeftCommand(context));
 				}
@@ -190,7 +187,7 @@ public class Tetris extends Canvas implements Runnable
 				}
 			}
 
-			if (context.getState() != State.PAUSED && !runningAi) {
+			if (context.getState() != State.PAUSED && !context.isRunningAi()) {
 				if (keyCode == KeyEvent.VK_BACK_SPACE) {
 					context.undo();
 				}
@@ -207,11 +204,11 @@ public class Tetris extends Canvas implements Runnable
 			}
 
 			if (keyCode == KeyEvent.VK_A) {
-				runningAi = !runningAi;
+				context.setRunningAi(!context.isRunningAi());
 			}
 
 			if (keyCode == KeyEvent.VK_U) {
-				autoRestart = !autoRestart;
+				context.setAutoRestart(!context.isAutoRestart());
 			}
 
 			if (keyCode == 61) {
