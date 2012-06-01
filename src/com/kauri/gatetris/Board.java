@@ -53,6 +53,9 @@ public class Board implements Cloneable
 		clear();
 	}
 
+	/**
+	 * Remove all blocks from the board.
+	 */
 	public void clear()
 	{
 		Arrays.fill(board, Shape.NoShape);
@@ -111,21 +114,6 @@ public class Board implements Cloneable
 	}
 
 	/**
-	 * Updates the block type at the given position.
-	 * 
-	 * @param row
-	 *            The row index.
-	 * @param col
-	 *            The column index.
-	 * @param type
-	 *            The tetromino type.
-	 */
-	private void setShapeAt(int row, int col, Shape type)
-	{
-		board[(row * width) + col] = type;
-	}
-
-	/**
 	 * Determines if a tetromino can be placed at the given x and y-coordinates without collision.
 	 * 
 	 * @param piece
@@ -169,21 +157,19 @@ public class Board implements Cloneable
 		fillTetromino(piece, xPos, yPos, piece.getShape());
 	}
 
+	/**
+	 * Removes the blocks of a tetromino from this board.
+	 * 
+	 * @param piece
+	 *            The tetromino.
+	 * @param xPos
+	 *            The x-position.
+	 * @param yPos
+	 *            The y-position.
+	 */
 	public void removePiece(Tetromino piece, int xPos, int yPos)
 	{
 		fillTetromino(piece, xPos, yPos, Shape.NoShape);
-	}
-
-	private void fillTetromino(Tetromino piece, int xPos, int yPos, Shape shape)
-	{
-		for (int i = 0; i < piece.getSize(); i++) {
-			int col = xPos + piece.getX(i);
-			int row = yPos - piece.getY(i);
-
-			if (col >= 0 && col < width && row >= 0 && row < height) {
-				setShapeAt(row, col, shape);
-			}
-		}
 	}
 
 	/**
@@ -204,6 +190,13 @@ public class Board implements Cloneable
 		return true;
 	}
 
+	/**
+	 * Retrieve the shapes that compose a given row.
+	 * 
+	 * @param row
+	 *            The row index.
+	 * @return An array of shapes.
+	 */
 	public Shape[] getRow(int row)
 	{
 		Shape[] shapes = new Shape[width];
@@ -256,11 +249,27 @@ public class Board implements Cloneable
 		}
 	}
 
+	/**
+	 * Determines the x-position of a piece as if it were spawning at the top of the board. This
+	 * attempts to center the piece horizontally on the board.
+	 * 
+	 * @param piece
+	 *            The tetromino.
+	 * @return The x-position.
+	 */
 	public int getSpawnX(Tetromino piece)
 	{
 		return (width - piece.getWidth()) / 2 + Math.abs(piece.getMinX());
 	}
 
+	/**
+	 * Determines the y-position of a piece as if it were spawning at the top of the board. This
+	 * attempts to place the piece so that all of its blocks are visible at the time of spawn.
+	 * 
+	 * @param piece
+	 *            The tetromino.
+	 * @return The y-position.
+	 */
 	public int getSpawnY(Tetromino piece)
 	{
 		return height - 1 - piece.getMinY();
@@ -273,7 +282,7 @@ public class Board implements Cloneable
 	 * @param piece
 	 *            The tetromino.
 	 * @param xPos
-	 *            The piece's current x-position.
+	 *            The x-position.
 	 * @return The resting y-position.
 	 */
 	public int dropHeight(Tetromino piece, int xPos)
@@ -288,9 +297,9 @@ public class Board implements Cloneable
 	 * @param piece
 	 *            The tetromino.
 	 * @param xPos
-	 *            The piece's current x-position.
+	 *            The x-position.
 	 * @param yPos
-	 *            The piece's current y-position.
+	 *            The y-position.
 	 * @return The resting y-position.
 	 */
 	public int dropHeight(Tetromino piece, int xPos, int yPos)
@@ -303,8 +312,58 @@ public class Board implements Cloneable
 		return yPos - diff + 1;
 	}
 
+	/**
+	 * Determines if the piece can move straight down vertically.
+	 * 
+	 * @param piece
+	 *            The tetromino.
+	 * @param xPos
+	 *            The x-position.
+	 * @param yPos
+	 *            The y-position.
+	 * @return
+	 */
 	public boolean isFalling(Tetromino piece, int xPos, int yPos)
 	{
 		return canMove(piece, xPos, yPos - 1);
+	}
+
+	/**
+	 * Updates the block type at the given position.
+	 * 
+	 * @param row
+	 *            The row index.
+	 * @param col
+	 *            The column index.
+	 * @param type
+	 *            The tetromino type.
+	 */
+	private void setShapeAt(int row, int col, Shape type)
+	{
+		board[(row * width) + col] = type;
+	}
+
+	/**
+	 * Fill the shape of a tetromino with the given shape at the given position.
+	 * 
+	 * @param piece
+	 *            The tetromino.
+	 * @param xPos
+	 *            The x-position.
+	 * @param yPos
+	 *            The y-position.
+	 * @param shape
+	 *            The shape that composes the tetromino.
+	 */
+	private void fillTetromino(Tetromino piece, int xPos, int yPos, Shape shape)
+	{
+		for (int i = 0; i < piece.getSize(); i++) {
+			int col = xPos + piece.getX(i);
+			int row = yPos - piece.getY(i);
+
+			if (col >= 0 && col < width && row >= 0 && row < height) {
+				setShapeAt(row, col, shape);
+			}
+		}
 	}
 }

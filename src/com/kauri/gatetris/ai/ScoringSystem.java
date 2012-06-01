@@ -40,11 +40,25 @@ public class ScoringSystem
 	private double weightBlockades;
 	private double weightClears;
 
-	public double[] getWeights()
-	{
-		return new double[] { weightSumHeight, weightMaxHeight, weightRelHeight, weightAvgHeight, weightHoles, weightWells, weightBlockades, weightClears };
-	}
-
+	/**
+	 * 
+	 * @param weightSumHeight
+	 *            The weight for the sum of the board's column heights.
+	 * @param weightMaxHeight
+	 *            The weight for the height of the tallest column.
+	 * @param weightRelHeight
+	 *            The weight for the relative height distance (maximum-minimum).
+	 * @param weightAvgHeight
+	 *            The weight for the average column height.
+	 * @param weightHoles
+	 *            The weight for the number of holes.
+	 * @param weightWells
+	 *            The weight for the number of wells.
+	 * @param weightBlockades
+	 *            The weight for the number of blockades.
+	 * @param weightClears
+	 *            The weight for the number of line clears.
+	 */
 	public void setWeights(double weightSumHeight, double weightMaxHeight, double weightRelHeight, double weightAvgHeight, double weightHoles, double weightWells, double weightBlockades, double weightClears)
 	{
 		this.weightSumHeight = weightSumHeight;

@@ -37,21 +37,13 @@ public class Evolution
 
 	private int generation = 1;
 
-	private static class Entity
-	{
-		public long score;
-		public double[] chromosomes;
-
-		public Entity(double[] chromosomes)
-		{
-			this.chromosomes = chromosomes;
-		}
-	}
-
 	List<Entity> population = new ArrayList<Entity>();
 
 	int current = 0;
 
+	/**
+	 * Creates a new Evolution.
+	 */
 	public Evolution()
 	{
 		for (int i = 0; i < populationSize; i++) {
@@ -65,11 +57,43 @@ public class Evolution
 		}
 	}
 
+	/**
+	 * Apply the next chromosome to the given scoring system.
+	 * 
+	 * @param scoring
+	 *            The scoring system.
+	 */
 	public void updateScoring(ScoringSystem scoring)
 	{
 		scoring.setWeights(population.get(current).chromosomes[0], population.get(current).chromosomes[1], population.get(current).chromosomes[2], population.get(current).chromosomes[3], population.get(current).chromosomes[4], population.get(current).chromosomes[5], population.get(current).chromosomes[6], population.get(current).chromosomes[7]);
 	}
 
+	/**
+	 * Records the score of the game played with the current weights.
+	 * 
+	 * @param score
+	 *            The number of lines cleared on the last game with the current weights.
+	 */
+	public void submit(long score)
+	{
+		String chromosomes = "";
+		for (int i = 0; i < population.get(current).chromosomes.length; i++) {
+			chromosomes += String.format("%+2.2f%s", population.get(current).chromosomes[i], i != population.get(current).chromosomes.length - 1 ? ", " : "");
+		}
+
+		System.out.printf("Generation %-2d - Candidate %-2d: [%s] score = %d\n", generation, current + 1, chromosomes, score);
+
+		population.get(current).score = score;
+		current++;
+
+		if (current == populationSize) {
+			newGeneration();
+		}
+	}
+
+	/**
+	 * Create a new generation based off of the success of the last generation.
+	 */
 	private void newGeneration()
 	{
 		Collections.sort(population, new Comparator<Entity>() {
@@ -112,20 +136,17 @@ public class Evolution
 		generation++;
 	}
 
-	public void submit(long score)
+	/**
+	 * Represents a single game played with the given weights and score.
+	 */
+	private static class Entity
 	{
-		String chromosomes = "";
-		for (int i = 0; i < population.get(current).chromosomes.length; i++) {
-			chromosomes += String.format("%+2.2f%s", population.get(current).chromosomes[i], i != population.get(current).chromosomes.length - 1 ? ", " : "");
-		}
+		public long score;
+		public double[] chromosomes;
 
-		System.out.printf("Generation %-2d - Candidate %-2d: [%s] score = %d\n", generation, current + 1, chromosomes, score);
-
-		population.get(current).score = score;
-		current++;
-
-		if (current == populationSize) {
-			newGeneration();
+		public Entity(double[] chromosomes)
+		{
+			this.chromosomes = chromosomes;
 		}
 	}
 }

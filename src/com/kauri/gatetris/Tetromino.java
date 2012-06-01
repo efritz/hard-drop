@@ -41,8 +41,6 @@ public class Tetromino
 {
 	/**
 	 * A shape represents a unique tetromino shape.
-	 * 
-	 * @author Eric Fritz
 	 */
 	public enum Shape {
 		/**
