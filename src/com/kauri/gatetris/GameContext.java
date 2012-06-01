@@ -27,7 +27,9 @@ import com.kauri.gatetris.ai.Evolution;
 import com.kauri.gatetris.ai.MoveEvaluator;
 import com.kauri.gatetris.ai.ScoringSystem;
 import com.kauri.gatetris.command.Command;
+import com.kauri.gatetris.command.NewTetrominoCommand;
 import com.kauri.gatetris.sequence.PieceSequence;
+import com.kauri.gatetris.sequence.ShufflePieceSelector;
 
 /**
  * @author Eric Fritz
@@ -39,8 +41,8 @@ public class GameContext
 	}
 
 	private State state = State.PLAYING;
-	private Board board;
-	private PieceSequence sequence;
+	private Board board = new Board(10, 20);
+	private PieceSequence sequence = new PieceSequence(new ShufflePieceSelector());
 
 	private boolean showNextPiece = false;
 	private boolean showShadowPiece = false;
@@ -78,6 +80,8 @@ public class GameContext
 		sequence.clear();
 
 		evo.updateScoring(scoring);
+
+		new NewTetrominoCommand(this).execute();
 	}
 
 	public MoveEvaluator getEvaluator()

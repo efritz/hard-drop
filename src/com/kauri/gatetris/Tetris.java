@@ -39,12 +39,9 @@ import com.kauri.gatetris.command.AddJunkCommand;
 import com.kauri.gatetris.command.HardDropCommand;
 import com.kauri.gatetris.command.MoveLeftCommand;
 import com.kauri.gatetris.command.MoveRightCommand;
-import com.kauri.gatetris.command.NewTetrominoCommand;
 import com.kauri.gatetris.command.RotateClockwiseCommand;
 import com.kauri.gatetris.command.RotateCounterClockwiseCommand;
 import com.kauri.gatetris.command.SoftDropCommand;
-import com.kauri.gatetris.sequence.PieceSequence;
-import com.kauri.gatetris.sequence.ShufflePieceSelector;
 
 /**
  * @author Eric Fritz
@@ -67,17 +64,7 @@ public class Tetris extends Canvas implements Runnable
 
 	public void startNewGame()
 	{
-		if (context.getBoard() == null) {
-			context.setBoard(new Board(10, 20));
-		}
-
-		if (context.getSequence() == null) {
-			context.setSequence(new PieceSequence(new ShufflePieceSelector()));
-		}
-
 		context.newGame();
-
-		new NewTetrominoCommand(context).execute();
 	}
 
 	@Override
