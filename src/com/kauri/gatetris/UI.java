@@ -30,7 +30,6 @@ import java.awt.RenderingHints;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.kauri.gatetris.GameContext.State;
 import com.kauri.gatetris.Tetromino.Shape;
 
 /**
@@ -138,7 +137,7 @@ public class UI
 			drawTetromino(g, context.getPreview(), rowOffset, translateBoardCol(xPos), colors.get(context.getPreview().getShape()), 0);
 		}
 
-		if (context.getState() != State.PLAYING) {
+		if (context.getShowScore()) {
 			g.setColor(new Color(0, 0, 0, (int) (255 * .5)));
 			g.fillRect(0, 0, getWidth(), getHeight());
 

@@ -233,6 +233,10 @@ public class Tetris extends Canvas implements Runnable
 				}
 			}
 
+			if (keyCode == KeyEvent.VK_O) {
+				context.setShowScore(true);
+			}
+
 			if (keyCode == KeyEvent.VK_PAGE_UP) {
 				int width = Math.min(100, Math.max(4, context.getBoard().getWidth() + 1));
 				context.setBoard(new Board(width, width * 2));
@@ -249,6 +253,11 @@ public class Tetris extends Canvas implements Runnable
 		@Override
 		public void keyReleased(KeyEvent ke)
 		{
+			int keyCode = ke.getKeyCode();
+
+			if (keyCode == KeyEvent.VK_O) {
+				context.setShowScore(false);
+			}
 		}
 
 		@Override

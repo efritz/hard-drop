@@ -63,6 +63,8 @@ public class GameContext
 
 	private int aiDelay = 128;
 
+	private boolean showScore = false;
+
 	public void newGame()
 	{
 		if (score != 0) {
@@ -278,5 +280,15 @@ public class GameContext
 	void setAutoRestart(boolean autoRestart)
 	{
 		this.autoRestart = autoRestart;
+	}
+
+	public boolean getShowScore()
+	{
+		return showScore;
+	}
+
+	public void setShowScore(boolean b)
+	{
+		this.showScore = b;
 	}
 }
