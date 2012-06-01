@@ -41,6 +41,7 @@ public class ScoringSystem
 	private double weightClears;
 
 	/**
+	 * Updates the scoring weights.
 	 * 
 	 * @param weightSumHeight
 	 *            The weight for the sum of the board's column heights.
