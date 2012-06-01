@@ -94,6 +94,10 @@ public class Tetris extends Canvas implements Runnable
 
 	private void update()
 	{
+		if (!context.getBoard().canMove(context.getCurrent(), context.getX(), context.getY())) {
+			context.setState(State.GAMEOVER);
+		}
+
 		if (context.getState() == State.GAMEOVER) {
 			if (autoRestart) {
 				startNewGame();

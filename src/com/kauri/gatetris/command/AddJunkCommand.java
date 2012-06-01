@@ -41,10 +41,6 @@ public class AddJunkCommand implements Command
 	@Override
 	public void execute()
 	{
-		//
-		// TODO - also game over if overflow contains blocks?
-		//
-
 		overflow = context.getBoard().getRow(context.getBoard().getHeight() - 1);
 
 		Shape[] line = new Shape[context.getBoard().getWidth()];

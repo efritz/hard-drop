@@ -22,7 +22,6 @@
 package com.kauri.gatetris.command;
 
 import com.kauri.gatetris.GameContext;
-import com.kauri.gatetris.GameContext.State;
 import com.kauri.gatetris.Tetromino;
 
 /**
@@ -56,19 +55,11 @@ public class NewTetrominoCommand implements Command
 
 		context.setX(context.getBoard().getSpawnX(context.getCurrent()));
 		context.setY(context.getBoard().getSpawnY(context.getCurrent()));
-
-		// TODO - move this somewhere else
-
-		if (!context.getBoard().canMove(context.getCurrent(), context.getX(), context.getY())) {
-			context.setState(State.GAMEOVER);
-		}
 	}
 
 	@Override
 	public void unexecute()
 	{
-		context.setState(State.PLAYING);
-
 		context.setCurrent(current);
 		context.setPreview(preview);
 
