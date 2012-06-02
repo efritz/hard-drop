@@ -51,6 +51,8 @@ public class UI
 		colors.put(Shape.NoShape, new Color(240, 240, 240));
 	}
 
+	private final int maximumTetrominoHeight = 2;
+
 	private int width;
 	private int height;
 	private GameContext context;
@@ -88,12 +90,12 @@ public class UI
 
 	private int getSquareWidth()
 	{
-		return getAdjustedBoardWidth() / (context.getBoard().getWidth() + (context.showNextPiece() ? 2 : 0));
+		return getAdjustedBoardWidth() / (context.getBoard().getWidth() + (context.showNextPiece() ? maximumTetrominoHeight : 0));
 	}
 
 	private int getSquareHeight()
 	{
-		return getAdjustedBoardHeight() / (context.getBoard().getHeight() + (context.showNextPiece() ? 6 : 0));
+		return getAdjustedBoardHeight() / (context.getBoard().getHeight() + (context.showNextPiece() ? maximumTetrominoHeight * 2 : 0));
 	}
 
 	private int getLeftMargin()
