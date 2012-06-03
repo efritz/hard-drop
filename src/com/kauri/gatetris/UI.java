@@ -113,13 +113,23 @@ public class UI
 		return (getHeight() - context.getBoard().getHeight() * (getSquareHeight() - 1)) / 2;
 	}
 
+	private int translateBoardRow(int row)
+	{
+		return getTopMargin() + (context.getBoard().getHeight() - 1 - row) * (getSquareHeight() - 1);
+	}
+
+	private int translateBoardCol(int col)
+	{
+		return getLeftMargin() + col * getSquareWidth() - col;
+	}
+
 	public void render(Graphics g)
 	{
 		clear(g, colors.get(Shape.NoShape));
 
 		for (int row = 0; row < context.getBoard().getHeight(); row++) {
 			for (int col = 0; col < context.getBoard().getWidth(); col++) {
-				drawBoardSquare(g, row, col, colors.get(context.getBoard().getShapeAt(row, col)));
+				drawBoardTranslatedSquare(g, row, col, colors.get(context.getBoard().getShapeAt(row, col)));
 			}
 		}
 
@@ -136,10 +146,10 @@ public class UI
 			return;
 		}
 
-		int xPos = context.getX();
-		int yPos = context.getY();
+		int x = context.getX();
+		int y = context.getY();
 
-		drawTetromino(g, current, yPos, xPos, colors.get(current.getShape()));
+		drawTetromino(g, current, y, x, colors.get(current.getShape()));
 	}
 
 	private void renderDropPosTetromino(Graphics g, Tetromino current)
@@ -148,10 +158,10 @@ public class UI
 			return;
 		}
 
-		int xPos = context.getX();
-		int yPos = context.getBoard().dropHeight(current, context.getX(), context.getY());
+		int x = context.getX();
+		int y = context.getBoard().dropHeight(current, context.getX(), context.getY());
 
-		drawTetromino(g, current, yPos, xPos, changeAlpha(colors.get(current.getShape()), 30));
+		drawTetromino(g, current, y, x, changeAlpha(colors.get(current.getShape()), 30));
 	}
 
 	private void renderPreviewTetromino(Graphics g, Tetromino preview)
@@ -160,10 +170,10 @@ public class UI
 			return;
 		}
 
-		int xPos = context.getBoard().getSpawnX(preview);
-		int yPos = context.getBoard().getHeight() - 1 + preview.getHeight();
+		int x = context.getBoard().getSpawnX(preview);
+		int y = context.getBoard().getSpawnY(preview) + preview.getHeight();
 
-		drawTetromino(g, preview, yPos, xPos, colors.get(preview.getShape()));
+		drawTetromino(g, preview, y, x, colors.get(preview.getShape()), true);
 	}
 
 	private void renderGui(Graphics g)
@@ -177,47 +187,32 @@ public class UI
 		}
 	}
 
-	private void drawWindowWideString(Graphics g, String string)
-	{
-		g.setFont(scaleFont(g, baseFont, string, (int) (getWidth() * .85)));
-
-		drawCenteredString(g, string, getWidth() / 2, getHeight() / 2);
-	}
-
-	private void drawCenteredString(Graphics g, String string, int x, int y)
-	{
-		g.drawString(string, x - (g.getFontMetrics().stringWidth(string) / 2), y + g.getFontMetrics().getDescent());
-	}
-
 	private void clear(Graphics g, Color c)
 	{
 		g.setColor(c);
 		g.fillRect(0, 0, getWidth(), getHeight());
 	}
 
-	private int translateBoardRow(int row)
-	{
-		return getTopMargin() + (context.getBoard().getHeight() - 1 - row) * getSquareHeight() - (context.getBoard().getHeight() - 1 - row);
-	}
-
-	private int translateBoardCol(int col)
-	{
-		return getLeftMargin() + col * getSquareWidth() - col;
-	}
-
 	private void drawTetromino(Graphics g, Tetromino piece, int row, int col, Color color)
+	{
+		drawTetromino(g, piece, row, col, color, false);
+	}
+
+	private void drawTetromino(Graphics g, Tetromino piece, int row, int col, Color color, boolean displayOffBoard)
 	{
 		if (piece.getShape() != Shape.NoShape) {
 			for (int i = 0; i < piece.getSize(); i++) {
-				int xPos = col + piece.getX(i);
-				int yPos = row - piece.getY(i);
+				int x = col + piece.getX(i);
+				int y = row - piece.getY(i);
 
-				drawBoardSquare(g, yPos, xPos, color);
+				if (displayOffBoard || y < context.getBoard().getHeight()) {
+					drawBoardTranslatedSquare(g, y, x, color);
+				}
 			}
 		}
 	}
 
-	private void drawBoardSquare(Graphics g, int row, int col, Color color)
+	private void drawBoardTranslatedSquare(Graphics g, int row, int col, Color color)
 	{
 		drawSquare(g, translateBoardRow(row), translateBoardCol(col), color);
 	}
@@ -229,6 +224,21 @@ public class UI
 
 		g.setColor(color);
 		g.fillRect(col + 1, row + 1, getSquareWidth() - 2, getSquareHeight() - 2);
+	}
+
+	private void drawWindowWideString(Graphics g, String string)
+	{
+		drawCenteredString(g, scaleFont(g, baseFont, string, (int) (getWidth() * .85)), string, getWidth() / 2, getHeight() / 2);
+	}
+
+	private void drawCenteredString(Graphics g, Font font, String string, int x, int y)
+	{
+		g.setFont(font);
+
+		x -= g.getFontMetrics().stringWidth(string) / 2;
+		y += g.getFontMetrics().getDescent();
+
+		g.drawString(string, x, y);
 	}
 
 	private static Color changeAlpha(Color color, double percent)
