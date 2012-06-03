@@ -44,8 +44,8 @@ public class GameContext
 	private Board board = new Board(10, 20);
 	private PieceSequence sequence = new PieceSequence(new ShufflePieceSelector());
 
-	private boolean showNextPiece = false;
-	private boolean showShadowPiece = false;
+	private boolean showPreviewPiece = false;
+	private boolean showDropPosPiece = false;
 
 	private long score = 0;
 	private long lines = 0;
@@ -156,24 +156,24 @@ public class GameContext
 		this.drops = drops;
 	}
 
-	public boolean showNextPiece()
+	public boolean showPreviewPiece()
 	{
-		return showNextPiece;
+		return showPreviewPiece;
 	}
 
-	public void setShowNextPiece(boolean showNextPiece)
+	public void setShowPreviewPiece(boolean showPreviewPiece)
 	{
-		this.showNextPiece = showNextPiece;
+		this.showPreviewPiece = showPreviewPiece;
 	}
 
-	public boolean showShadowPiece()
+	public boolean showDropPosPiece()
 	{
-		return showShadowPiece;
+		return showDropPosPiece;
 	}
 
-	public void setShowShadowPiece(boolean showShadowPiece)
+	public void setShowDropPosPiece(boolean showDropPosPiece)
 	{
-		this.showShadowPiece = showShadowPiece;
+		this.showDropPosPiece = showDropPosPiece;
 	}
 
 	public int getX()

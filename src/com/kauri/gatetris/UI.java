@@ -23,13 +23,13 @@ package com.kauri.gatetris;
 
 import java.awt.Color;
 import java.awt.Font;
-import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.kauri.gatetris.GameContext.State;
 import com.kauri.gatetris.Tetromino.Shape;
 
 /**
@@ -37,7 +37,14 @@ import com.kauri.gatetris.Tetromino.Shape;
  */
 public class UI
 {
-	private static Map<Shape, Color> colors = new HashMap<Shape, Color>();
+	private static final int maximumTetrominoHeight = 2;
+
+	private static final Color gameBackgroundColor = Color.white;
+	private static final Color textForegroundColor = Color.white;
+	private static final Color textBackgroundColor = changeAlpha(Color.black, 50);
+	private static final Font baseFont = new Font("Arial", Font.PLAIN, 20);
+
+	private static final Map<Shape, Color> colors = new HashMap<Shape, Color>();
 
 	static {
 		colors.put(Shape.I, Color.red);
@@ -48,10 +55,8 @@ public class UI
 		colors.put(Shape.T, Color.cyan);
 		colors.put(Shape.Z, Color.green);
 		colors.put(Shape.Junk, Color.darkGray);
-		colors.put(Shape.NoShape, new Color(240, 240, 240));
+		colors.put(Shape.NoShape, gameBackgroundColor);
 	}
-
-	private final int maximumTetrominoHeight = 2;
 
 	private int width;
 	private int height;
@@ -90,109 +95,131 @@ public class UI
 
 	private int getSquareWidth()
 	{
-		return getAdjustedBoardWidth() / (context.getBoard().getWidth() + (context.showNextPiece() ? maximumTetrominoHeight : 0));
+		return getAdjustedBoardWidth() / (context.getBoard().getWidth() + (context.showPreviewPiece() ? maximumTetrominoHeight : 0));
 	}
 
 	private int getSquareHeight()
 	{
-		return getAdjustedBoardHeight() / (context.getBoard().getHeight() + (context.showNextPiece() ? maximumTetrominoHeight * 2 : 0));
+		return getAdjustedBoardHeight() / (context.getBoard().getHeight() + (context.showPreviewPiece() ? maximumTetrominoHeight * 2 : 0));
 	}
 
 	private int getLeftMargin()
 	{
-		return (getWidth() - context.getBoard().getWidth() * getSquareWidth()) / 2;
+		return (getWidth() - context.getBoard().getWidth() * (getSquareWidth() - 1)) / 2;
 	}
 
 	private int getTopMargin()
 	{
-		return (getHeight() - context.getBoard().getHeight() * getSquareHeight()) / 2;
+		return (getHeight() - context.getBoard().getHeight() * (getSquareHeight() - 1)) / 2;
 	}
 
 	public void render(Graphics g)
 	{
-		g.setColor(colors.get(Shape.NoShape));
-		g.fillRect(0, 0, getWidth(), getHeight());
+		clear(g, colors.get(Shape.NoShape));
 
 		for (int row = 0; row < context.getBoard().getHeight(); row++) {
 			for (int col = 0; col < context.getBoard().getWidth(); col++) {
-				drawSquare(g, translateBoardRow(row), translateBoardCol(col), colors.get(context.getBoard().getShapeAt(row, col)));
+				drawBoardSquare(g, row, col, colors.get(context.getBoard().getShapeAt(row, col)));
 			}
 		}
 
-		if (context.showShadowPiece()) {
-			int ghostPosition = context.getBoard().dropHeight(context.getCurrent(), context.getX(), context.getY());
+		renderCurrentTetromino(g, context.getCurrent());
+		renderDropPosTetromino(g, context.getCurrent());
+		renderPreviewTetromino(g, context.getPreview());
 
-			if (ghostPosition < context.getY()) {
-				drawTetromino(g, context.getCurrent(), translateBoardRow(ghostPosition), translateBoardCol(context.getX()), changeAlpha(colors.get(context.getCurrent().getShape()), .3), getTopMargin());
-			}
+		renderGui(g);
+	}
+
+	private void renderCurrentTetromino(Graphics g, Tetromino current)
+	{
+		if (context.getState() == State.GAMEOVER) {
+			return;
 		}
 
-		if (context.getBoard().canMove(context.getCurrent(), context.getX(), context.getY())) {
-			drawTetromino(g, context.getCurrent(), translateBoardRow(context.getY()), translateBoardCol(context.getX()), colors.get(context.getCurrent().getShape()), getTopMargin());
+		int xPos = context.getX();
+		int yPos = context.getY();
+
+		drawTetromino(g, current, yPos, xPos, colors.get(current.getShape()));
+	}
+
+	private void renderDropPosTetromino(Graphics g, Tetromino current)
+	{
+		if (context.getState() == State.GAMEOVER || !context.showDropPosPiece()) {
+			return;
 		}
 
-		if (context.showNextPiece()) {
-			int xPos = context.getBoard().getSpawnX(context.getPreview());
+		int xPos = context.getX();
+		int yPos = context.getBoard().dropHeight(current, context.getX(), context.getY());
 
-			int rowOffset = (getTopMargin() - (context.getPreview().getHeight() * getSquareHeight())) / 2;
+		drawTetromino(g, current, yPos, xPos, changeAlpha(colors.get(current.getShape()), 30));
+	}
 
-			drawTetromino(g, context.getPreview(), rowOffset, translateBoardCol(xPos), colors.get(context.getPreview().getShape()), 0);
+	private void renderPreviewTetromino(Graphics g, Tetromino preview)
+	{
+		if (!context.showPreviewPiece()) {
+			return;
 		}
 
+		int xPos = context.getBoard().getSpawnX(preview);
+		int yPos = context.getBoard().getHeight() - 1 + preview.getHeight();
+
+		drawTetromino(g, preview, yPos, xPos, colors.get(preview.getShape()));
+	}
+
+	private void renderGui(Graphics g)
+	{
 		if (context.getShowScore()) {
-			g.setColor(new Color(0, 0, 0, (int) (255 * .5)));
-			g.fillRect(0, 0, getWidth(), getHeight());
+			((Graphics2D) g).setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
 
-			drawString(g, String.format("%d (%d)", context.getScore(), context.getLines()), getWidth() / 2, (getHeight() / 2), (int) (getWidth() * .85));
+			clear(g, textBackgroundColor);
+			g.setColor(textForegroundColor);
+			drawWindowWideString(g, String.format("%d (%d)", context.getScore(), context.getLines()));
 		}
 	}
 
-	private Color changeAlpha(Color color, double percent)
+	private void drawWindowWideString(Graphics g, String string)
 	{
-		return new Color(color.getRed(), color.getGreen(), color.getBlue(), Math.min(255, Math.max(1, (int) (color.getAlpha() * percent))));
+		g.setFont(scaleFont(g, baseFont, string, (int) (getWidth() * .85)));
+
+		drawCenteredString(g, string, getWidth() / 2, getHeight() / 2);
 	}
 
-	private void drawString(Graphics g, String string, int x, int y, int w)
+	private void drawCenteredString(Graphics g, String string, int x, int y)
 	{
-		((Graphics2D) g).setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
-
-		g.setFont(scaleFont(g, new Font("Arial", Font.PLAIN, 20), string, (w)));
-		FontMetrics fm = g.getFontMetrics();
-
-		g.setColor(new Color(255, 255, 255));
-		g.drawString(string, x - (fm.stringWidth(string) / 2), y + fm.getDescent());
+		g.drawString(string, x - (g.getFontMetrics().stringWidth(string) / 2), y + g.getFontMetrics().getDescent());
 	}
 
-	/**
-	 * @see http://stackoverflow.com/questions/876234/need-a-way-to-scale-a-font-to-fit-a-rectangle
-	 */
-	public Font scaleFont(Graphics g, Font font, String text, int width)
+	private void clear(Graphics g, Color c)
 	{
-		return g.getFont().deriveFont(font.getSize2D() * width / g.getFontMetrics(font).stringWidth(text));
+		g.setColor(c);
+		g.fillRect(0, 0, getWidth(), getHeight());
 	}
 
 	private int translateBoardRow(int row)
 	{
-		return getTopMargin() + (context.getBoard().getHeight() - 1 - row) * getSquareHeight();
+		return getTopMargin() + (context.getBoard().getHeight() - 1 - row) * getSquareHeight() - (context.getBoard().getHeight() - 1 - row);
 	}
 
 	private int translateBoardCol(int col)
 	{
-		return getLeftMargin() + col * getSquareWidth();
+		return getLeftMargin() + col * getSquareWidth() - col;
 	}
 
-	private void drawTetromino(Graphics g, Tetromino piece, int row, int col, Color color, int top)
+	private void drawTetromino(Graphics g, Tetromino piece, int row, int col, Color color)
 	{
 		if (piece.getShape() != Shape.NoShape) {
 			for (int i = 0; i < piece.getSize(); i++) {
-				int xPos = col + piece.getX(i) * getSquareWidth();
-				int yPos = row + piece.getY(i) * getSquareHeight();
+				int xPos = col + piece.getX(i);
+				int yPos = row - piece.getY(i);
 
-				if (yPos >= top) {
-					drawSquare(g, yPos, xPos, color);
-				}
+				drawBoardSquare(g, yPos, xPos, color);
 			}
 		}
+	}
+
+	private void drawBoardSquare(Graphics g, int row, int col, Color color)
+	{
+		drawSquare(g, translateBoardRow(row), translateBoardCol(col), color);
 	}
 
 	private void drawSquare(Graphics g, int row, int col, Color color)
@@ -202,5 +229,18 @@ public class UI
 
 		g.setColor(color);
 		g.fillRect(col + 1, row + 1, getSquareWidth() - 2, getSquareHeight() - 2);
+	}
+
+	private static Color changeAlpha(Color color, double percent)
+	{
+		return new Color(color.getRed(), color.getGreen(), color.getBlue(), Math.min(255, Math.max(1, (int) (color.getAlpha() * (percent / 100.0)))));
+	}
+
+	/**
+	 * @see http://stackoverflow.com/questions/876234/need-a-way-to-scale-a-font-to-fit-a-rectangle
+	 */
+	private static Font scaleFont(Graphics g, Font font, String text, int width)
+	{
+		return g.getFont().deriveFont(font.getSize2D() * width / g.getFontMetrics(font).stringWidth(text));
 	}
 }

@@ -220,11 +220,11 @@ public class Tetris extends Canvas implements Runnable
 			}
 
 			if (keyCode == KeyEvent.VK_N) {
-				context.setShowNextPiece(!context.showNextPiece());
+				context.setShowPreviewPiece(!context.showPreviewPiece());
 			}
 
 			if (keyCode == KeyEvent.VK_S) {
-				context.setShowShadowPiece(!context.showShadowPiece());
+				context.setShowDropPosPiece(!context.showDropPosPiece());
 			}
 
 			if (keyCode == KeyEvent.VK_P) {
