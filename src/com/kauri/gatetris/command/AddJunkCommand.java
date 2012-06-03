@@ -22,7 +22,7 @@
 package com.kauri.gatetris.command;
 
 import com.kauri.gatetris.GameContext;
-import com.kauri.gatetris.Tetromino.Shape;
+import com.kauri.gatetris.Shape;
 
 /**
  * @author efritz

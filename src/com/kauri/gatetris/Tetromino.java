@@ -21,7 +21,6 @@
 
 package com.kauri.gatetris;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
@@ -33,97 +32,68 @@ import java.util.Map;
  * A tetromino is a geometric shape composed of four squares, connected orthogonally.
  * 
  * A tetromino is immutable and privately created. To reference a new tetromino, use the map of
- * pre-constructed one-sided {@link #tetrominoes tetrominoes}.
+ * pre-constructed one-sided {@link Tetromino#tetrominoes tetrominoes}.
  * 
  * @author Eric Fritz
  */
 public class Tetromino
 {
 	/**
-	 * A shape represents a unique tetromino shape.
-	 */
-	public enum Shape {
-		/**
-		 * Represents a <tt>null</tt> shape.
-		 */
-		NoShape,
-
-		/**
-		 * Represents a junk block.
-		 */
-		Junk,
-
-		/**
-		 * Four blocks in a straight line.
-		 */
-		I,
-
-		/**
-		 * A row of three blocks with one added below the right side.
-		 */
-		J,
-
-		/**
-		 * A row of three blocks with one added below the left side.
-		 */
-		L,
-
-		/**
-		 * Four blocks in a 2x2 square.
-		 */
-		O,
-
-		/**
-		 * Two stacked horizontal dominoes with the top one offset to the right.
-		 */
-		S,
-
-		/**
-		 * A row of three blocks with one added below the center.
-		 */
-		T,
-
-		/**
-		 * Two stacked horizontal dominoes with the top one offset to the left.
-		 */
-		Z;
-	}
-
-	/**
 	 * A map of all seven pre-constructed one-sided tetrominoes.
 	 */
 	public static Map<Shape, Tetromino> tetrominoes = new HashMap<Shape, Tetromino>();
+
+	static {
+		tetrominoes.put(Shape.I, new Tetromino(Shape.I, new Point(-2, +0), new Point(-1, +0), new Point(+0, +0), new Point(+1, +0)));
+		tetrominoes.put(Shape.J, new Tetromino(Shape.J, new Point(+1, +1), new Point(+1, +0), new Point(+0, +0), new Point(-1, +0)));
+		tetrominoes.put(Shape.L, new Tetromino(Shape.L, new Point(-1, +1), new Point(-1, +0), new Point(+0, +0), new Point(+1, +0)));
+		tetrominoes.put(Shape.O, new Tetromino(Shape.O, new Point(+0, +0), new Point(+1, +0), new Point(+0, +1), new Point(+1, +1)));
+		tetrominoes.put(Shape.S, new Tetromino(Shape.S, new Point(+1, +0), new Point(+0, +0), new Point(+0, +1), new Point(-1, +1)));
+		tetrominoes.put(Shape.T, new Tetromino(Shape.T, new Point(-1, +0), new Point(+0, +0), new Point(+1, +0), new Point(+0, +1)));
+		tetrominoes.put(Shape.Z, new Tetromino(Shape.Z, new Point(+0, +0), new Point(-1, +0), new Point(+1, +1), new Point(+0, +1)));
+	}
 
 	/**
 	 * A lazily-filled cache of the clockwise-rotation of tetrominoes.
 	 */
 	private static Map<Tetromino, Tetromino> rotationCache = new HashMap<Tetromino, Tetromino>();
 
-	static {
-		tetrominoes.put(Shape.I, new Tetromino(Shape.I, Arrays.asList(new Point(-2, +0), new Point(-1, +0), new Point(+0, +0), new Point(+1, +0))));
-		tetrominoes.put(Shape.J, new Tetromino(Shape.J, Arrays.asList(new Point(+1, +1), new Point(+1, +0), new Point(+0, +0), new Point(-1, +0))));
-		tetrominoes.put(Shape.L, new Tetromino(Shape.L, Arrays.asList(new Point(-1, +1), new Point(-1, +0), new Point(+0, +0), new Point(+1, +0))));
-		tetrominoes.put(Shape.O, new Tetromino(Shape.O, Arrays.asList(new Point(+0, +0), new Point(+1, +0), new Point(+0, +1), new Point(+1, +1))));
-		tetrominoes.put(Shape.S, new Tetromino(Shape.S, Arrays.asList(new Point(+1, +0), new Point(+0, +0), new Point(+0, +1), new Point(-1, +1))));
-		tetrominoes.put(Shape.T, new Tetromino(Shape.T, Arrays.asList(new Point(-1, +0), new Point(+0, +0), new Point(+1, +0), new Point(+0, +1))));
-		tetrominoes.put(Shape.Z, new Tetromino(Shape.Z, Arrays.asList(new Point(+0, +0), new Point(-1, +0), new Point(+1, +1), new Point(+0, +1))));
-	}
+	/**
+	 * Point comparator for x-values.
+	 */
+	private static Comparator<Point> xComparator = new Comparator<Point>() {
+		@Override
+		public int compare(Point p1, Point p2)
+		{
+			return p1.x == p2.x ? 0 : (p1.x < p2.x ? -1 : 1);
+		}
+	};
+	/**
+	 * Point comparator for y-values.
+	 */
+	private static Comparator<Point> yComparator = new Comparator<Point>() {
+		@Override
+		public int compare(Point p1, Point p2)
+		{
+			return p1.y == p2.y ? 0 : (p1.y < p2.y ? -1 : 1);
+		}
+	};
 
 	private Shape shape;
 	private List<Point> points;
 
 	/**
-	 * Private constructor.
+	 * Creates a new Tetromino.
 	 * 
 	 * @param shape
 	 *            The tetromino shape.
 	 * @param points
 	 *            The points composing the tetromino.
 	 */
-	private Tetromino(Shape shape, List<Point> points)
+	private Tetromino(Shape shape, Point... points)
 	{
 		this.shape = shape;
-		this.points = points;
+		this.points = Arrays.asList(points);
 	}
 
 	/**
@@ -228,10 +198,11 @@ public class Tetromino
 		}
 
 		if (!rotationCache.containsKey(original)) {
-			List<Point> points = new ArrayList<Point>();
+			Point[] points = new Point[original.getSize()];
 
+			int i = 0;
 			for (Point p : original.points) {
-				points.add(new Point(-p.y, p.x));
+				points[i++] = new Point(-p.y, p.x);
 			}
 
 			rotationCache.put(original, new Tetromino(original.shape, points));
@@ -293,10 +264,13 @@ public class Tetromino
 
 	/**
 	 * A Point represents a single (x, y) position.
+	 * 
+	 * @author Eric Fritz
 	 */
 	private static class Point
 	{
-		int x, y;
+		public int x;
+		public int y;
 
 		public Point(int x, int y)
 		{
@@ -304,26 +278,4 @@ public class Tetromino
 			this.y = y;
 		}
 	}
-
-	/**
-	 * Point comparator for x-values.
-	 */
-	private static Comparator<Point> xComparator = new Comparator<Point>() {
-		@Override
-		public int compare(Point p1, Point p2)
-		{
-			return p1.x == p2.x ? 0 : (p1.x < p2.x ? -1 : 1);
-		}
-	};
-
-	/**
-	 * Point comparator for y-values.
-	 */
-	private static Comparator<Point> yComparator = new Comparator<Point>() {
-		@Override
-		public int compare(Point p1, Point p2)
-		{
-			return p1.y == p2.y ? 0 : (p1.y < p2.y ? -1 : 1);
-		}
-	};
 }

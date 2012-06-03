@@ -19,44 +19,56 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. 
  */
 
-package com.kauri.gatetris.sequence;
-
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.Map;
-
-import com.kauri.gatetris.GameContext;
-import com.kauri.gatetris.Tetromino;
-import com.kauri.gatetris.ai.Move;
+package com.kauri.gatetris;
 
 /**
+ * A shape represents a unique tetromino shape.
+ * 
  * @author Eric Fritz
  */
-public class WorstPieceSelector implements PieceSelector
-{
-	private GameContext context;
+public enum Shape {
+	/**
+	 * Represents a <tt>null</tt> shape.
+	 */
+	NoShape,
 
-	public WorstPieceSelector(GameContext context)
-	{
-		this.context = context;
-	}
+	/**
+	 * Represents a junk block.
+	 */
+	Junk,
 
-	@Override
-	public Tetromino getNextPiece()
-	{
-		Map<Move, Tetromino> moves = new HashMap<Move, Tetromino>();
+	/**
+	 * Four blocks in a straight line.
+	 */
+	I,
 
-		for (Tetromino tetromino : Tetromino.tetrominoes.values()) {
-			moves.put(context.getEvaluator().getNextMove(context.getBoard(), tetromino, context.getBoard().getSpawnX(tetromino), context.getBoard().getSpawnY(tetromino)), tetromino);
-		}
+	/**
+	 * A row of three blocks with one added below the right side.
+	 */
+	J,
 
-		return moves.get(Collections.min(moves.keySet(), new Comparator<Move>() {
-			@Override
-			public int compare(Move m1, Move m2)
-			{
-				return Double.compare(m1.getScore(), m2.getScore());
-			}
-		}));
-	}
+	/**
+	 * A row of three blocks with one added below the left side.
+	 */
+	L,
+
+	/**
+	 * Four blocks in a 2x2 square.
+	 */
+	O,
+
+	/**
+	 * Two stacked horizontal dominoes with the top one offset to the right.
+	 */
+	S,
+
+	/**
+	 * A row of three blocks with one added below the center.
+	 */
+	T,
+
+	/**
+	 * Two stacked horizontal dominoes with the top one offset to the left.
+	 */
+	Z;
 }

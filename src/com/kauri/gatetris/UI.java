@@ -30,7 +30,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.kauri.gatetris.GameContext.State;
-import com.kauri.gatetris.Tetromino.Shape;
 
 /**
  * @author efritz

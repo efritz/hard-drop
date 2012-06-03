@@ -26,7 +26,7 @@ import java.util.SortedMap;
 import java.util.TreeMap;
 
 import com.kauri.gatetris.GameContext;
-import com.kauri.gatetris.Tetromino.Shape;
+import com.kauri.gatetris.Shape;
 
 /**
  * @author efritz

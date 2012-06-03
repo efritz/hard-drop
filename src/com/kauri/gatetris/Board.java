@@ -23,14 +23,12 @@ package com.kauri.gatetris;
 
 import java.util.Arrays;
 
-import com.kauri.gatetris.Tetromino.Shape;
-
 /**
  * A board provides access to the state of the current pile.
  * 
  * @author Eric Fritz
  */
-public class Board implements Cloneable
+public class Board 
 {
 	private int width;
 	private int height;

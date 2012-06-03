@@ -27,17 +27,14 @@ import java.util.List;
 import java.util.Random;
 
 import com.kauri.gatetris.Tetromino;
-import com.kauri.gatetris.Tetromino.Shape;
 
 /**
  * @author Eric Fritz
  */
 public class ShufflePieceSelector implements PieceSelector
 {
-	private static Shape[] shapes = new Shape[] { Shape.I, Shape.J, Shape.L, Shape.O, Shape.S, Shape.T, Shape.Z };
-
 	private Random random;
-	private List<Shape> bag = new LinkedList<Shape>();
+	private List<Tetromino> bag = new LinkedList<Tetromino>();
 
 	public ShufflePieceSelector()
 	{
@@ -53,13 +50,10 @@ public class ShufflePieceSelector implements PieceSelector
 	public Tetromino getNextPiece()
 	{
 		if (bag.size() == 0) {
-			for (Shape shape : shapes) {
-				bag.add(shape);
-			}
-
+			bag.addAll(Tetromino.tetrominoes.values());
 			Collections.shuffle(bag, random);
 		}
 
-		return Tetromino.tetrominoes.get(bag.remove(0));
+		return bag.remove(0);
 	}
 }

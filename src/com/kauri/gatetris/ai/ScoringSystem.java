@@ -22,7 +22,7 @@
 package com.kauri.gatetris.ai;
 
 import com.kauri.gatetris.Board;
-import com.kauri.gatetris.Tetromino.Shape;
+import com.kauri.gatetris.Shape;
 
 /**
  * @author Eric Fritz

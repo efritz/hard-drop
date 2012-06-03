@@ -21,8 +21,8 @@
 
 package com.kauri.gatetris.sequence;
 
+import com.kauri.gatetris.Shape;
 import com.kauri.gatetris.Tetromino;
-import com.kauri.gatetris.Tetromino.Shape;
 
 /**
  * @author Eric Fritz
