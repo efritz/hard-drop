@@ -46,5 +46,4 @@ public class Tetris
 
 		game.start();
 	}
-
 }
