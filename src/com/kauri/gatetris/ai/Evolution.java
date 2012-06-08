@@ -32,24 +32,27 @@ import java.util.List;
 public class Evolution
 {
 	private final int populationSize = 16;
-	private final double elitePercent = .25;
-	private final double mutationRate = .10;
+	private final double elitePercent = 1 / 4.0;
+	private final double mutationRate = 1 / 10.0;
 
+	private int current = 0;
 	private int generation = 1;
 
-	List<Entity> population = new ArrayList<Entity>();
+	private List<Entity> population = new ArrayList<Entity>();
 
-	int current = 0;
+	private ScoringSystem scoring;
 
 	/**
 	 * Creates a new Evolution.
 	 */
-	public Evolution()
+	public Evolution(ScoringSystem scoring)
 	{
-		for (int i = 0; i < populationSize; i++) {
-			double[] chromosomes = new double[8];
+		this.scoring = scoring;
 
-			for (int j = 0; j < 8; j++) {
+		for (int i = 0; i < populationSize; i++) {
+			double[] chromosomes = new double[scoring.getNumWeights()];
+
+			for (int j = 0; j < scoring.getNumWeights(); j++) {
 				chromosomes[j] = Math.random() * 10 - 5;
 			}
 
@@ -58,14 +61,11 @@ public class Evolution
 	}
 
 	/**
-	 * Apply the next chromosome to the given scoring system.
-	 * 
-	 * @param scoring
-	 *            The scoring system.
+	 * Apply the next chromosome to the scoring system.
 	 */
-	public void updateScoring(ScoringSystem scoring)
+	public void updateScoring()
 	{
-		scoring.setWeights(population.get(current).chromosomes[0], population.get(current).chromosomes[1], population.get(current).chromosomes[2], population.get(current).chromosomes[3], population.get(current).chromosomes[4], population.get(current).chromosomes[5], population.get(current).chromosomes[6], population.get(current).chromosomes[7]);
+		scoring.setWeights(population.get(current).chromosomes);
 	}
 
 	/**
@@ -117,9 +117,9 @@ public class Evolution
 			int w1 = (int) (Math.random() * (populationSize / 2));
 			int w2 = (int) (Math.random() * (populationSize / 2));
 
-			double[] child = new double[8];
+			double[] child = new double[scoring.getNumWeights()];
 
-			for (int j = 0; j < 8; j++) {
+			for (int j = 0; j < scoring.getNumWeights(); j++) {
 				child[j] = population.get(Math.random() < .5 ? w1 : w2).chromosomes[j];
 
 				if (Math.random() < mutationRate) {

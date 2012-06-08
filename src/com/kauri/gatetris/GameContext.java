@@ -23,6 +23,7 @@ package com.kauri.gatetris;
 
 import java.util.Stack;
 
+import com.kauri.gatetris.ai.DefaultScoringSystem;
 import com.kauri.gatetris.ai.Evolution;
 import com.kauri.gatetris.ai.MoveEvaluator;
 import com.kauri.gatetris.ai.ScoringSystem;
@@ -56,10 +57,9 @@ public class GameContext
 	private Tetromino current;
 	private Tetromino preview;
 
-	private Evolution evo = new Evolution();
-
-	private ScoringSystem scoring = new ScoringSystem();
+	private ScoringSystem scoring = new DefaultScoringSystem();
 	private MoveEvaluator evaluator = new MoveEvaluator(scoring);
+	private Evolution evo = new Evolution(scoring);
 
 	private int aiDelay = 128;
 
@@ -81,7 +81,7 @@ public class GameContext
 		history.clear();
 		sequence.clear();
 
-		evo.updateScoring(scoring);
+		evo.updateScoring();
 
 		new NewTetrominoCommand(this).execute();
 	}
