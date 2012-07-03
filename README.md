@@ -1,2 +1,3 @@
-ga-tetris
-=========
+Tetris (with Genetic AI)
+========================
+
