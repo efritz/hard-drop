@@ -91,14 +91,8 @@ public class Game extends Canvas implements Runnable
 		if (context.getState() == State.PLAYING) {
 			if (context.isRunningAi()) {
 				ai.update();
-			} else {
-				long time = System.currentTimeMillis();
-				long wait = (long) (((11 - context.getLevel()) * 0.05) * 1000);
-
-				if (time - wait >= lastGravity) {
-					lastGravity = time;
-					context.storeAndExecute(new SoftDropCommand(context));
-				}
+			} else if (checkGravityTimeout()) {
+				context.storeAndExecute(new SoftDropCommand(context));
 			}
 		}
 	}
@@ -118,6 +112,19 @@ public class Game extends Canvas implements Runnable
 
 		g.dispose();
 		bs.show();
+	}
+
+	private boolean checkGravityTimeout()
+	{
+		long time = System.currentTimeMillis();
+		long wait = (long) (((11 - context.getLevel()) * 0.05) * 1000);
+
+		if (time - wait >= lastGravity) {
+			lastGravity = time;
+			return true;
+		}
+
+		return false;
 	}
 
 	private void refreshSize()
