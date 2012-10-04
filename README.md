@@ -1,3 +1,3 @@
-Tetris (with Genetic AI)
-========================
+Tetris
+======
 
