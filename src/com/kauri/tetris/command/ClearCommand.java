@@ -1,5 +1,5 @@
 /*
- * This file is part of the ga-tetris package.
+ * This file is part of the tetris package.
  *
  * Copyright (C) 2012, efritz
  * 
