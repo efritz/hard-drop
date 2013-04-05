@@ -26,13 +26,17 @@ import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import javax.swing.ButtonGroup;
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import javax.swing.JRadioButtonMenuItem;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
+
+import com.kauri.tetris.GameContext.State;
 
 /**
  * @author Eric Fritz
@@ -58,35 +62,136 @@ public class Tetris
 		frame.getContentPane().setLayout(new BorderLayout());
 		frame.getContentPane().add(game, BorderLayout.CENTER);
 
-		final JCheckBoxMenuItem item = new JCheckBoxMenuItem("Replay");
+		final JMenuItem item1 = new JCheckBoxMenuItem("Pause");
 
-		item.addActionListener(new ActionListener() {
+		item1.addActionListener(new ActionListener() {
+
 			@Override
 			public void actionPerformed(ActionEvent e)
 			{
-				context.setAutoRestart(item.isSelected());
+				context.setState(item1.isSelected() ? State.PAUSED : State.PLAYING);
 			}
 		});
 
-		final JMenuItem item2 = new JCheckBoxMenuItem("Enabled");
+		final JMenuItem item2 = new JMenuItem("New Game");
 
 		item2.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e)
 			{
-				context.setRunningAi(item2.isSelected());
+				context.newGame();
 			}
 		});
 
-		JMenu menu = new JMenu("Game");
-		menu.add(item);
+		final JMenuItem item3 = new JCheckBoxMenuItem("Auto-Replay");
 
-		JMenuItem menu2 = new JMenu("AI");
-		menu2.add(item2);
+		item3.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e)
+			{
+				context.setAutoRestart(item3.isSelected());
+			}
+		});
+
+		final JMenuItem item4 = new JCheckBoxMenuItem("Show Score");
+
+		item4.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e)
+			{
+				context.setShowScore(item4.isSelected());
+			}
+		});
+
+		final JMenuItem item5 = new JCheckBoxMenuItem("Show Preview");
+
+		item5.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e)
+			{
+				context.setShowPreviewPiece(item5.isSelected());
+			}
+		});
+
+		final JMenuItem item6 = new JCheckBoxMenuItem("Show Shadow");
+
+		item6.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e)
+			{
+				context.setShowDropPosPiece(item6.isSelected());
+			}
+		});
+
+		final JMenuItem item7 = new JCheckBoxMenuItem("Enabled");
+
+		item7.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e)
+			{
+				context.setRunningAi(item7.isSelected());
+			}
+		});
+
+		JMenu menu2 = new JMenu("Board Size");
+		ButtonGroup group1 = new ButtonGroup();
+
+		for (int i = 5; i <= 30; i += 5) {
+			final int width = i;
+			JMenuItem item8 = new JRadioButtonMenuItem(width + "x" + (width * 2));
+
+			menu2.add(item8);
+			group1.add(item8);
+
+			item8.addActionListener(new ActionListener() {
+
+				@Override
+				public void actionPerformed(ActionEvent e)
+				{
+					context.setBoard(new Board(width, width * 2));
+					context.newGame();
+				}
+			});
+		}
+
+		JMenu menu5 = new JMenu("Speed");
+		ButtonGroup group2 = new ButtonGroup();
+
+		for (int i = 10; i >= 0; i--) {
+			final int delay = (int) Math.pow(2, i);
+			JMenuItem item9 = new JRadioButtonMenuItem("Speed " + (10 - i));
+
+			menu5.add(item9);
+			group2.add(item9);
+
+			item9.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e)
+				{
+					context.setAiDelay(delay);
+				}
+			});
+		}
+
+		JMenu menu1 = new JMenu("Game");
+		menu1.add(item1);
+		menu1.add(item2);
+		menu1.add(item3);
+		menu1.add(menu2);
+
+		JMenuItem menu3 = new JMenu("View");
+		menu3.add(item4);
+		menu3.add(item5);
+		menu3.add(item6);
+
+		JMenuItem menu4 = new JMenu("AI");
+		menu4.add(item7);
+		menu4.add(menu5);
 
 		JMenuBar menuBar = new JMenuBar();
-		menuBar.add(menu);
-		menuBar.add(menu2);
+		menuBar.add(menu1);
+		menuBar.add(menu3);
+		menuBar.add(menu4);
 
 		frame.setJMenuBar(menuBar);
 		frame.setVisible(true);
