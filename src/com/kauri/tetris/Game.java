@@ -38,13 +38,22 @@ public class Game extends Canvas implements Runnable
 {
 	private static final long serialVersionUID = 1L;
 
-	private GameContext context = new GameContext();
-	private InputHandler input = new InputHandler(context);
+	private GameContext context;
+	private InputHandler input;
 
-	private AI ai = new AI(context);
-	private UI ui = new UI(context);
+	private AI ai;
+	private UI ui;
 
 	private long lastGravity;
+
+	public Game(GameContext context)
+	{
+		this.context = context;
+		this.input = new InputHandler(context);
+
+		this.ai = new AI(context);
+		this.ui = new UI(context);
+	}
 
 	public void start()
 	{

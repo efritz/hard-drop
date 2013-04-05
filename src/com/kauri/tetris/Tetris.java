@@ -23,8 +23,16 @@ package com.kauri.tetris;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
+import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JFrame;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
+import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
 
 /**
  * @author Eric Fritz
@@ -33,7 +41,14 @@ public class Tetris
 {
 	public static void main(String[] args)
 	{
-		Game game = new Game();
+		final GameContext context = new GameContext();
+		Game game = new Game(context);
+
+		try {
+			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+		} catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException e1) {
+			e1.printStackTrace();
+		}
 
 		JFrame frame = new JFrame();
 		frame.setMinimumSize(new Dimension(300, 600));
@@ -42,6 +57,38 @@ public class Tetris
 
 		frame.getContentPane().setLayout(new BorderLayout());
 		frame.getContentPane().add(game, BorderLayout.CENTER);
+
+		final JCheckBoxMenuItem item = new JCheckBoxMenuItem("Replay");
+
+		item.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e)
+			{
+				context.setAutoRestart(item.isSelected());
+			}
+		});
+
+		final JMenuItem item2 = new JCheckBoxMenuItem("Enabled");
+
+		item2.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e)
+			{
+				context.setRunningAi(item2.isSelected());
+			}
+		});
+
+		JMenu menu = new JMenu("Game");
+		menu.add(item);
+
+		JMenuItem menu2 = new JMenu("AI");
+		menu2.add(item2);
+
+		JMenuBar menuBar = new JMenuBar();
+		menuBar.add(menu);
+		menuBar.add(menu2);
+
+		frame.setJMenuBar(menuBar);
 		frame.setVisible(true);
 
 		game.start();
