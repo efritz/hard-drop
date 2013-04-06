@@ -21,6 +21,8 @@
 
 package com.kauri.tetris;
 
+import java.util.LinkedList;
+import java.util.Queue;
 import java.util.Stack;
 
 import com.kauri.tetris.ai.DefaultScoringSystem;
@@ -40,6 +42,8 @@ public class GameContext
 	public enum State {
 		PLAYING, PAUSED, GAMEOVER;
 	}
+
+	private final int MAX_HISTORY = 5000;
 
 	private State state = State.PLAYING;
 	private Board board = new Board(10, 20);
@@ -64,6 +68,24 @@ public class GameContext
 	private int aiDelay = 128;
 
 	private boolean showScore = false;
+	private boolean runningAi = false;
+	private boolean autoRestart = false;
+
+	private Queue<Command> queue = new LinkedList<Command>();
+
+	private Stack<Command> history = new Stack<Command>() {
+		private static final long serialVersionUID = 1L;
+
+		@Override
+		public boolean add(Command element)
+		{
+			if (this.size() > MAX_HISTORY - 1) {
+				this.remove(0);
+			}
+
+			return super.add(element);
+		}
+	};
 
 	public void newGame()
 	{
@@ -216,28 +238,27 @@ public class GameContext
 		this.preview = preview;
 	}
 
-	private final int MAX_HISTORY = 5000;
+	public void store(Command command)
+	{
+		queue.add(command);
+	}
 
-	private Stack<Command> history = new Stack<Command>() {
-		private static final long serialVersionUID = 1L;
-
-		@Override
-		public boolean add(Command element)
-		{
-			if (this.size() > MAX_HISTORY - 1) {
-				this.remove(0);
+	public void execute()
+	{
+		for (Command command : queue) {
+			if (state == State.GAMEOVER) {
+				break;
 			}
 
-			return super.add(element);
-		}
-	};
-	private boolean runningAi = false;
-	private boolean autoRestart = false;
+			command.execute();
+			history.add(command);
 
-	public void storeAndExecute(Command command)
-	{
-		command.execute();
-		history.add(command);
+			if (!getBoard().canMove(getCurrent(), getX(), getY())) {
+				state = State.GAMEOVER;
+			}
+		}
+
+		queue.clear();
 	}
 
 	public void undo()

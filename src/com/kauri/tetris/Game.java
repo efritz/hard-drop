@@ -85,11 +85,7 @@ public class Game extends Canvas implements Runnable
 
 	private void update()
 	{
-		input.process();
-
-		if (!context.getBoard().canMove(context.getCurrent(), context.getX(), context.getY())) {
-			context.setState(State.GAMEOVER);
-		}
+		context.execute();
 
 		if (context.getState() == State.GAMEOVER) {
 			if (context.isAutoRestart()) {
@@ -101,7 +97,7 @@ public class Game extends Canvas implements Runnable
 			if (context.isRunningAi()) {
 				ai.update();
 			} else if (checkGravityTimeout()) {
-				context.storeAndExecute(new SoftDropCommand(context));
+				context.store(new SoftDropCommand(context));
 			}
 		}
 	}

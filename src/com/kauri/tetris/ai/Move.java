@@ -69,17 +69,17 @@ public class Move
 	{
 		if (rDelta > 0) {
 			rDelta--;
-			context.storeAndExecute(new RotateClockwiseCommand(context));
+			context.store(new RotateClockwiseCommand(context));
 		} else if (mDelta < 0) {
 			mDelta++;
-			context.storeAndExecute(new MoveLeftCommand(context));
+			context.store(new MoveLeftCommand(context));
 		} else if (mDelta > 0) {
 			mDelta--;
-			context.storeAndExecute(new MoveRightCommand(context));
+			context.store(new MoveRightCommand(context));
 		} else if (context.getBoard().isFalling(context.getCurrent(), context.getX(), context.getY())) {
-			context.storeAndExecute(new SoftDropCommand(context));
+			context.store(new SoftDropCommand(context));
 		} else {
-			context.storeAndExecute(new HardDropCommand(context));
+			context.store(new HardDropCommand(context));
 			animating = false;
 		}
 	}
