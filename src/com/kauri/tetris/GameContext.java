@@ -21,7 +21,9 @@
 
 package com.kauri.tetris;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Queue;
 import java.util.Stack;
 
@@ -71,6 +73,9 @@ public class GameContext
 			return super.add(element);
 		}
 	};
+
+	private List<NewGameListener> newGameListeners = new ArrayList<NewGameListener>();
+	private List<EndGameListener> endGameListeners = new ArrayList<EndGameListener>();
 
 	//
 	// General Game Settings
@@ -201,10 +206,6 @@ public class GameContext
 
 	public void newGame()
 	{
-		// if (score != 0) {
-		// evo.submit(lines);
-		// }
-
 		this.score = 0;
 		this.lines = 0;
 		this.drops = 0;
@@ -215,9 +216,22 @@ public class GameContext
 		history.clear();
 		sequence.clear();
 
-		// evo.updateScoring();
+		this.store(new NewTetrominoCommand(this));
+		this.execute();
 
-		new NewTetrominoCommand(this).execute();
+		for (NewGameListener listener : newGameListeners) {
+			listener.onNewGame();
+		}
+	}
+
+	public void registerNewGameListener(NewGameListener listener)
+	{
+		newGameListeners.add(listener);
+	}
+
+	public void registerEndGameListener(EndGameListener listener)
+	{
+		endGameListeners.add(listener);
 	}
 
 	public void store(Command command)
@@ -241,6 +255,12 @@ public class GameContext
 		}
 
 		queue.clear();
+
+		if (state == State.GAMEOVER) {
+			for (EndGameListener listener : endGameListeners) {
+				listener.onEndGame();
+			}
+		}
 	}
 
 	public void undo()
