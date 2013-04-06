@@ -87,40 +87,17 @@ public class GameContext
 		}
 	};
 
-	public void newGame()
+	//
+	// General Game Settings
+
+	boolean isAutoRestart()
 	{
-		if (score != 0) {
-			evo.submit(lines);
-		}
-
-		this.score = 0;
-		this.lines = 0;
-		this.drops = 0;
-
-		state = State.PLAYING;
-
-		board.clear();
-		history.clear();
-		sequence.clear();
-
-		evo.updateScoring();
-
-		new NewTetrominoCommand(this).execute();
+		return autoRestart;
 	}
 
-	public MoveEvaluator getEvaluator()
+	void setAutoRestart(boolean autoRestart)
 	{
-		return evaluator;
-	}
-
-	public State getState()
-	{
-		return state;
-	}
-
-	public void setState(State state)
-	{
-		this.state = state;
+		this.autoRestart = autoRestart;
 	}
 
 	public Board getBoard()
@@ -143,60 +120,8 @@ public class GameContext
 		this.sequence = sequence;
 	}
 
-	public long getScore()
-	{
-		return score;
-	}
-
-	public void setScore(long score)
-	{
-		this.score = score;
-	}
-
-	public int getLevel()
-	{
-		return (int) Math.min(10, ((lines - 1) / 10) + 1);
-	}
-
-	public long getLines()
-	{
-		return lines;
-	}
-
-	public void setLines(long lines)
-	{
-		this.lines = lines;
-	}
-
-	public long getDrops()
-	{
-		return drops;
-	}
-
-	public void setDrops(long drops)
-	{
-		this.drops = drops;
-	}
-
-	public boolean showPreviewPiece()
-	{
-		return showPreviewPiece;
-	}
-
-	public void setShowPreviewPiece(boolean showPreviewPiece)
-	{
-		this.showPreviewPiece = showPreviewPiece;
-	}
-
-	public boolean showDropPosPiece()
-	{
-		return showDropPosPiece;
-	}
-
-	public void setShowDropPosPiece(boolean showDropPosPiece)
-	{
-		this.showDropPosPiece = showDropPosPiece;
-	}
+	//
+	// Current Piece State
 
 	public int getX()
 	{
@@ -238,6 +163,78 @@ public class GameContext
 		this.preview = preview;
 	}
 
+	//
+	// Score State
+
+	public State getState()
+	{
+		return state;
+	}
+
+	public void setState(State state)
+	{
+		this.state = state;
+	}
+
+	public long getScore()
+	{
+		return score;
+	}
+
+	public void setScore(long score)
+	{
+		this.score = score;
+	}
+
+	public int getLevel()
+	{
+		return (int) Math.min(10, ((lines - 1) / 10) + 1);
+	}
+
+	public long getLines()
+	{
+		return lines;
+	}
+
+	public void setLines(long lines)
+	{
+		this.lines = lines;
+	}
+
+	public long getDrops()
+	{
+		return drops;
+	}
+
+	public void setDrops(long drops)
+	{
+		this.drops = drops;
+	}
+
+	//
+	// Command Execution
+
+	public void newGame()
+	{
+		if (score != 0) {
+			evo.submit(lines);
+		}
+
+		this.score = 0;
+		this.lines = 0;
+		this.drops = 0;
+
+		state = State.PLAYING;
+
+		board.clear();
+		history.clear();
+		sequence.clear();
+
+		evo.updateScoring();
+
+		new NewTetrominoCommand(this).execute();
+	}
+
 	public void store(Command command)
 	{
 		queue.add(command);
@@ -273,15 +270,8 @@ public class GameContext
 		}
 	}
 
-	public int getAiDelay()
-	{
-		return aiDelay;
-	}
-
-	public void setAiDelay(int aiDelay)
-	{
-		this.aiDelay = aiDelay;
-	}
+	//
+	// AI Settings
 
 	boolean isRunningAi()
 	{
@@ -293,15 +283,23 @@ public class GameContext
 		this.runningAi = runningAi;
 	}
 
-	boolean isAutoRestart()
+	public MoveEvaluator getEvaluator()
 	{
-		return autoRestart;
+		return evaluator;
 	}
 
-	void setAutoRestart(boolean autoRestart)
+	public int getAiDelay()
 	{
-		this.autoRestart = autoRestart;
+		return aiDelay;
 	}
+
+	public void setAiDelay(int aiDelay)
+	{
+		this.aiDelay = aiDelay;
+	}
+
+	//
+	// UI Settings
 
 	public boolean getShowScore()
 	{
@@ -311,5 +309,25 @@ public class GameContext
 	public void setShowScore(boolean b)
 	{
 		this.showScore = b;
+	}
+
+	public boolean showPreviewPiece()
+	{
+		return showPreviewPiece;
+	}
+
+	public void setShowPreviewPiece(boolean showPreviewPiece)
+	{
+		this.showPreviewPiece = showPreviewPiece;
+	}
+
+	public boolean showDropPosPiece()
+	{
+		return showDropPosPiece;
+	}
+
+	public void setShowDropPosPiece(boolean showDropPosPiece)
+	{
+		this.showDropPosPiece = showDropPosPiece;
 	}
 }
