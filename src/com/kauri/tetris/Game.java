@@ -25,10 +25,17 @@ import java.awt.Canvas;
 import java.awt.Graphics;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.image.BufferStrategy;
 
 import com.kauri.tetris.GameContext.State;
 import com.kauri.tetris.ai.AI;
+import com.kauri.tetris.command.HardDropCommand;
+import com.kauri.tetris.command.MoveLeftCommand;
+import com.kauri.tetris.command.MoveRightCommand;
+import com.kauri.tetris.command.RotateClockwiseCommand;
+import com.kauri.tetris.command.RotateCounterClockwiseCommand;
 import com.kauri.tetris.command.SoftDropCommand;
 
 /**
@@ -39,20 +46,22 @@ public class Game extends Canvas implements Runnable
 	private static final long serialVersionUID = 1L;
 
 	private GameContext context;
-	private InputHandler input;
 
 	private AI ai;
 	private UI ui;
 
 	private long lastGravity;
 
-	public Game(GameContext context)
+	public Game(final GameContext context)
 	{
 		this.context = context;
-		this.input = new InputHandler(context);
 
 		this.ai = new AI(context);
 		this.ui = new UI(context);
+
+		refreshSize();
+		this.addKeyListener(new PlayerKeyListener());
+		this.addComponentListener(new ResizeListener());
 	}
 
 	public void start()
@@ -63,10 +72,6 @@ public class Game extends Canvas implements Runnable
 	@Override
 	public void run()
 	{
-		refreshSize();
-		this.addKeyListener(input);
-		this.addComponentListener(new ResizeListener());
-
 		context.newGame();
 
 		while (true) {
@@ -158,6 +163,54 @@ public class Game extends Canvas implements Runnable
 		public void componentResized(ComponentEvent ce)
 		{
 			refreshSize();
+		}
+	}
+
+	private class PlayerKeyListener implements KeyListener
+	{
+		@Override
+		public void keyPressed(KeyEvent ke)
+		{
+			if (context.getState() != State.PLAYING || context.isRunningAi()) {
+				return;
+			}
+
+			switch (ke.getKeyCode()) {
+				case KeyEvent.VK_LEFT:
+					context.store(new MoveLeftCommand(context));
+					break;
+
+				case KeyEvent.VK_RIGHT:
+					context.store(new MoveRightCommand(context));
+					break;
+
+				case KeyEvent.VK_Z:
+				case KeyEvent.VK_UP:
+					context.store(new RotateClockwiseCommand(context));
+					break;
+
+				case KeyEvent.VK_X:
+					context.store(new RotateCounterClockwiseCommand(context));
+					break;
+
+				case KeyEvent.VK_DOWN:
+					context.store(new SoftDropCommand(context));
+					break;
+
+				case KeyEvent.VK_SPACE:
+					context.store(new HardDropCommand(context));
+					break;
+			}
+		}
+
+		@Override
+		public void keyReleased(KeyEvent ke)
+		{
+		}
+
+		@Override
+		public void keyTyped(KeyEvent ke)
+		{
 		}
 	}
 }
