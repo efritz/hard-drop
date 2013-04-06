@@ -42,7 +42,7 @@ public class AI implements NewGameListener, EndGameListener
 	private GameContext context;
 
 	private Move move;
-	private long lastAi = System.currentTimeMillis();
+	private long lastUpdate = System.currentTimeMillis();
 	private Queue<Command> commands = new LinkedList<Command>();
 
 	private int delay = 128;
@@ -76,8 +76,8 @@ public class AI implements NewGameListener, EndGameListener
 	{
 		long time = System.currentTimeMillis();
 
-		if (time - delay >= lastAi) {
-			lastAi = time;
+		if (time - delay >= lastUpdate) {
+			lastUpdate = time;
 
 			if (commands.size() == 0) {
 				move = evaluator.getNextMove(context.getBoard(), context.getCurrent(), context.getX(), context.getY(), context.getPreview(), context.getBoard().getSpawnX(context.getPreview()), context.getBoard().getSpawnY(context.getPreview()));
