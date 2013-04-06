@@ -22,10 +22,16 @@
 package com.kauri.tetris;
 
 import java.awt.BorderLayout;
+import java.awt.Canvas;
 import java.awt.Dimension;
+import java.awt.Graphics;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ComponentEvent;
+import java.awt.event.ComponentListener;
 import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
+import java.awt.image.BufferStrategy;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -41,6 +47,13 @@ import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
 import com.kauri.tetris.GameContext.State;
+import com.kauri.tetris.ai.AI;
+import com.kauri.tetris.command.HardDropCommand;
+import com.kauri.tetris.command.MoveLeftCommand;
+import com.kauri.tetris.command.MoveRightCommand;
+import com.kauri.tetris.command.RotateClockwiseCommand;
+import com.kauri.tetris.command.RotateCounterClockwiseCommand;
+import com.kauri.tetris.command.SoftDropCommand;
 import com.kauri.tetris.sequence.LinePieceSelector;
 import com.kauri.tetris.sequence.PieceSelector;
 import com.kauri.tetris.sequence.PieceSequence;
@@ -51,12 +64,183 @@ import com.kauri.tetris.sequence.WorstPieceSelector;
 /**
  * @author Eric Fritz
  */
-public class Tetris
+public class Tetris extends Canvas implements Runnable
 {
+	private static final long serialVersionUID = 1L;
+
+	private GameContext context;
+
+	private AI ai;
+	private UI ui;
+
+	private long lastGravity;
+
+	public Tetris(final GameContext context)
+	{
+		this.context = context;
+
+		this.ai = new AI(context);
+		this.ui = new UI(context);
+
+		refreshSize();
+		this.addKeyListener(new PlayerKeyListener());
+		this.addComponentListener(new ResizeListener());
+	}
+
+	public void start()
+	{
+		new Thread(this).start();
+	}
+
+	@Override
+	public void run()
+	{
+		context.newGame();
+
+		while (true) {
+			update();
+			render();
+
+			try {
+				Thread.sleep(1);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+
+			Thread.yield();
+		}
+	}
+
+	private void update()
+	{
+		context.execute();
+
+		if (context.getState() == State.GAMEOVER) {
+			if (context.isAutoRestart()) {
+				context.newGame();
+			}
+		}
+
+		if (context.getState() == State.PLAYING) {
+			if (context.isRunningAi()) {
+				ai.update();
+			} else if (checkGravityTimeout()) {
+				context.store(new SoftDropCommand(context));
+			}
+		}
+	}
+
+	private void render()
+	{
+		BufferStrategy bs = getBufferStrategy();
+		if (bs == null) {
+			requestFocus();
+			createBufferStrategy(3);
+			return;
+		}
+
+		Graphics g = bs.getDrawGraphics();
+
+		ui.render(g);
+
+		g.dispose();
+		bs.show();
+	}
+
+	private boolean checkGravityTimeout()
+	{
+		long time = System.currentTimeMillis();
+		long wait = (long) (((11 - context.getLevel()) * 0.05) * 1000);
+
+		if (time - wait >= lastGravity) {
+			lastGravity = time;
+			return true;
+		}
+
+		return false;
+	}
+
+	private void refreshSize()
+	{
+		ui.setSize(getWidth(), getHeight());
+	}
+
+	private class ResizeListener implements ComponentListener
+	{
+		@Override
+		public void componentShown(ComponentEvent ce)
+		{
+		}
+
+		@Override
+		public void componentHidden(ComponentEvent ce)
+		{
+		}
+
+		@Override
+		public void componentMoved(ComponentEvent ce)
+		{
+		}
+
+		@Override
+		public void componentResized(ComponentEvent ce)
+		{
+			refreshSize();
+		}
+	}
+
+	private class PlayerKeyListener implements KeyListener
+	{
+		@Override
+		public void keyPressed(KeyEvent ke)
+		{
+			if (context.getState() != State.PLAYING || context.isRunningAi()) {
+				return;
+			}
+
+			switch (ke.getKeyCode()) {
+				case KeyEvent.VK_LEFT:
+					context.store(new MoveLeftCommand(context));
+					break;
+
+				case KeyEvent.VK_RIGHT:
+					context.store(new MoveRightCommand(context));
+					break;
+
+				case KeyEvent.VK_Z:
+				case KeyEvent.VK_UP:
+					context.store(new RotateClockwiseCommand(context));
+					break;
+
+				case KeyEvent.VK_X:
+					context.store(new RotateCounterClockwiseCommand(context));
+					break;
+
+				case KeyEvent.VK_DOWN:
+					context.store(new SoftDropCommand(context));
+					break;
+
+				case KeyEvent.VK_SPACE:
+					context.store(new HardDropCommand(context));
+					break;
+			}
+		}
+
+		@Override
+		public void keyReleased(KeyEvent ke)
+		{
+		}
+
+		@Override
+		public void keyTyped(KeyEvent ke)
+		{
+		}
+	}
+
 	public static void main(String[] args)
 	{
 		final GameContext context = new GameContext();
-		Game game = new Game(context);
+		Tetris game = new Tetris(context);
 
 		try {
 			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
