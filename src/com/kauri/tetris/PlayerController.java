@@ -23,11 +23,11 @@ package com.kauri.tetris;
 
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.util.HashMap;
 import java.util.LinkedList;
-import java.util.Queue;
+import java.util.List;
+import java.util.Map;
 
-import com.kauri.tetris.GameContext.State;
-import com.kauri.tetris.command.Command;
 import com.kauri.tetris.command.HardDropCommand;
 import com.kauri.tetris.command.MoveLeftCommand;
 import com.kauri.tetris.command.MoveRightCommand;
@@ -42,7 +42,7 @@ public class PlayerController implements KeyListener
 {
 	private GameContext context;
 	private long lastGravity = System.currentTimeMillis();
-	private Queue<Command> commands = new LinkedList<Command>();
+	private Map<Integer, Boolean> keys = new HashMap<Integer, Boolean>();
 
 	public PlayerController(GameContext context)
 	{
@@ -55,13 +55,33 @@ public class PlayerController implements KeyListener
 			context.store(new SoftDropCommand(context));
 		}
 
-		//
-		// [BUG] Commands are stashed while AI is running and will be executed when AI is turned
-		// off. Disable commands from caching while the player is not enabled (key presses should be
-		// a no-op in this situation).
+		for (int keyCode : getKeys()) {
+			switch (keyCode) {
+				case KeyEvent.VK_LEFT:
+					context.store(new MoveLeftCommand(context));
+					break;
 
-		while (commands.size() > 0) {
-			context.store(commands.remove());
+				case KeyEvent.VK_RIGHT:
+					context.store(new MoveRightCommand(context));
+					break;
+
+				case KeyEvent.VK_Z:
+				case KeyEvent.VK_UP:
+					context.store(new RotateClockwiseCommand(context));
+					break;
+
+				case KeyEvent.VK_X:
+					context.store(new RotateCounterClockwiseCommand(context));
+					break;
+
+				case KeyEvent.VK_DOWN:
+					context.store(new SoftDropCommand(context));
+					break;
+
+				case KeyEvent.VK_SPACE:
+					context.store(new HardDropCommand(context));
+					break;
+			}
 		}
 	}
 
@@ -81,45 +101,37 @@ public class PlayerController implements KeyListener
 	@Override
 	public void keyPressed(KeyEvent ke)
 	{
-		if (context.getState() != State.PLAYING) {
-			return;
-		}
-
-		switch (ke.getKeyCode()) {
-			case KeyEvent.VK_LEFT:
-				commands.add(new MoveLeftCommand(context));
-				break;
-
-			case KeyEvent.VK_RIGHT:
-				commands.add(new MoveRightCommand(context));
-				break;
-
-			case KeyEvent.VK_Z:
-			case KeyEvent.VK_UP:
-				commands.add(new RotateClockwiseCommand(context));
-				break;
-
-			case KeyEvent.VK_X:
-				commands.add(new RotateCounterClockwiseCommand(context));
-				break;
-
-			case KeyEvent.VK_DOWN:
-				commands.add(new SoftDropCommand(context));
-				break;
-
-			case KeyEvent.VK_SPACE:
-				commands.add(new HardDropCommand(context));
-				break;
-		}
+		toggle(ke.getKeyCode(), true);
 	}
 
 	@Override
 	public void keyReleased(KeyEvent ke)
 	{
+		toggle(ke.getKeyCode(), false);
 	}
 
 	@Override
 	public void keyTyped(KeyEvent ke)
 	{
+	}
+
+	private void toggle(int keyCode, boolean down)
+	{
+		keys.put(keyCode, down);
+	}
+
+	private List<Integer> getKeys()
+	{
+		List<Integer> result = new LinkedList<Integer>();
+
+		for (Map.Entry<Integer, Boolean> entry : keys.entrySet()) {
+			if (entry.getValue()) {
+				result.add(entry.getKey());
+			}
+
+			keys.put(entry.getKey(), false);
+		}
+
+		return result;
 	}
 }
