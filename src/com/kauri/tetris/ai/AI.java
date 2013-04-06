@@ -21,7 +21,16 @@
 
 package com.kauri.tetris.ai;
 
+import java.util.LinkedList;
+import java.util.Queue;
+
 import com.kauri.tetris.GameContext;
+import com.kauri.tetris.command.Command;
+import com.kauri.tetris.command.HardDropCommand;
+import com.kauri.tetris.command.MoveLeftCommand;
+import com.kauri.tetris.command.MoveRightCommand;
+import com.kauri.tetris.command.RotateClockwiseCommand;
+import com.kauri.tetris.command.SoftDropCommand;
 
 /**
  * @author Eric Fritz
@@ -32,6 +41,7 @@ public class AI
 
 	private Move move;
 	private long lastAi = System.currentTimeMillis();
+	private Queue<Command> commands = new LinkedList<Command>();
 
 	public AI(GameContext context)
 	{
@@ -45,17 +55,47 @@ public class AI
 		if (time - context.getAiDelay() >= lastAi) {
 			lastAi = time;
 
-			if (move == null || !move.canPerformUpdate()) {
+			if (commands.size() == 0) {
 				move = context.getEvaluator().getNextMove(context.getBoard(), context.getCurrent(), context.getX(), context.getY(), context.getPreview(), context.getBoard().getSpawnX(context.getPreview()), context.getBoard().getSpawnY(context.getPreview()));
-			}
 
-			if (move.canPerformUpdate()) {
-				move.update(context);
+				int rDelta = move.getRotationDelta();
+				int mDelta = move.getMovementDelta();
 
-				while (move.canPerformUpdate() && context.getAiDelay() == 1) {
-					move.update(context);
+				int currX = context.getBoard().getSpawnX(context.getCurrent()) + mDelta;
+				int currY = context.getBoard().getSpawnY(context.getCurrent());
+
+				while (rDelta != 0 || mDelta != 0) {
+					if (rDelta > 0) {
+						rDelta--;
+						commands.add(new RotateClockwiseCommand(context));
+					} else if (mDelta < 0) {
+						mDelta++;
+						commands.add(new MoveLeftCommand(context));
+					} else if (mDelta > 0) {
+						mDelta--;
+						commands.add(new MoveRightCommand(context));
+					}
 				}
+
+				if (context.getAiDelay() > 1) {
+					while (context.getBoard().isFalling(context.getCurrent(), currX, currY--)) {
+						commands.add(new SoftDropCommand(context));
+					}
+				}
+
+				commands.add(new HardDropCommand(context));
 			}
+
+			animate();
+		}
+	}
+
+	private void animate()
+	{
+		if (commands.size() > 0) {
+			do {
+				context.store(commands.remove());
+			} while (commands.size() > 0 && context.getAiDelay() == 1);
 		}
 	}
 }

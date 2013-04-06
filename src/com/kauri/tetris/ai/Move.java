@@ -21,13 +21,6 @@
 
 package com.kauri.tetris.ai;
 
-import com.kauri.tetris.GameContext;
-import com.kauri.tetris.command.HardDropCommand;
-import com.kauri.tetris.command.MoveLeftCommand;
-import com.kauri.tetris.command.MoveRightCommand;
-import com.kauri.tetris.command.RotateClockwiseCommand;
-import com.kauri.tetris.command.SoftDropCommand;
-
 /**
  * @author Eric Fritz
  */
@@ -36,7 +29,6 @@ public class Move
 	private double score;
 	private int rDelta = 0;
 	private int mDelta = 0;
-	private boolean animating = true;
 
 	public Move(double score, int rotationDelta, int movementDelta)
 	{
@@ -58,29 +50,5 @@ public class Move
 	public int getMovementDelta()
 	{
 		return mDelta;
-	}
-
-	public boolean canPerformUpdate()
-	{
-		return animating;
-	}
-
-	public void update(GameContext context)
-	{
-		if (rDelta > 0) {
-			rDelta--;
-			context.store(new RotateClockwiseCommand(context));
-		} else if (mDelta < 0) {
-			mDelta++;
-			context.store(new MoveLeftCommand(context));
-		} else if (mDelta > 0) {
-			mDelta--;
-			context.store(new MoveRightCommand(context));
-		} else if (context.getBoard().isFalling(context.getCurrent(), context.getX(), context.getY())) {
-			context.store(new SoftDropCommand(context));
-		} else {
-			context.store(new HardDropCommand(context));
-			animating = false;
-		}
 	}
 }
