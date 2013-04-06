@@ -117,7 +117,7 @@ public class Tetris extends Canvas implements Runnable
 		}
 
 		if (context.getState() == State.PLAYING) {
-			if (context.isRunningAi()) {
+			if (ai.isEnabled()) {
 				ai.update();
 			} else if (checkGravityTimeout()) {
 				context.store(new SoftDropCommand(context));
@@ -189,7 +189,7 @@ public class Tetris extends Canvas implements Runnable
 		@Override
 		public void keyPressed(KeyEvent ke)
 		{
-			if (context.getState() != State.PLAYING || context.isRunningAi()) {
+			if (context.getState() != State.PLAYING || ai.isEnabled()) {
 				return;
 			}
 
@@ -320,7 +320,7 @@ public class Tetris extends Canvas implements Runnable
 			@Override
 			public void actionPerformed(ActionEvent e)
 			{
-				context.setRunningAi(item7.isSelected());
+				ai.setEnabled(item7.isSelected());
 			}
 		});
 
@@ -395,7 +395,7 @@ public class Tetris extends Canvas implements Runnable
 				@Override
 				public void actionPerformed(ActionEvent e)
 				{
-					context.setAiDelay(delay);
+					ai.setDelay(delay);
 				}
 			});
 		}

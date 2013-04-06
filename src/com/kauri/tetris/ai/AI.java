@@ -43,6 +43,14 @@ public class AI
 	private long lastAi = System.currentTimeMillis();
 	private Queue<Command> commands = new LinkedList<Command>();
 
+	private int delay = 128;
+	private boolean enabled = false;
+	private ScoringSystem scoring = new DefaultScoringSystem();
+	private MoveEvaluator evaluator = new MoveEvaluator(scoring);
+
+	// TODO - update this when a game ends
+	// private Evolution evo = new Evolution(scoring);
+
 	public AI(GameContext context)
 	{
 		this.context = context;
@@ -52,11 +60,11 @@ public class AI
 	{
 		long time = System.currentTimeMillis();
 
-		if (time - context.getAiDelay() >= lastAi) {
+		if (time - delay >= lastAi) {
 			lastAi = time;
 
 			if (commands.size() == 0) {
-				move = context.getEvaluator().getNextMove(context.getBoard(), context.getCurrent(), context.getX(), context.getY(), context.getPreview(), context.getBoard().getSpawnX(context.getPreview()), context.getBoard().getSpawnY(context.getPreview()));
+				move = evaluator.getNextMove(context.getBoard(), context.getCurrent(), context.getX(), context.getY(), context.getPreview(), context.getBoard().getSpawnX(context.getPreview()), context.getBoard().getSpawnY(context.getPreview()));
 
 				int rDelta = move.getRotationDelta();
 				int mDelta = move.getMovementDelta();
@@ -77,7 +85,7 @@ public class AI
 					}
 				}
 
-				if (context.getAiDelay() > 1) {
+				if (delay > 1) {
 					while (context.getBoard().isFalling(context.getCurrent(), currX, currY--)) {
 						commands.add(new SoftDropCommand(context));
 					}
@@ -95,7 +103,22 @@ public class AI
 		if (commands.size() > 0) {
 			do {
 				context.store(commands.remove());
-			} while (commands.size() > 0 && context.getAiDelay() == 1);
+			} while (commands.size() > 0 && delay == 1);
 		}
+	}
+
+	public boolean isEnabled()
+	{
+		return enabled;
+	}
+
+	public void setEnabled(boolean enabled)
+	{
+		this.enabled = enabled;
+	}
+
+	public void setDelay(int delay)
+	{
+		this.delay = delay;
 	}
 }

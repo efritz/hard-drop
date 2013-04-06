@@ -28,7 +28,10 @@ import java.util.Map;
 
 import com.kauri.tetris.GameContext;
 import com.kauri.tetris.Tetromino;
+import com.kauri.tetris.ai.DefaultScoringSystem;
 import com.kauri.tetris.ai.Move;
+import com.kauri.tetris.ai.MoveEvaluator;
+import com.kauri.tetris.ai.ScoringSystem;
 
 /**
  * @author Eric Fritz
@@ -36,6 +39,8 @@ import com.kauri.tetris.ai.Move;
 public class WorstPieceSelector implements PieceSelector
 {
 	private GameContext context;
+	private ScoringSystem scoring = new DefaultScoringSystem();
+	private MoveEvaluator evaluator = new MoveEvaluator(scoring);
 
 	public WorstPieceSelector(GameContext context)
 	{
@@ -48,7 +53,7 @@ public class WorstPieceSelector implements PieceSelector
 		Map<Move, Tetromino> moves = new HashMap<Move, Tetromino>();
 
 		for (Tetromino tetromino : Tetromino.tetrominoes.values()) {
-			moves.put(context.getEvaluator().getNextMove(context.getBoard(), tetromino, context.getBoard().getSpawnX(tetromino), context.getBoard().getSpawnY(tetromino)), tetromino);
+			moves.put(evaluator.getNextMove(context.getBoard(), tetromino, context.getBoard().getSpawnX(tetromino), context.getBoard().getSpawnY(tetromino)), tetromino);
 		}
 
 		return moves.get(Collections.min(moves.keySet(), new Comparator<Move>() {

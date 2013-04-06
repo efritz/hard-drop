@@ -25,10 +25,6 @@ import java.util.LinkedList;
 import java.util.Queue;
 import java.util.Stack;
 
-import com.kauri.tetris.ai.DefaultScoringSystem;
-import com.kauri.tetris.ai.Evolution;
-import com.kauri.tetris.ai.MoveEvaluator;
-import com.kauri.tetris.ai.ScoringSystem;
 import com.kauri.tetris.command.Command;
 import com.kauri.tetris.command.NewTetrominoCommand;
 import com.kauri.tetris.sequence.PieceSequence;
@@ -58,13 +54,6 @@ public class GameContext
 	private Tetromino current;
 	private Tetromino preview;
 
-	private ScoringSystem scoring = new DefaultScoringSystem();
-	private MoveEvaluator evaluator = new MoveEvaluator(scoring);
-	private Evolution evo = new Evolution(scoring);
-
-	private int aiDelay = 128;
-
-	private boolean runningAi = false;
 	private boolean autoRestart = false;
 
 	private Queue<Command> queue = new LinkedList<Command>();
@@ -212,9 +201,9 @@ public class GameContext
 
 	public void newGame()
 	{
-		if (score != 0) {
-			evo.submit(lines);
-		}
+		// if (score != 0) {
+		// evo.submit(lines);
+		// }
 
 		this.score = 0;
 		this.lines = 0;
@@ -226,7 +215,7 @@ public class GameContext
 		history.clear();
 		sequence.clear();
 
-		evo.updateScoring();
+		// evo.updateScoring();
 
 		new NewTetrominoCommand(this).execute();
 	}
@@ -264,33 +253,5 @@ public class GameContext
 		while (turns-- > 0 && history.size() > 0) {
 			history.pop().unexecute();
 		}
-	}
-
-	//
-	// AI Settings
-
-	boolean isRunningAi()
-	{
-		return runningAi;
-	}
-
-	void setRunningAi(boolean runningAi)
-	{
-		this.runningAi = runningAi;
-	}
-
-	public MoveEvaluator getEvaluator()
-	{
-		return evaluator;
-	}
-
-	public int getAiDelay()
-	{
-		return aiDelay;
-	}
-
-	public void setAiDelay(int aiDelay)
-	{
-		this.aiDelay = aiDelay;
 	}
 }
