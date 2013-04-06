@@ -94,12 +94,12 @@ public class UI
 
 	private int getSquareWidth()
 	{
-		return getAdjustedBoardWidth() / (context.getBoard().getWidth() + (context.showPreviewPiece() ? maximumTetrominoHeight : 0));
+		return getAdjustedBoardWidth() / (context.getBoard().getWidth() + (showPreviewPiece() ? maximumTetrominoHeight : 0));
 	}
 
 	private int getSquareHeight()
 	{
-		return getAdjustedBoardHeight() / (context.getBoard().getHeight() + (context.showPreviewPiece() ? maximumTetrominoHeight * 2 : 0));
+		return getAdjustedBoardHeight() / (context.getBoard().getHeight() + (showPreviewPiece() ? maximumTetrominoHeight * 2 : 0));
 	}
 
 	private int getLeftMargin()
@@ -153,7 +153,7 @@ public class UI
 
 	private void renderDropPosTetromino(Graphics g, Tetromino current)
 	{
-		if (context.getState() == State.GAMEOVER || !context.showDropPosPiece()) {
+		if (context.getState() == State.GAMEOVER || !showDropPosPiece()) {
 			return;
 		}
 
@@ -165,7 +165,7 @@ public class UI
 
 	private void renderPreviewTetromino(Graphics g, Tetromino preview)
 	{
-		if (!context.showPreviewPiece()) {
+		if (!showPreviewPiece()) {
 			return;
 		}
 
@@ -177,7 +177,7 @@ public class UI
 
 	private void renderGui(Graphics g)
 	{
-		if (context.getShowScore()) {
+		if (getShowScore()) {
 			((Graphics2D) g).setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
 
 			clear(g, textBackgroundColor);
@@ -251,5 +251,42 @@ public class UI
 	private static Font scaleFont(Graphics g, Font font, String text, int width)
 	{
 		return g.getFont().deriveFont(font.getSize2D() * width / g.getFontMetrics(font).stringWidth(text));
+	}
+
+	//
+	// UI Settings
+
+	private boolean showScore = false;
+	private boolean showPreviewPiece = false;
+	private boolean showDropPosPiece = false;
+
+	public boolean getShowScore()
+	{
+		return showScore;
+	}
+
+	public void setShowScore(boolean b)
+	{
+		this.showScore = b;
+	}
+
+	public boolean showPreviewPiece()
+	{
+		return showPreviewPiece;
+	}
+
+	public void setShowPreviewPiece(boolean showPreviewPiece)
+	{
+		this.showPreviewPiece = showPreviewPiece;
+	}
+
+	public boolean showDropPosPiece()
+	{
+		return showDropPosPiece;
+	}
+
+	public void setShowDropPosPiece(boolean showDropPosPiece)
+	{
+		this.showDropPosPiece = showDropPosPiece;
 	}
 }

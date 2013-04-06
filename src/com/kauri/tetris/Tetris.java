@@ -68,20 +68,15 @@ public class Tetris extends Canvas implements Runnable
 {
 	private static final long serialVersionUID = 1L;
 
-	private GameContext context;
+	private static GameContext context = new GameContext();
 
-	private AI ai;
-	private UI ui;
+	private static AI ai = new AI(context);
+	private static UI ui = new UI(context);
 
 	private long lastGravity;
 
-	public Tetris(final GameContext context)
+	public Tetris()
 	{
-		this.context = context;
-
-		this.ai = new AI(context);
-		this.ui = new UI(context);
-
 		refreshSize();
 		this.addKeyListener(new PlayerKeyListener());
 		this.addComponentListener(new ResizeListener());
@@ -239,8 +234,7 @@ public class Tetris extends Canvas implements Runnable
 
 	public static void main(String[] args)
 	{
-		final GameContext context = new GameContext();
-		Tetris game = new Tetris(context);
+		Tetris game = new Tetris();
 
 		try {
 			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
@@ -295,7 +289,7 @@ public class Tetris extends Canvas implements Runnable
 			@Override
 			public void actionPerformed(ActionEvent e)
 			{
-				context.setShowScore(item4.isSelected());
+				ui.setShowScore(item4.isSelected());
 			}
 		});
 
@@ -305,7 +299,7 @@ public class Tetris extends Canvas implements Runnable
 			@Override
 			public void actionPerformed(ActionEvent e)
 			{
-				context.setShowPreviewPiece(item5.isSelected());
+				ui.setShowPreviewPiece(item5.isSelected());
 			}
 		});
 
@@ -315,7 +309,7 @@ public class Tetris extends Canvas implements Runnable
 			@Override
 			public void actionPerformed(ActionEvent e)
 			{
-				context.setShowDropPosPiece(item6.isSelected());
+				ui.setShowDropPosPiece(item6.isSelected());
 			}
 		});
 

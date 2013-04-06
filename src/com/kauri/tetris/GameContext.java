@@ -49,9 +49,6 @@ public class GameContext
 	private Board board = new Board(10, 20);
 	private PieceSequence sequence = new PieceSequence(new ShufflePieceSelector());
 
-	private boolean showPreviewPiece = false;
-	private boolean showDropPosPiece = false;
-
 	private long score = 0;
 	private long lines = 0;
 	private long drops = 0;
@@ -67,7 +64,6 @@ public class GameContext
 
 	private int aiDelay = 128;
 
-	private boolean showScore = false;
 	private boolean runningAi = false;
 	private boolean autoRestart = false;
 
@@ -296,38 +292,5 @@ public class GameContext
 	public void setAiDelay(int aiDelay)
 	{
 		this.aiDelay = aiDelay;
-	}
-
-	//
-	// UI Settings
-
-	public boolean getShowScore()
-	{
-		return showScore;
-	}
-
-	public void setShowScore(boolean b)
-	{
-		this.showScore = b;
-	}
-
-	public boolean showPreviewPiece()
-	{
-		return showPreviewPiece;
-	}
-
-	public void setShowPreviewPiece(boolean showPreviewPiece)
-	{
-		this.showPreviewPiece = showPreviewPiece;
-	}
-
-	public boolean showDropPosPiece()
-	{
-		return showDropPosPiece;
-	}
-
-	public void setShowDropPosPiece(boolean showDropPosPiece)
-	{
-		this.showDropPosPiece = showDropPosPiece;
 	}
 }
