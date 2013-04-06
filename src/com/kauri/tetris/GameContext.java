@@ -251,16 +251,14 @@ public class GameContext
 
 			if (!getBoard().canMove(getCurrent(), getX(), getY())) {
 				state = State.GAMEOVER;
+
+				for (EndGameListener listener : endGameListeners) {
+					listener.onEndGame();
+				}
 			}
 		}
 
 		queue.clear();
-
-		if (state == State.GAMEOVER) {
-			for (EndGameListener listener : endGameListeners) {
-				listener.onEndGame();
-			}
-		}
 	}
 
 	public void undo()
