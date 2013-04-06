@@ -27,10 +27,7 @@ import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.ComponentEvent;
-import java.awt.event.ComponentListener;
 import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
 import java.awt.image.BufferStrategy;
 import java.util.HashMap;
 import java.util.Map;
@@ -48,12 +45,6 @@ import javax.swing.UnsupportedLookAndFeelException;
 
 import com.kauri.tetris.GameContext.State;
 import com.kauri.tetris.ai.AI;
-import com.kauri.tetris.command.HardDropCommand;
-import com.kauri.tetris.command.MoveLeftCommand;
-import com.kauri.tetris.command.MoveRightCommand;
-import com.kauri.tetris.command.RotateClockwiseCommand;
-import com.kauri.tetris.command.RotateCounterClockwiseCommand;
-import com.kauri.tetris.command.SoftDropCommand;
 import com.kauri.tetris.sequence.LinePieceSelector;
 import com.kauri.tetris.sequence.PieceSelector;
 import com.kauri.tetris.sequence.PieceSequence;
@@ -72,14 +63,12 @@ public class Tetris extends Canvas implements Runnable
 
 	private static AI ai = new AI(context);
 	private static UI ui = new UI(context);
-
-	private long lastGravity;
+	private static PlayerController player = new PlayerController(context);
 
 	public Tetris()
 	{
-		refreshSize();
-		this.addKeyListener(new PlayerKeyListener());
-		this.addComponentListener(new ResizeListener());
+		this.addKeyListener(player);
+		this.addComponentListener(ui);
 	}
 
 	public void start()
@@ -119,8 +108,8 @@ public class Tetris extends Canvas implements Runnable
 		if (context.getState() == State.PLAYING) {
 			if (ai.isEnabled()) {
 				ai.update();
-			} else if (checkGravityTimeout()) {
-				context.store(new SoftDropCommand(context));
+			} else {
+				player.update();
 			}
 		}
 	}
@@ -140,96 +129,6 @@ public class Tetris extends Canvas implements Runnable
 
 		g.dispose();
 		bs.show();
-	}
-
-	private boolean checkGravityTimeout()
-	{
-		long time = System.currentTimeMillis();
-		long wait = (long) (((11 - context.getLevel()) * 0.05) * 1000);
-
-		if (time - wait >= lastGravity) {
-			lastGravity = time;
-			return true;
-		}
-
-		return false;
-	}
-
-	private void refreshSize()
-	{
-		ui.setSize(getWidth(), getHeight());
-	}
-
-	private class ResizeListener implements ComponentListener
-	{
-		@Override
-		public void componentShown(ComponentEvent ce)
-		{
-		}
-
-		@Override
-		public void componentHidden(ComponentEvent ce)
-		{
-		}
-
-		@Override
-		public void componentMoved(ComponentEvent ce)
-		{
-		}
-
-		@Override
-		public void componentResized(ComponentEvent ce)
-		{
-			refreshSize();
-		}
-	}
-
-	private class PlayerKeyListener implements KeyListener
-	{
-		@Override
-		public void keyPressed(KeyEvent ke)
-		{
-			if (context.getState() != State.PLAYING || ai.isEnabled()) {
-				return;
-			}
-
-			switch (ke.getKeyCode()) {
-				case KeyEvent.VK_LEFT:
-					context.store(new MoveLeftCommand(context));
-					break;
-
-				case KeyEvent.VK_RIGHT:
-					context.store(new MoveRightCommand(context));
-					break;
-
-				case KeyEvent.VK_Z:
-				case KeyEvent.VK_UP:
-					context.store(new RotateClockwiseCommand(context));
-					break;
-
-				case KeyEvent.VK_X:
-					context.store(new RotateCounterClockwiseCommand(context));
-					break;
-
-				case KeyEvent.VK_DOWN:
-					context.store(new SoftDropCommand(context));
-					break;
-
-				case KeyEvent.VK_SPACE:
-					context.store(new HardDropCommand(context));
-					break;
-			}
-		}
-
-		@Override
-		public void keyReleased(KeyEvent ke)
-		{
-		}
-
-		@Override
-		public void keyTyped(KeyEvent ke)
-		{
-		}
 	}
 
 	public static void main(String[] args)

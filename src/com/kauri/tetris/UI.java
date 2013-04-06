@@ -26,6 +26,8 @@ import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
+import java.awt.event.ComponentEvent;
+import java.awt.event.ComponentListener;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -34,7 +36,7 @@ import com.kauri.tetris.GameContext.State;
 /**
  * @author efritz
  */
-public class UI
+public class UI implements ComponentListener
 {
 	private static final int maximumTetrominoHeight = 2;
 
@@ -288,5 +290,26 @@ public class UI
 	public void setShowDropPosPiece(boolean showDropPosPiece)
 	{
 		this.showDropPosPiece = showDropPosPiece;
+	}
+
+	@Override
+	public void componentShown(ComponentEvent ce)
+	{
+	}
+
+	@Override
+	public void componentHidden(ComponentEvent ce)
+	{
+	}
+
+	@Override
+	public void componentMoved(ComponentEvent ce)
+	{
+	}
+
+	@Override
+	public void componentResized(ComponentEvent ce)
+	{
+		setSize(ce.getComponent().getWidth(), ce.getComponent().getHeight());
 	}
 }
