@@ -25,6 +25,7 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
 
 import javax.swing.ButtonGroup;
 import javax.swing.JCheckBoxMenuItem;
@@ -33,10 +34,17 @@ import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JRadioButtonMenuItem;
+import javax.swing.KeyStroke;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
 import com.kauri.tetris.GameContext.State;
+import com.kauri.tetris.sequence.LinePieceSelector;
+import com.kauri.tetris.sequence.PieceSelector;
+import com.kauri.tetris.sequence.PieceSequence;
+import com.kauri.tetris.sequence.SZPieceSelector;
+import com.kauri.tetris.sequence.ShufflePieceSelector;
+import com.kauri.tetris.sequence.WorstPieceSelector;
 
 /**
  * @author Eric Fritz
@@ -63,9 +71,9 @@ public class Tetris
 		frame.getContentPane().add(game, BorderLayout.CENTER);
 
 		final JMenuItem item1 = new JCheckBoxMenuItem("Pause");
+		item1.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_P, ActionEvent.CTRL_MASK));
 
 		item1.addActionListener(new ActionListener() {
-
 			@Override
 			public void actionPerformed(ActionEvent e)
 			{
@@ -74,6 +82,7 @@ public class Tetris
 		});
 
 		final JMenuItem item2 = new JMenuItem("New Game");
+		item2.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_N, ActionEvent.CTRL_MASK));
 
 		item2.addActionListener(new ActionListener() {
 			@Override
@@ -84,6 +93,7 @@ public class Tetris
 		});
 
 		final JMenuItem item3 = new JCheckBoxMenuItem("Auto-Replay");
+		item3.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_R, ActionEvent.CTRL_MASK));
 
 		item3.addActionListener(new ActionListener() {
 			@Override
@@ -124,6 +134,7 @@ public class Tetris
 		});
 
 		final JMenuItem item7 = new JCheckBoxMenuItem("Enabled");
+		item7.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_A, ActionEvent.CTRL_MASK));
 
 		item7.addActionListener(new ActionListener() {
 			@Override
@@ -138,13 +149,12 @@ public class Tetris
 
 		for (int i = 5; i <= 30; i += 5) {
 			final int width = i;
-			JMenuItem item8 = new JRadioButtonMenuItem(width + "x" + (width * 2));
+			JMenuItem item = new JRadioButtonMenuItem(width + "x" + (width * 2));
 
-			menu2.add(item8);
-			group1.add(item8);
+			menu2.add(item);
+			group1.add(item);
 
-			item8.addActionListener(new ActionListener() {
-
+			item.addActionListener(new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent e)
 				{
@@ -154,17 +164,36 @@ public class Tetris
 			});
 		}
 
-		JMenu menu5 = new JMenu("Speed");
+		JMenu menu3 = new JMenu("Piece Sequence");
 		ButtonGroup group2 = new ButtonGroup();
+
+		for (PieceSelector selector : new PieceSelector[] { new ShufflePieceSelector(), new LinePieceSelector(), new SZPieceSelector(), new WorstPieceSelector(context) }) {
+			final PieceSelector selector2 = selector;
+			JMenuItem item = new JRadioButtonMenuItem(selector2.getClass().getName());
+
+			menu3.add(item);
+			group2.add(item);
+
+			item.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e)
+				{
+					context.setSequence(new PieceSequence(selector2));
+				}
+			});
+		}
+
+		JMenu menu6 = new JMenu("Speed");
+		ButtonGroup group3 = new ButtonGroup();
 
 		for (int i = 10; i >= 0; i--) {
 			final int delay = (int) Math.pow(2, i);
-			JMenuItem item9 = new JRadioButtonMenuItem("Speed " + (10 - i));
+			JMenuItem item = new JRadioButtonMenuItem("Speed " + (10 - i));
 
-			menu5.add(item9);
-			group2.add(item9);
+			menu6.add(item);
+			group3.add(item);
 
-			item9.addActionListener(new ActionListener() {
+			item.addActionListener(new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent e)
 				{
@@ -178,20 +207,21 @@ public class Tetris
 		menu1.add(item2);
 		menu1.add(item3);
 		menu1.add(menu2);
+		menu1.add(menu3);
 
-		JMenuItem menu3 = new JMenu("View");
-		menu3.add(item4);
-		menu3.add(item5);
-		menu3.add(item6);
+		JMenuItem menu4 = new JMenu("View");
+		menu4.add(item4);
+		menu4.add(item5);
+		menu4.add(item6);
 
-		JMenuItem menu4 = new JMenu("AI");
-		menu4.add(item7);
-		menu4.add(menu5);
+		JMenuItem menu5 = new JMenu("AI");
+		menu5.add(item7);
+		menu5.add(menu6);
 
 		JMenuBar menuBar = new JMenuBar();
 		menuBar.add(menu1);
-		menuBar.add(menu3);
 		menuBar.add(menu4);
+		menuBar.add(menu5);
 
 		frame.setJMenuBar(menuBar);
 		frame.setVisible(true);
