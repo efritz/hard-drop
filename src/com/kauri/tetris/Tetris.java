@@ -26,6 +26,8 @@ import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.swing.ButtonGroup;
 import javax.swing.JCheckBoxMenuItem;
@@ -151,6 +153,10 @@ public class Tetris
 			final int width = i;
 			JMenuItem item = new JRadioButtonMenuItem(width + "x" + (width * 2));
 
+			if (width == 10) {
+				item.setSelected(true);
+			}
+
 			menu2.add(item);
 			group1.add(item);
 
@@ -167,9 +173,19 @@ public class Tetris
 		JMenu menu3 = new JMenu("Piece Sequence");
 		ButtonGroup group2 = new ButtonGroup();
 
-		for (PieceSelector selector : new PieceSelector[] { new ShufflePieceSelector(), new LinePieceSelector(), new SZPieceSelector(), new WorstPieceSelector(context) }) {
-			final PieceSelector selector2 = selector;
-			JMenuItem item = new JRadioButtonMenuItem(selector2.getClass().getName());
+		Map<String, PieceSelector> selectors = new HashMap<String, PieceSelector>();
+		selectors.put("Shuffle", new ShufflePieceSelector());
+		selectors.put("Line", new LinePieceSelector());
+		selectors.put("SZ", new SZPieceSelector());
+		selectors.put("Worst", new WorstPieceSelector(context));
+
+		for (Map.Entry<String, PieceSelector> entry : selectors.entrySet()) {
+			final PieceSelector selector2 = entry.getValue();
+			JMenuItem item = new JRadioButtonMenuItem(entry.getKey());
+
+			if (entry.getKey().equals("Shuffle")) {
+				item.setSelected(true);
+			}
 
 			menu3.add(item);
 			group2.add(item);
@@ -189,6 +205,10 @@ public class Tetris
 		for (int i = 10; i >= 0; i--) {
 			final int delay = (int) Math.pow(2, i);
 			JMenuItem item = new JRadioButtonMenuItem("Speed " + (10 - i));
+
+			if (delay == 128) {
+				item.setSelected(true);
+			}
 
 			menu6.add(item);
 			group3.add(item);
