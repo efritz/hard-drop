@@ -184,11 +184,11 @@ public class UI implements ComponentListener
 		if (context.getState() == GameContext.State.GAMEOVER) {
 			clear(g, textBackgroundColor);
 			g.setColor(textForegroundColor);
-			drawWindowWideString(g, "GAME OVER");
+			drawWindowWideString(g, String.format("Game Over: %d (%d)", context.getScore(), context.getLines()));
 		} else if (context.getState() == GameContext.State.PAUSED) {
 			clear(g, textBackgroundColor);
 			g.setColor(textForegroundColor);
-			drawWindowWideString(g, "PAUSED");
+			drawWindowWideString(g, "Paused");
 		} else if (getShowScore()) {
 			clear(g, textBackgroundColor);
 			g.setColor(textForegroundColor);
