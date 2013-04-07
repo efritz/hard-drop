@@ -181,7 +181,11 @@ public class UI implements ComponentListener
 	{
 		((Graphics2D) g).setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
 
-		if (context.getState() == GameContext.State.PAUSED) {
+		if (context.getState() == GameContext.State.GAMEOVER) {
+			clear(g, textBackgroundColor);
+			g.setColor(textForegroundColor);
+			drawWindowWideString(g, "GAME OVER");
+		} else if (context.getState() == GameContext.State.PAUSED) {
 			clear(g, textBackgroundColor);
 			g.setColor(textForegroundColor);
 			drawWindowWideString(g, "PAUSED");
