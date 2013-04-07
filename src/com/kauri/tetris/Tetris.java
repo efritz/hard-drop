@@ -242,9 +242,19 @@ public class Tetris extends Canvas implements Runnable
 			}
 		});
 
-		JMenuItem item8 = new JMenuItem("About Tetris");
+		JMenuItem item8 = new JCheckBoxMenuItem("Train/Evolve");
 
-		item8.addActionListener(new ActionListener() {
+		item8.addItemListener(new ItemListener() {
+			@Override
+			public void itemStateChanged(ItemEvent e)
+			{
+				// TODO
+			}
+		});
+
+		JMenuItem item9 = new JMenuItem("About Tetris");
+
+		item9.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e)
 			{
@@ -303,10 +313,11 @@ public class Tetris extends Canvas implements Runnable
 
 		JMenuItem menu5 = new JMenu("AI");
 		menu5.add(item7);
+		menu5.add(item8);
 		menu5.add(menu6);
 
 		JMenuItem menu7 = new JMenu("Help");
-		menu7.add(item8);
+		menu7.add(item9);
 
 		JMenuBar menuBar = new JMenuBar();
 		menuBar.add(menu1);
