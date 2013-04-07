@@ -179,9 +179,13 @@ public class UI implements ComponentListener
 
 	private void renderGui(Graphics g)
 	{
-		if (getShowScore()) {
-			((Graphics2D) g).setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+		((Graphics2D) g).setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
 
+		if (context.getState() == GameContext.State.PAUSED) {
+			clear(g, textBackgroundColor);
+			g.setColor(textForegroundColor);
+			drawWindowWideString(g, "PAUSED");
+		} else if (getShowScore()) {
 			clear(g, textBackgroundColor);
 			g.setColor(textForegroundColor);
 			drawWindowWideString(g, String.format("%d (%d)", context.getScore(), context.getLines()));
