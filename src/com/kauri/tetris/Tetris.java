@@ -26,14 +26,12 @@ import java.awt.Canvas;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
 import java.awt.event.KeyEvent;
 import java.awt.image.BufferStrategy;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.swing.AbstractAction;
 import javax.swing.ButtonGroup;
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JDialog;
@@ -161,12 +159,13 @@ public class Tetris extends Canvas implements Runnable
 
 	private static void buildMenu(final JFrame frame)
 	{
-		final JMenuItem item1 = new JCheckBoxMenuItem("Pause");
-		item1.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_P, ActionEvent.CTRL_MASK));
+		final JMenuItem item1 = new JCheckBoxMenuItem();
 
-		item1.addItemListener(new ItemListener() {
+		item1.setAction(new AbstractAction() {
+			private static final long serialVersionUID = 1L;
+
 			@Override
-			public void itemStateChanged(ItemEvent e)
+			public void actionPerformed(ActionEvent e)
 			{
 				//
 				// Dynamically disable on game over instead of this hack
@@ -179,10 +178,14 @@ public class Tetris extends Canvas implements Runnable
 			}
 		});
 
-		JMenuItem item2 = new JMenuItem("New Game");
-		item2.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_N, ActionEvent.CTRL_MASK));
+		item1.setText("Pause");
+		item1.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_P, ActionEvent.CTRL_MASK));
 
-		item2.addActionListener(new ActionListener() {
+		JMenuItem item2 = new JMenuItem();
+
+		item2.setAction(new AbstractAction() {
+			private static final long serialVersionUID = 1L;
+
 			@Override
 			public void actionPerformed(ActionEvent e)
 			{
@@ -190,71 +193,100 @@ public class Tetris extends Canvas implements Runnable
 			}
 		});
 
-		JMenuItem item3 = new JCheckBoxMenuItem("Auto-Replay");
-		item3.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_R, ActionEvent.CTRL_MASK));
+		item2.setText("New Game");
+		item2.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_N, ActionEvent.CTRL_MASK));
 
-		item3.addItemListener(new ItemListener() {
+		JMenuItem item3 = new JCheckBoxMenuItem();
+
+		item3.setAction(new AbstractAction() {
+			private static final long serialVersionUID = 1L;
+
 			@Override
-			public void itemStateChanged(ItemEvent e)
+			public void actionPerformed(ActionEvent e)
 			{
 				context.setAutoRestart(((JMenuItem) e.getSource()).isSelected());
 			}
 		});
 
-		JMenuItem item4 = new JCheckBoxMenuItem("Show Score");
+		item3.setText("Auto-Replay");
+		item3.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_R, ActionEvent.CTRL_MASK));
 
-		item4.addItemListener(new ItemListener() {
+		JMenuItem item4 = new JCheckBoxMenuItem();
+
+		item4.setAction(new AbstractAction() {
+			private static final long serialVersionUID = 1L;
+
 			@Override
-			public void itemStateChanged(ItemEvent e)
+			public void actionPerformed(ActionEvent e)
 			{
 				ui.setShowScore(((JMenuItem) e.getSource()).isSelected());
 			}
 		});
 
-		JMenuItem item5 = new JCheckBoxMenuItem("Show Preview");
+		item4.setText("Show Score");
 
-		item5.addItemListener(new ItemListener() {
+		JMenuItem item5 = new JCheckBoxMenuItem();
+
+		item5.setAction(new AbstractAction() {
+			private static final long serialVersionUID = 1L;
+
 			@Override
-			public void itemStateChanged(ItemEvent e)
+			public void actionPerformed(ActionEvent e)
 			{
 				ui.setShowPreviewPiece(((JMenuItem) e.getSource()).isSelected());
 			}
 		});
 
-		JMenuItem item6 = new JCheckBoxMenuItem("Show Shadow");
+		item5.setText("Show Preview");
 
-		item6.addItemListener(new ItemListener() {
+		JMenuItem item6 = new JCheckBoxMenuItem();
+
+		item6.setAction(new AbstractAction() {
+			private static final long serialVersionUID = 1L;
+
 			@Override
-			public void itemStateChanged(ItemEvent e)
+			public void actionPerformed(ActionEvent e)
 			{
 				ui.setShowDropPosPiece(((JMenuItem) e.getSource()).isSelected());
 			}
 		});
 
-		JMenuItem item7 = new JCheckBoxMenuItem("Enabled");
-		item7.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_A, ActionEvent.CTRL_MASK));
+		item6.setText("Show Shadow");
 
-		item7.addItemListener(new ItemListener() {
+		JMenuItem item7 = new JCheckBoxMenuItem();
+
+		item7.setAction(new AbstractAction() {
+			private static final long serialVersionUID = 1L;
+
 			@Override
-			public void itemStateChanged(ItemEvent e)
+			public void actionPerformed(ActionEvent e)
 			{
 				ai.setEnabled(((JMenuItem) e.getSource()).isSelected());
 			}
 		});
 
-		JMenuItem item8 = new JCheckBoxMenuItem("Train/Evolve");
+		item7.setText("Enabled");
+		item7.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_A, ActionEvent.CTRL_MASK));
 
-		item8.addItemListener(new ItemListener() {
+		JMenuItem item8 = new JCheckBoxMenuItem();
+
+		item8.setAction(new AbstractAction() {
+			private static final long serialVersionUID = 1L;
+
 			@Override
-			public void itemStateChanged(ItemEvent e)
+			public void actionPerformed(ActionEvent e)
 			{
 				// TODO
 			}
 		});
 
-		JMenuItem item9 = new JMenuItem("About Tetris");
+		item8.setText("Train/Evolve");
 
-		item9.addActionListener(new ActionListener() {
+		JMenuItem item9 = new JMenuItem();
+
+		item9.setAction(new AbstractAction() {
+			private static final long serialVersionUID = 1L;
+
 			@Override
 			public void actionPerformed(ActionEvent e)
 			{
@@ -270,6 +302,8 @@ public class Tetris extends Canvas implements Runnable
 				dialog.setVisible(true);
 			}
 		});
+
+		item9.setText("About Tetris");
 
 		JMenu menu2 = new JMenu("Board Size");
 		ButtonGroup group1 = new ButtonGroup();
@@ -330,62 +364,71 @@ public class Tetris extends Canvas implements Runnable
 
 	private static void createBoardSizeItem(JMenu menu, ButtonGroup group, final int width)
 	{
-		JMenuItem item = new JRadioButtonMenuItem(width + "x" + (width * 2));
+		JMenuItem item = new JRadioButtonMenuItem();
 
-		if (width == 10) {
-			item.setSelected(true);
-		}
+		item.setAction(new AbstractAction() {
+			private static final long serialVersionUID = 1L;
 
-		item.addItemListener(new ItemListener() {
 			@Override
-			public void itemStateChanged(ItemEvent e)
+			public void actionPerformed(ActionEvent e)
 			{
 				context.setBoard(new Board(width, width * 2));
 				context.newGame();
 			}
 		});
 
+		if (width == 10) {
+			item.setSelected(true);
+		}
+
 		menu.add(item);
 		group.add(item);
+		item.setText(width + "x" + (width * 2));
 	}
 
 	private static void createSelectorItem(JMenu menu, ButtonGroup group, final PieceSelector selector, final String label)
 	{
-		JMenuItem item = new JRadioButtonMenuItem(label);
+		JMenuItem item = new JRadioButtonMenuItem();
 
-		if (label.equals("Shuffle")) {
-			item.setSelected(true);
-		}
+		item.setAction(new AbstractAction() {
+			private static final long serialVersionUID = 1L;
 
-		item.addItemListener(new ItemListener() {
 			@Override
-			public void itemStateChanged(ItemEvent e)
+			public void actionPerformed(ActionEvent e)
 			{
 				context.setSequence(new PieceSequence(selector));
 			}
 		});
 
+		if (label.equals("Shuffle")) {
+			item.setSelected(true);
+		}
+
 		menu.add(item);
 		group.add(item);
+		item.setText(label);
 	}
 
 	private static void createSpeedItem(JMenu menu, ButtonGroup group, final int delay)
 	{
-		JMenuItem item = new JRadioButtonMenuItem("Speed " + delay);
+		JMenuItem item = new JRadioButtonMenuItem();
 
-		if (delay == 128) {
-			item.setSelected(true);
-		}
+		item.setAction(new AbstractAction() {
+			private static final long serialVersionUID = 1L;
 
-		item.addItemListener(new ItemListener() {
 			@Override
-			public void itemStateChanged(ItemEvent e)
+			public void actionPerformed(ActionEvent e)
 			{
 				ai.setDelay(delay);
 			}
 		});
 
+		if (delay == 128) {
+			item.setSelected(true);
+		}
+
 		menu.add(item);
 		group.add(item);
+		item.setText("Speed " + delay);
 	}
 }
