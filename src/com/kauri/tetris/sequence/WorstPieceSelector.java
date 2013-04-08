@@ -28,7 +28,6 @@ import java.util.Map;
 
 import com.kauri.tetris.GameContext;
 import com.kauri.tetris.Tetromino;
-import com.kauri.tetris.ai.DefaultScoringSystem;
 import com.kauri.tetris.ai.Move;
 import com.kauri.tetris.ai.MoveEvaluator;
 import com.kauri.tetris.ai.ScoringSystem;
@@ -39,7 +38,7 @@ import com.kauri.tetris.ai.ScoringSystem;
 public class WorstPieceSelector implements PieceSelector
 {
 	private GameContext context;
-	private ScoringSystem scoring = new DefaultScoringSystem();
+	private ScoringSystem scoring = new ScoringSystem();
 	private MoveEvaluator evaluator = new MoveEvaluator(scoring);
 
 	public WorstPieceSelector(GameContext context)

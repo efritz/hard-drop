@@ -48,7 +48,7 @@ public class AI implements NewGameListener, EndGameListener
 	private int delay = 128;
 	private boolean enabled = false;
 	private boolean training = false;
-	private ScoringSystem scoring = new DefaultScoringSystem();
+	private ScoringSystem scoring = new ScoringSystem();
 	private MoveEvaluator evaluator = new MoveEvaluator(scoring);
 
 	private Evolution evo = new Evolution(scoring);
