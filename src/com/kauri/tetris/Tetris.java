@@ -60,11 +60,11 @@ public class Tetris extends Canvas implements Runnable
 {
 	private static final long serialVersionUID = 1L;
 
-	private static GameContext context = new GameContext();
+	private GameContext context = new GameContext();
 
-	private static AI ai = new AI(context);
-	private static UI ui = new UI(context);
-	private static PlayerController player = new PlayerController(context);
+	private AI ai = new AI(context);
+	private UI ui = new UI(context);
+	private PlayerController player = new PlayerController(context);
 
 	public Tetris()
 	{
@@ -74,6 +74,24 @@ public class Tetris extends Canvas implements Runnable
 
 	public void start()
 	{
+		try {
+			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+		} catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException e1) {
+			e1.printStackTrace();
+		}
+
+		JFrame frame = new JFrame();
+		frame.setTitle("Tetris");
+		frame.setMinimumSize(new Dimension(300, 600));
+		frame.setLocationRelativeTo(null);
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+		frame.getContentPane().setLayout(new BorderLayout());
+		frame.getContentPane().add(this, BorderLayout.CENTER);
+
+		buildMenu(frame);
+		frame.setVisible(true);
+
 		new Thread(this).start();
 	}
 
@@ -132,32 +150,7 @@ public class Tetris extends Canvas implements Runnable
 		bs.show();
 	}
 
-	public static void main(String[] args)
-	{
-		Tetris game = new Tetris();
-
-		try {
-			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-		} catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException e1) {
-			e1.printStackTrace();
-		}
-
-		JFrame frame = new JFrame();
-		frame.setTitle("Tetris");
-		frame.setMinimumSize(new Dimension(300, 600));
-		frame.setLocationRelativeTo(null);
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
-		frame.getContentPane().setLayout(new BorderLayout());
-		frame.getContentPane().add(game, BorderLayout.CENTER);
-
-		buildMenu(frame);
-		frame.setVisible(true);
-
-		game.start();
-	}
-
-	private static void buildMenu(final JFrame frame)
+	private void buildMenu(final JFrame frame)
 	{
 		final JMenuItem item1 = new JCheckBoxMenuItem();
 
@@ -167,19 +160,29 @@ public class Tetris extends Canvas implements Runnable
 			@Override
 			public void actionPerformed(ActionEvent e)
 			{
-				//
-				// Dynamically disable on game over instead of this hack
-
-				if (context.getState() == State.GAMEOVER) {
-					((JMenuItem) e.getSource()).setSelected(false);
-				} else {
-					context.setState(((JMenuItem) e.getSource()).isSelected() ? State.PAUSED : State.PLAYING);
-				}
+				context.setState(((JMenuItem) e.getSource()).isSelected() ? State.PAUSED : State.PLAYING);
 			}
 		});
 
 		item1.setText("Pause");
 		item1.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_P, ActionEvent.CTRL_MASK));
+
+		context.registerNewGameListener(new NewGameListener() {
+			@Override
+			public void onNewGame()
+			{
+				item1.setEnabled(true);
+				item1.setSelected(false);
+			}
+		});
+
+		context.registerEndGameListener(new EndGameListener() {
+			@Override
+			public void onEndGame()
+			{
+				item1.setEnabled(false);
+			}
+		});
 
 		JMenuItem item2 = new JMenuItem();
 
@@ -362,7 +365,7 @@ public class Tetris extends Canvas implements Runnable
 		frame.setJMenuBar(menuBar);
 	}
 
-	private static void createBoardSizeItem(JMenu menu, ButtonGroup group, final int width)
+	private void createBoardSizeItem(JMenu menu, ButtonGroup group, final int width)
 	{
 		JMenuItem item = new JRadioButtonMenuItem();
 
@@ -386,7 +389,7 @@ public class Tetris extends Canvas implements Runnable
 		item.setText(width + "x" + (width * 2));
 	}
 
-	private static void createSelectorItem(JMenu menu, ButtonGroup group, final PieceSelector selector, final String label)
+	private void createSelectorItem(JMenu menu, ButtonGroup group, final PieceSelector selector, final String label)
 	{
 		JMenuItem item = new JRadioButtonMenuItem();
 
@@ -409,7 +412,7 @@ public class Tetris extends Canvas implements Runnable
 		item.setText(label);
 	}
 
-	private static void createSpeedItem(JMenu menu, ButtonGroup group, final int delay)
+	private void createSpeedItem(JMenu menu, ButtonGroup group, final int delay)
 	{
 		JMenuItem item = new JRadioButtonMenuItem();
 
@@ -430,5 +433,10 @@ public class Tetris extends Canvas implements Runnable
 		menu.add(item);
 		group.add(item);
 		item.setText("Speed " + delay);
+	}
+
+	public static void main(String[] args)
+	{
+		new Tetris().start();
 	}
 }
