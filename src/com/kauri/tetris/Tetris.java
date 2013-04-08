@@ -291,7 +291,7 @@ public class Tetris extends Canvas implements Runnable
 			public void actionPerformed(ActionEvent e)
 			{
 				if (!item1.isSelected()) {
-					item1.setSelected(true);
+					item1.doClick();
 				}
 
 				JDialog dialog = new JDialog(frame);
