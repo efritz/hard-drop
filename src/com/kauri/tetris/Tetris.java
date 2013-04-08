@@ -82,14 +82,15 @@ public class Tetris extends Canvas implements Runnable
 
 		JFrame frame = new JFrame();
 		frame.setTitle("Tetris");
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
 		frame.setMinimumSize(new Dimension(300, 600));
 		frame.setLocationRelativeTo(null);
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
 		frame.getContentPane().setLayout(new BorderLayout());
 		frame.getContentPane().add(this, BorderLayout.CENTER);
-
 		buildMenu(frame);
+
 		frame.setVisible(true);
 
 		new Thread(this).start();
@@ -299,9 +300,9 @@ public class Tetris extends Canvas implements Runnable
 
 				JDialog dialog = new JDialog(frame);
 				dialog.setTitle("About Tetris");
-				dialog.setLocationRelativeTo(null);
 
 				dialog.setSize(200, 100);
+				dialog.setLocationRelativeTo(frame);
 				dialog.setVisible(true);
 			}
 		});
