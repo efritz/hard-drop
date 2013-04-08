@@ -47,6 +47,7 @@ public class AI implements NewGameListener, EndGameListener
 
 	private int delay = 128;
 	private boolean enabled = false;
+	private boolean training = false;
 	private ScoringSystem scoring = new DefaultScoringSystem();
 	private MoveEvaluator evaluator = new MoveEvaluator(scoring);
 
@@ -69,7 +70,9 @@ public class AI implements NewGameListener, EndGameListener
 	@Override
 	public void onEndGame()
 	{
-		evo.submit(context.getLines());
+		if (training) {
+			evo.submit(context.getLines());
+		}
 	}
 
 	public void update()
@@ -131,6 +134,16 @@ public class AI implements NewGameListener, EndGameListener
 	public void setEnabled(boolean enabled)
 	{
 		this.enabled = enabled;
+	}
+
+	public boolean isTraining()
+	{
+		return training;
+	}
+
+	public void setTraining(boolean training)
+	{
+		this.training = training;
 	}
 
 	public void setDelay(int delay)
