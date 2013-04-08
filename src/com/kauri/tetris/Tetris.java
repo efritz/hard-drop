@@ -276,7 +276,7 @@ public class Tetris extends Canvas implements Runnable
 			@Override
 			public void actionPerformed(ActionEvent e)
 			{
-				// TODO
+				ai.setTraining(((JMenuItem) e.getSource()).isSelected());
 			}
 		});
 
