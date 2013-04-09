@@ -164,7 +164,5 @@ public class Evolution
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-
-		System.out.println("Saving File.");
 	}
 }
