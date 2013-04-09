@@ -26,10 +26,8 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
+import java.util.Arrays;
 import java.util.Comparator;
-import java.util.List;
 import java.util.Scanner;
 
 /**
@@ -46,7 +44,8 @@ public class Evolution
 	private int current = 0;
 	private int generation = 1;
 
-	private List<Entity> population = new ArrayList<Entity>();
+	Long[] scores = new Long[populationSize];
+	Weights[] population = new Weights[populationSize];
 
 	private ScoringSystem scoring;
 
@@ -58,27 +57,27 @@ public class Evolution
 		this.scoring = scoring;
 
 		try (Scanner scanner = new Scanner(new BufferedReader(new FileReader(filename)))) {
-			while (scanner.hasNextLine()) {
-				double[] chromosomes = new double[scoring.getNumWeights()];
+			for (int i = 0; i < populationSize; i++) {
+				double[] weights = new double[8];
 
-				for (int j = 0; j < scoring.getNumWeights(); j++) {
-					chromosomes[j] = scanner.nextDouble();
+				for (int j = 0; j < weights.length; j++) {
+					weights[j] = scanner.nextDouble();
 				}
 
+				population[i] = new Weights(weights);
 				scanner.nextLine();
-				population.add(new Entity(chromosomes));
 			}
 		} catch (FileNotFoundException e) {
 			System.out.println("Population data not found - generating random population.");
 
 			for (int i = 0; i < populationSize; i++) {
-				double[] chromosomes = new double[scoring.getNumWeights()];
+				double[] weights = new double[8];
 
-				for (int j = 0; j < scoring.getNumWeights(); j++) {
-					chromosomes[j] = Math.random() * 10 - 5;
+				for (int j = 0; j < weights.length; j++) {
+					weights[j] = Math.random() * 10 - 5;
 				}
 
-				population.add(new Entity(chromosomes));
+				population[i] = new Weights(weights);
 			}
 		}
 	}
@@ -88,7 +87,7 @@ public class Evolution
 	 */
 	public void updateScoring()
 	{
-		scoring.setWeights(population.get(current).chromosomes);
+		scoring.setWeights(population[current]);
 	}
 
 	/**
@@ -99,15 +98,9 @@ public class Evolution
 	 */
 	public void submit(long score)
 	{
-		String chromosomes = "";
-		for (int i = 0; i < population.get(current).chromosomes.length; i++) {
-			chromosomes += String.format("%+2.2f%s", population.get(current).chromosomes[i], i != population.get(current).chromosomes.length - 1 ? ", " : "");
-		}
+		System.out.printf("Generation %-2d - Candidate %-2d: score = %d\n", generation, current + 1, score);
 
-		System.out.printf("Generation %-2d - Candidate %-2d: [%s] score = %d\n", generation, current + 1, chromosomes, score);
-
-		population.get(current).score = score;
-		current++;
+		scores[current++] = score;
 
 		if (current == populationSize) {
 			newGeneration();
@@ -119,73 +112,59 @@ public class Evolution
 	 */
 	private void newGeneration()
 	{
-		Collections.sort(population, new Comparator<Entity>() {
+		Integer[] idx = new Integer[populationSize];
+
+		for (int i = 0; i < populationSize; i++) {
+			idx[i] = i;
+		}
+
+		Arrays.sort(idx, new Comparator<Integer>() {
 			@Override
-			public int compare(Entity e1, Entity e2)
+			public int compare(Integer i, Integer j)
 			{
-				return Long.compare(e2.score, e1.score);
+				return Double.compare(scores[j], scores[i]);
 			}
 		});
 
-		System.out.printf("Generation %-2d - max = %d, med = %d, min = %d\n", generation, population.get(0).score, population.get(populationSize / 2).score, population.get(populationSize - 1).score);
+		System.out.printf("Generation %-2d - max = %d, med = %d, min = %d\n", generation, scores[idx[0]], scores[idx[populationSize / 2]], scores[idx[populationSize - 1]]);
 		System.out.printf("\n");
 
-		List<Entity> new_population = new ArrayList<Entity>();
+		Weights[] newPopulation = new Weights[populationSize];
 
-		for (int i = 0; i < populationSize * elitePercent; i++) {
-			new_population.add(new Entity(population.get(i).chromosomes));
-		}
+		for (int i = 0; i < populationSize; i++) {
+			if (i < populationSize * elitePercent) {
+				newPopulation[i] = population[idx[i]];
+			} else {
+				int w1 = (int) (Math.random() * (populationSize / 2));
+				int w2 = (int) (Math.random() * (populationSize / 2));
 
-		while (new_population.size() < populationSize) {
-			int w1 = (int) (Math.random() * (populationSize / 2));
-			int w2 = (int) (Math.random() * (populationSize / 2));
+				double[] child = new double[8];
 
-			double[] child = new double[scoring.getNumWeights()];
+				for (int j = 0; j < child.length; j++) {
+					child[j] = population[idx[Math.random() < .5 ? w1 : w2]].getWeights()[j];
 
-			for (int j = 0; j < scoring.getNumWeights(); j++) {
-				child[j] = population.get(Math.random() < .5 ? w1 : w2).chromosomes[j];
-
-				if (Math.random() < mutationRate) {
-					child[j] = Math.random() * 10 - 5;
+					if (Math.random() < mutationRate) {
+						child[j] = Math.random() * 10 - 5;
+					}
 				}
-			}
 
-			new_population.add(new Entity(child));
+				newPopulation[i] = new Weights(child);
+			}
 		}
 
-		population = new_population;
+		population = newPopulation;
 
 		current = 0;
 		generation++;
 
 		try (FileWriter writer = new FileWriter(filename)) {
-			for (Entity entity : population) {
-				for (int i = 0; i < entity.chromosomes.length; i++) {
-					if (i != 0) {
-						writer.write(" ");
-					}
-
-					writer.write("" + entity.chromosomes[i]);
-				}
-
-				writer.write("\n");
+			for (Weights weights : population) {
+				writer.write(weights + "\n");
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-	}
 
-	/**
-	 * Represents a single game played with the given weights and score.
-	 */
-	private static class Entity
-	{
-		public long score;
-		public double[] chromosomes;
-
-		public Entity(double[] chromosomes)
-		{
-			this.chromosomes = chromosomes;
-		}
+		System.out.println("Saving File.");
 	}
 }

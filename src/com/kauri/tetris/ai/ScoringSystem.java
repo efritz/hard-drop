@@ -21,8 +21,6 @@
 
 package com.kauri.tetris.ai;
 
-import java.util.Arrays;
-
 import com.kauri.tetris.Board;
 import com.kauri.tetris.Shape;
 
@@ -31,37 +29,19 @@ import com.kauri.tetris.Shape;
  */
 public class ScoringSystem
 {
-	private final int numWeights = 8;
-	private double[] weights = new double[numWeights];
+	private Weights weights;
 
-	public int getNumWeights()
+	public Weights getWeights()
 	{
-		return numWeights;
+		return weights;
 	}
 
-	public double[] getWeights()
+	public void setWeights(Weights weights)
 	{
-		return Arrays.copyOf(weights, numWeights);
-	}
-
-	public void setWeights(double[] weights)
-	{
-		this.weights = Arrays.copyOf(weights, numWeights);
+		this.weights = weights;
 	}
 
 	public double score(Board board)
-	{
-		double score = 0;
-
-		int i = 0;
-		for (double s : getScores(board)) {
-			score += s * weights[i++];
-		}
-
-		return score;
-	}
-
-	private double[] getScores(Board board)
 	{
 		//
 		// TODO - modify line clears so that the board is not modified.
@@ -123,7 +103,17 @@ public class ScoringSystem
 			}
 		}
 
-		return new double[] { sumHeight, maxHeight, maxHeight - minHeight, sumHeight / (double) heights.length, holes, wells, blockades, clears };
+		double score = 0;
+		score += weights.getWeights()[0] * sumHeight;
+		score += weights.getWeights()[1] * maxHeight;
+		score += weights.getWeights()[2] * (maxHeight - minHeight);
+		score += weights.getWeights()[3] * (sumHeight / (double) heights.length);
+		score += weights.getWeights()[4] * holes;
+		score += weights.getWeights()[5] * wells;
+		score += weights.getWeights()[6] * blockades;
+		score += weights.getWeights()[7] * clears;
+
+		return score;
 	}
 
 	/**
