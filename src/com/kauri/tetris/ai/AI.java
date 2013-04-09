@@ -62,7 +62,12 @@ public class AI
 			lastUpdate = time;
 
 			if (commands.size() == 0) {
-				move = evaluator.getNextMove(context.getBoard(), context.getCurrent(), context.getX(), context.getY(), context.getPreview(), context.getBoard().getSpawnX(context.getPreview()), context.getBoard().getSpawnY(context.getPreview()));
+				int x1 = context.getX();
+				int y1 = context.getY();
+				int x2 = context.getBoard().getSpawnX(context.getPreview());
+				int y2 = context.getBoard().getSpawnY(context.getPreview());
+
+				move = evaluator.getNextMove(context.getBoard(), context.getCurrent(), x1, y1, context.getPreview(), x2, y2);
 
 				int rDelta = move.getRotationDelta();
 				int mDelta = move.getMovementDelta();

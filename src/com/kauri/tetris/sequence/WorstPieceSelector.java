@@ -51,7 +51,10 @@ public class WorstPieceSelector implements PieceSelector
 		Map<Move, Tetromino> moves = new HashMap<Move, Tetromino>();
 
 		for (Tetromino tetromino : Tetromino.tetrominoes.values()) {
-			moves.put(evaluator.getNextMove(context.getBoard(), tetromino, context.getBoard().getSpawnX(tetromino), context.getBoard().getSpawnY(tetromino)), tetromino);
+			int x = context.getBoard().getSpawnX(tetromino);
+			int y = context.getBoard().getSpawnY(tetromino);
+
+			moves.put(evaluator.getNextMove(context.getBoard(), tetromino, x, y), tetromino);
 		}
 
 		return moves.get(Collections.min(moves.keySet(), new Comparator<Move>() {
