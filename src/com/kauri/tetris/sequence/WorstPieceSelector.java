@@ -21,11 +21,6 @@
 
 package com.kauri.tetris.sequence;
 
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.Map;
-
 import com.kauri.tetris.GameContext;
 import com.kauri.tetris.Tetromino;
 import com.kauri.tetris.ai.Move;
@@ -48,21 +43,21 @@ public class WorstPieceSelector implements PieceSelector
 	@Override
 	public Tetromino getNextPiece()
 	{
-		Map<Move, Tetromino> moves = new HashMap<Move, Tetromino>();
+		double worst = Double.POSITIVE_INFINITY;
+		Tetromino piece = null;
 
 		for (Tetromino tetromino : Tetromino.tetrominoes.values()) {
 			int x = context.getBoard().getSpawnX(tetromino);
 			int y = context.getBoard().getSpawnY(tetromino);
 
-			moves.put(evaluator.getNextMove(context.getBoard(), tetromino, x, y), tetromino);
+			Move m = evaluator.getNextMove(context.getBoard(), tetromino, x, y);
+
+			if (m.getScore() < worst) {
+				worst = m.getScore();
+				piece = tetromino;
+			}
 		}
 
-		return moves.get(Collections.min(moves.keySet(), new Comparator<Move>() {
-			@Override
-			public int compare(Move m1, Move m2)
-			{
-				return Double.compare(m1.getScore(), m2.getScore());
-			}
-		}));
+		return piece;
 	}
 }
