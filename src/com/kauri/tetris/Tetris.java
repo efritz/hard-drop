@@ -46,6 +46,9 @@ import javax.swing.UnsupportedLookAndFeelException;
 
 import com.kauri.tetris.GameContext.State;
 import com.kauri.tetris.ai.AI;
+import com.kauri.tetris.ai.Evolution;
+import com.kauri.tetris.ai.MoveEvaluator;
+import com.kauri.tetris.ai.ScoringSystem;
 import com.kauri.tetris.sequence.LinePieceSelector;
 import com.kauri.tetris.sequence.PieceSelector;
 import com.kauri.tetris.sequence.PieceSequence;
@@ -62,8 +65,12 @@ public class Tetris extends Canvas implements Runnable
 
 	private GameContext context = new GameContext();
 
-	private AI ai = new AI(context);
+	private ScoringSystem scoring = new ScoringSystem();
+	private MoveEvaluator evaluator = new MoveEvaluator(scoring);
+	private Evolution evo = new Evolution(scoring);
+
 	private UI ui = new UI(context);
+	private AI ai = new AI(context, evaluator);
 	private PlayerController player = new PlayerController(context);
 
 	public Tetris()
@@ -286,6 +293,24 @@ public class Tetris extends Canvas implements Runnable
 
 		item8.setText("Train/Evolve");
 
+		context.registerNewGameListener(new NewGameListener() {
+			@Override
+			public void onNewGame()
+			{
+				evo.updateScoring();
+			}
+		});
+
+		context.registerEndGameListener(new EndGameListener() {
+			@Override
+			public void onEndGame()
+			{
+				if (ai.isTraining()) {
+					evo.submit(context.getLines());
+				}
+			}
+		});
+
 		JMenuItem item9 = new JMenuItem();
 
 		item9.setAction(new AbstractAction() {
@@ -323,7 +348,7 @@ public class Tetris extends Canvas implements Runnable
 		selectors.put("Shuffle", new ShufflePieceSelector());
 		selectors.put("Line", new LinePieceSelector());
 		selectors.put("SZ", new SZPieceSelector());
-		selectors.put("Worst", new WorstPieceSelector(context));
+		selectors.put("Worst", new WorstPieceSelector(context, evaluator));
 
 		for (Map.Entry<String, PieceSelector> entry : selectors.entrySet()) {
 			createSelectorItem(menu3, group2, entry.getValue(), entry.getKey());

@@ -24,9 +24,7 @@ package com.kauri.tetris.ai;
 import java.util.LinkedList;
 import java.util.Queue;
 
-import com.kauri.tetris.EndGameListener;
 import com.kauri.tetris.GameContext;
-import com.kauri.tetris.NewGameListener;
 import com.kauri.tetris.command.Command;
 import com.kauri.tetris.command.HardDropCommand;
 import com.kauri.tetris.command.MoveLeftCommand;
@@ -37,7 +35,7 @@ import com.kauri.tetris.command.SoftDropCommand;
 /**
  * @author Eric Fritz
  */
-public class AI implements NewGameListener, EndGameListener
+public class AI
 {
 	private GameContext context;
 
@@ -48,31 +46,12 @@ public class AI implements NewGameListener, EndGameListener
 	private int delay = 128;
 	private boolean enabled = false;
 	private boolean training = false;
-	private ScoringSystem scoring = new ScoringSystem();
-	private MoveEvaluator evaluator = new MoveEvaluator(scoring);
+	private MoveEvaluator evaluator;
 
-	private Evolution evo = new Evolution(scoring);
-
-	public AI(GameContext context)
+	public AI(GameContext context, MoveEvaluator evaluator)
 	{
 		this.context = context;
-
-		context.registerNewGameListener(this);
-		context.registerEndGameListener(this);
-	}
-
-	@Override
-	public void onNewGame()
-	{
-		evo.updateScoring();
-	}
-
-	@Override
-	public void onEndGame()
-	{
-		if (training) {
-			evo.submit(context.getLines());
-		}
+		this.evaluator = evaluator;
 	}
 
 	public void update()

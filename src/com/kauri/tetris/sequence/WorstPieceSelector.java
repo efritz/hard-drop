@@ -30,7 +30,6 @@ import com.kauri.tetris.GameContext;
 import com.kauri.tetris.Tetromino;
 import com.kauri.tetris.ai.Move;
 import com.kauri.tetris.ai.MoveEvaluator;
-import com.kauri.tetris.ai.ScoringSystem;
 
 /**
  * @author Eric Fritz
@@ -38,12 +37,12 @@ import com.kauri.tetris.ai.ScoringSystem;
 public class WorstPieceSelector implements PieceSelector
 {
 	private GameContext context;
-	private ScoringSystem scoring = new ScoringSystem();
-	private MoveEvaluator evaluator = new MoveEvaluator(scoring);
+	private MoveEvaluator evaluator;
 
-	public WorstPieceSelector(GameContext context)
+	public WorstPieceSelector(GameContext context, MoveEvaluator evaluator)
 	{
 		this.context = context;
+		this.evaluator = evaluator;
 	}
 
 	@Override
