@@ -21,16 +21,24 @@
 
 package com.kauri.tetris.ai;
 
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Scanner;
 
 /**
  * @author Eric Fritz
  */
 public class Evolution
 {
+	private final static String filename = "aiscores.txt";
+
 	private final int populationSize = 16;
 	private final double elitePercent = 1 / 4.0;
 	private final double mutationRate = 1 / 10.0;
@@ -49,14 +57,29 @@ public class Evolution
 	{
 		this.scoring = scoring;
 
-		for (int i = 0; i < populationSize; i++) {
-			double[] chromosomes = new double[scoring.getNumWeights()];
+		try (Scanner scanner = new Scanner(new BufferedReader(new FileReader(filename)))) {
+			while (scanner.hasNextLine()) {
+				double[] chromosomes = new double[scoring.getNumWeights()];
 
-			for (int j = 0; j < scoring.getNumWeights(); j++) {
-				chromosomes[j] = Math.random() * 10 - 5;
+				for (int j = 0; j < scoring.getNumWeights(); j++) {
+					chromosomes[j] = scanner.nextDouble();
+				}
+
+				scanner.nextLine();
+				population.add(new Entity(chromosomes));
 			}
+		} catch (FileNotFoundException e) {
+			System.out.println("Population data not found - generating random population.");
 
-			population.add(new Entity(chromosomes));
+			for (int i = 0; i < populationSize; i++) {
+				double[] chromosomes = new double[scoring.getNumWeights()];
+
+				for (int j = 0; j < scoring.getNumWeights(); j++) {
+					chromosomes[j] = Math.random() * 10 - 5;
+				}
+
+				population.add(new Entity(chromosomes));
+			}
 		}
 	}
 
@@ -134,6 +157,22 @@ public class Evolution
 
 		current = 0;
 		generation++;
+
+		try (FileWriter writer = new FileWriter(filename)) {
+			for (Entity entity : population) {
+				for (int i = 0; i < entity.chromosomes.length; i++) {
+					if (i != 0) {
+						writer.write(" ");
+					}
+
+					writer.write("" + entity.chromosomes[i]);
+				}
+
+				writer.write("\n");
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 
 	/**
