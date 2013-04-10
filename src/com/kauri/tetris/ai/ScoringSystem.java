@@ -49,6 +49,8 @@ public class ScoringSystem
 
 		int clears = 0;
 		for (int row = board.getHeight() - 1; row >= 0; row--) {
+			board = board.tryClone(null);
+
 			if (board.isRowFull(row)) {
 				clears++;
 				board.removeRow(row);

@@ -80,7 +80,7 @@ public class MoveEvaluator
 			int target = board.dropHeight(current, x1 + translation, y1);
 			board.addPiece(current, x1 + translation, target);
 
-			double score = preview == null ? scoring.score(board.tryClone(null)) : getNextMove(board, preview, x2, y2).getScore();
+			double score = preview == null ? scoring.score(board) : getNextMove(board, preview, x2, y2).getScore();
 
 			if (score > best) {
 				best = score;
