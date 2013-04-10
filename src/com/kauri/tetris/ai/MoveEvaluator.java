@@ -60,13 +60,13 @@ public class MoveEvaluator
 		return move;
 	}
 
-	public Move getBestMoveForRotatedPiece(Board board, int rot, Tetromino current, int x1, int y1, Tetromino preview, int x2, int y2)
+	private Move getBestMoveForRotatedPiece(Board board, int rot, Tetromino current, int x1, int y1, Tetromino preview, int x2, int y2)
 	{
 		double best = Double.NEGATIVE_INFINITY;
 		Move move = new Move(best, 0, 0);
 
-		int min = getMinTranslationDelta(board, current, x1, y1);
-		int max = getMaxTranslationDelta(board, current, x1, y1);
+		int min = getMaxTranslationDeltaMagnitude(board, current, x1, y1, -1);
+		int max = getMaxTranslationDeltaMagnitude(board, current, x1, y1, +1);
 
 		for (int translation = min; translation <= max; translation++) {
 			int target = board.dropHeight(current, x1 + translation, y1);
@@ -83,16 +83,6 @@ public class MoveEvaluator
 		}
 
 		return move;
-	}
-
-	private int getMinTranslationDelta(Board board, Tetromino current, int xPos, int yPos)
-	{
-		return getMaxTranslationDeltaMagnitude(board, current, xPos, yPos, -1);
-	}
-
-	private int getMaxTranslationDelta(Board board, Tetromino current, int xPos, int yPos)
-	{
-		return getMaxTranslationDeltaMagnitude(board, current, xPos, yPos, +1);
 	}
 
 	private int getMaxTranslationDeltaMagnitude(Board board, Tetromino current, int xPos, int yPos, int step)
