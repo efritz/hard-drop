@@ -21,11 +21,6 @@
 
 package com.kauri.tetris.ai;
 
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.LinkedList;
-import java.util.List;
-
 import com.kauri.tetris.Board;
 import com.kauri.tetris.Tetromino;
 
@@ -48,24 +43,21 @@ public class MoveEvaluator
 
 	public Move getNextMove(Board board, Tetromino current, int x1, int y1, Tetromino preview, int x2, int y2)
 	{
-		Tetromino t1 = current;
-		Tetromino t2 = Tetromino.rotateClockwise(t1);
-		Tetromino t3 = Tetromino.rotateClockwise(t2);
-		Tetromino t4 = Tetromino.rotateClockwise(t3);
+		double best = Double.NEGATIVE_INFINITY;
+		Move move = new Move(best, 0, 0);
 
-		List<Move> moves = new LinkedList<Move>();
-		moves.add(getBestMoveForRotatedPiece(board, 0, t1, x1, y1, preview, x2, y2));
-		moves.add(getBestMoveForRotatedPiece(board, 1, t2, x1, y1, preview, x2, y2));
-		moves.add(getBestMoveForRotatedPiece(board, 2, t3, x1, y1, preview, x2, y2));
-		moves.add(getBestMoveForRotatedPiece(board, 3, t4, x1, y1, preview, x2, y2));
+		for (int i = 0; i < 4; i++) {
+			Move m = getBestMoveForRotatedPiece(board, i, current, x1, y1, preview, x2, y2);
 
-		return Collections.max(moves, new Comparator<Move>() {
-			@Override
-			public int compare(Move m1, Move m2)
-			{
-				return Double.compare(m1.getScore(), m2.getScore());
+			if (m.getScore() > best) {
+				best = m.getScore();
+				move = m;
 			}
-		});
+
+			current = Tetromino.rotateClockwise(current);
+		}
+
+		return move;
 	}
 
 	public Move getBestMoveForRotatedPiece(Board board, int rot, Tetromino current, int x1, int y1, Tetromino preview, int x2, int y2)
