@@ -1,7 +1,14 @@
-*.class
-*.jar
+bin/
+lib/
+target/
 
-bin/**
+# Eclipse
+target
+.classpath
 .project
 .settings
-.classpath
+
+# IntelliJ
+.idea
+*iml
+*.iws
