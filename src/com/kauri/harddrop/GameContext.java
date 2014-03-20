@@ -166,6 +166,14 @@ public class GameContext
 		this.state = state;
 	}
 
+	public void pause(boolean pause) {
+		if (state == State.GAMEOVER) {
+			throw new RuntimeException("Tried pausing out of game.");
+		}
+
+		state = pause ? State.PAUSED : State.PLAYING;
+	}
+
 	public long getScore()
 	{
 		return score;
