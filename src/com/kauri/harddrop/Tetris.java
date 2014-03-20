@@ -26,6 +26,7 @@ import java.awt.Canvas;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.event.ActionEvent;
+import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.awt.image.BufferStrategy;
 import java.util.HashMap;
@@ -42,6 +43,7 @@ import javax.swing.JRadioButtonMenuItem;
 import javax.swing.KeyStroke;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
+import javax.swing.WindowConstants;
 
 import com.kauri.harddrop.GameContext.State;
 import com.kauri.harddrop.ai.AI;
@@ -89,7 +91,7 @@ public class Tetris extends Canvas implements Runnable
 
 		frame = new JFrame();
 		frame.setTitle("Tetris");
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
 		frame.setMinimumSize(new Dimension(300, 600));
 		frame.setLocationRelativeTo(null);
@@ -184,17 +186,17 @@ public class Tetris extends Canvas implements Runnable
 
 		pauseItem = new JCheckBoxMenuItem();
 		pauseItem.setText("Pause");
-		pauseItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_P, ActionEvent.CTRL_MASK));
+		pauseItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_P, InputEvent.CTRL_MASK));
 		pauseItem.addActionListener((e) -> context.pause(((JMenuItem) e.getSource()).isSelected()));
 
 		newGameItem = new JMenuItem();
 		newGameItem.setText("New Game");
-		newGameItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_N, ActionEvent.CTRL_MASK));
+		newGameItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_N, InputEvent.CTRL_MASK));
 		newGameItem.addActionListener((e) -> context.newGame());
 
 		autoReplayItem = new JCheckBoxMenuItem();
 		autoReplayItem.setText("Auto-Replay");
-		autoReplayItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_R, ActionEvent.CTRL_MASK));
+		autoReplayItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_R, InputEvent.CTRL_MASK));
 		autoReplayItem.addActionListener((e) -> context.setAutoRestart(((JMenuItem) e.getSource()).isSelected()));
 
 		context.registerNewGameListener(() -> {
@@ -248,7 +250,7 @@ public class Tetris extends Canvas implements Runnable
 
 		aiEnabledItem = new JCheckBoxMenuItem();
 		aiEnabledItem.setText("Enabled");
-		aiEnabledItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_A, ActionEvent.CTRL_MASK));
+		aiEnabledItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_A, InputEvent.CTRL_MASK));
 		aiEnabledItem.addActionListener((e) -> ai.setEnabled(((JMenuItem) e.getSource()).isSelected()));
 
 		evolveItem = new JCheckBoxMenuItem();
