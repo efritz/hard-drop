@@ -256,7 +256,7 @@ public class UI implements ComponentListener
 	}
 
 	/**
-	 * @see www.stackoverflow.com/questions/876234/need-a-way-to-scale-a-font-to-fit-a-rectangle
+	 * @see http://stackoverflow.com/questions/876234/need-a-way-to-scale-a-font-to-fit-a-rectangle
 	 */
 	private static Font scaleFont(Graphics g, Font font, String text, int width)
 	{

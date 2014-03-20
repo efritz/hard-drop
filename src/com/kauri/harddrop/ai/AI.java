@@ -39,7 +39,6 @@ public class AI
 {
 	private GameContext context;
 
-	private Move move;
 	private long lastUpdate = System.currentTimeMillis();
 	private Queue<Command> commands = new LinkedList<>();
 
@@ -67,7 +66,7 @@ public class AI
 				int x2 = context.getBoard().getSpawnX(context.getPreview());
 				int y2 = context.getBoard().getSpawnY(context.getPreview());
 
-				move = evaluator.getNextMove(context.getBoard(), context.getCurrent(), x1, y1, context.getPreview(), x2, y2);
+				Move move = evaluator.getNextMove(context.getBoard(), context.getCurrent(), x1, y1, context.getPreview(), x2, y2);
 
 				int rDelta = move.getRotationDelta();
 				int mDelta = move.getMovementDelta();

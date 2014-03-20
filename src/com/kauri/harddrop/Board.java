@@ -317,7 +317,7 @@ public class Board
 	 *            The x-position.
 	 * @param yPos
 	 *            The y-position.
-	 * @return
+	 * @return <tt>true</tt> if the piece can move straight down vertically, <tt>false</tt> otherwise.
 	 */
 	public boolean isFalling(Tetromino piece, int xPos, int yPos)
 	{
