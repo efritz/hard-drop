@@ -34,7 +34,7 @@ import com.kauri.harddrop.Tetromino;
 public class ShufflePieceSelector implements PieceSelector
 {
 	private Random random;
-	private List<Tetromino> bag = new LinkedList<Tetromino>();
+	private List<Tetromino> bag = new LinkedList<>();
 
 	public ShufflePieceSelector()
 	{

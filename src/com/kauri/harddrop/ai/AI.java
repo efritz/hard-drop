@@ -41,7 +41,7 @@ public class AI
 
 	private Move move;
 	private long lastUpdate = System.currentTimeMillis();
-	private Queue<Command> commands = new LinkedList<Command>();
+	private Queue<Command> commands = new LinkedList<>();
 
 	private int delay = 128;
 	private boolean enabled = false;

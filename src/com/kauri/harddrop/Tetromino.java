@@ -41,7 +41,7 @@ public class Tetromino
 	/**
 	 * A map of all seven pre-constructed one-sided tetrominoes.
 	 */
-	public static Map<Shape, Tetromino> tetrominoes = new HashMap<Shape, Tetromino>();
+	public static Map<Shape, Tetromino> tetrominoes = new HashMap<>();
 
 	static {
 		tetrominoes.put(Shape.I, new Tetromino(Shape.I, new Point(-2, +0), new Point(-1, +0), new Point(+0, +0), new Point(+1, +0)));
@@ -56,28 +56,16 @@ public class Tetromino
 	/**
 	 * A lazily-filled cache of the clockwise-rotation of tetrominoes.
 	 */
-	private static Map<Tetromino, Tetromino> rotationCache = new HashMap<Tetromino, Tetromino>();
+	private static Map<Tetromino, Tetromino> rotationCache = new HashMap<>();
 
 	/**
 	 * Point comparator for x-values.
 	 */
-	private static Comparator<Point> xComparator = new Comparator<Point>() {
-		@Override
-		public int compare(Point p1, Point p2)
-		{
-			return p1.x == p2.x ? 0 : (p1.x < p2.x ? -1 : 1);
-		}
-	};
+	private static Comparator<Point> xComparator = (p1, p2) -> p1.x == p2.x ? 0 : (p1.x < p2.x ? -1 : 1);
 	/**
 	 * Point comparator for y-values.
 	 */
-	private static Comparator<Point> yComparator = new Comparator<Point>() {
-		@Override
-		public int compare(Point p1, Point p2)
-		{
-			return p1.y == p2.y ? 0 : (p1.y < p2.y ? -1 : 1);
-		}
-	};
+	private static Comparator<Point> yComparator = (p1, p2) -> p1.y == p2.y ? 0 : (p1.y < p2.y ? -1 : 1);
 
 	private Shape shape;
 	private List<Point> points;

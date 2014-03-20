@@ -70,5 +70,5 @@ public enum Shape {
 	/**
 	 * Two stacked horizontal dominoes with the top one offset to the left.
 	 */
-	Z;
+	Z
 }

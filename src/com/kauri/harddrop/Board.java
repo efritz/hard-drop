@@ -73,9 +73,7 @@ public class Board
 			fill = new Board(width, height);
 		}
 
-		for (int i = 0; i < board.length; i++) {
-			fill.board[i] = board[i];
-		}
+		System.arraycopy(board, 0, fill.board, 0, board.length);
 
 		return fill;
 	}

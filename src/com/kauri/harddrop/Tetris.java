@@ -175,22 +175,12 @@ public class Tetris extends Canvas implements Runnable
 		item1.setText("Pause");
 		item1.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_P, ActionEvent.CTRL_MASK));
 
-		context.registerNewGameListener(new NewGameListener() {
-			@Override
-			public void onNewGame()
-			{
-				item1.setEnabled(true);
-				item1.setSelected(false);
-			}
+		context.registerNewGameListener(() -> {
+			item1.setEnabled(true);
+			item1.setSelected(false);
 		});
 
-		context.registerEndGameListener(new EndGameListener() {
-			@Override
-			public void onEndGame()
-			{
-				item1.setEnabled(false);
-			}
-		});
+		context.registerEndGameListener(() -> item1.setEnabled(false));
 
 		JMenuItem item2 = new JMenuItem();
 
@@ -293,21 +283,11 @@ public class Tetris extends Canvas implements Runnable
 
 		item8.setText("Train/Evolve");
 
-		context.registerNewGameListener(new NewGameListener() {
-			@Override
-			public void onNewGame()
-			{
-				evo.updateScoring();
-			}
-		});
+		context.registerNewGameListener(evo::updateScoring);
 
-		context.registerEndGameListener(new EndGameListener() {
-			@Override
-			public void onEndGame()
-			{
-				if (ai.isTraining()) {
-					evo.submit(context.getLines());
-				}
+		context.registerEndGameListener(() -> {
+			if (ai.isTraining()) {
+				evo.submit(context.getLines());
 			}
 		});
 
@@ -344,7 +324,7 @@ public class Tetris extends Canvas implements Runnable
 		JMenu menu3 = new JMenu("Piece Sequence");
 		ButtonGroup group2 = new ButtonGroup();
 
-		Map<String, PieceSelector> selectors = new HashMap<String, PieceSelector>();
+		Map<String, PieceSelector> selectors = new HashMap<>();
 		selectors.put("Shuffle", new ShufflePieceSelector());
 		selectors.put("Line", new LinePieceSelector());
 		selectors.put("SZ", new SZPieceSelector());

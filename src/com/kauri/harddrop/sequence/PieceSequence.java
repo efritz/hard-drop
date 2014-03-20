@@ -33,7 +33,7 @@ public class PieceSequence
 {
 	private int current = -1;
 	private int preview = +0;
-	private List<Tetromino> pieces = new ArrayList<Tetromino>();
+	private List<Tetromino> pieces = new ArrayList<>();
 
 	private PieceSelector selector;
 

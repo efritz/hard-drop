@@ -38,7 +38,7 @@ import com.kauri.harddrop.sequence.ShufflePieceSelector;
 public class GameContext
 {
 	public enum State {
-		PLAYING, PAUSED, GAMEOVER;
+		PLAYING, PAUSED, GAMEOVER
 	}
 
 	private final int MAX_HISTORY = 5000;
@@ -58,7 +58,7 @@ public class GameContext
 
 	private boolean autoRestart = false;
 
-	private Queue<Command> queue = new LinkedList<Command>();
+	private Queue<Command> queue = new LinkedList<>();
 
 	private Stack<Command> history = new Stack<Command>() {
 		private static final long serialVersionUID = 1L;
@@ -74,8 +74,8 @@ public class GameContext
 		}
 	};
 
-	private List<NewGameListener> newGameListeners = new ArrayList<NewGameListener>();
-	private List<EndGameListener> endGameListeners = new ArrayList<EndGameListener>();
+	private List<NewGameListener> newGameListeners = new ArrayList<>();
+	private List<EndGameListener> endGameListeners = new ArrayList<>();
 
 	//
 	// General Game Settings

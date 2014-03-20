@@ -45,7 +45,7 @@ public class UI implements ComponentListener
 	private static final Color textBackgroundColor = changeAlpha(Color.black, 50);
 	private static final Font baseFont = new Font("Arial", Font.PLAIN, 20);
 
-	private static final Map<Shape, Color> colors = new HashMap<Shape, Color>();
+	private static final Map<Shape, Color> colors = new HashMap<>();
 
 	static {
 		colors.put(Shape.I, Color.red);
@@ -256,7 +256,7 @@ public class UI implements ComponentListener
 	}
 
 	/**
-	 * @see http://stackoverflow.com/questions/876234/need-a-way-to-scale-a-font-to-fit-a-rectangle
+	 * @see www.stackoverflow.com/questions/876234/need-a-way-to-scale-a-font-to-fit-a-rectangle
 	 */
 	private static Font scaleFont(Graphics g, Font font, String text, int width)
 	{

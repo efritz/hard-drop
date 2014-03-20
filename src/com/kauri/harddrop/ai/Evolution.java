@@ -27,7 +27,6 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Arrays;
-import java.util.Comparator;
 import java.util.Scanner;
 
 /**
@@ -118,13 +117,7 @@ public class Evolution
 			idx[i] = i;
 		}
 
-		Arrays.sort(idx, new Comparator<Integer>() {
-			@Override
-			public int compare(Integer i, Integer j)
-			{
-				return Double.compare(scores[j], scores[i]);
-			}
-		});
+		Arrays.sort(idx, (i, j) -> Double.compare(scores[j], scores[i]));
 
 		System.out.printf("Generation %-2d - max = %d, med = %d, min = %d\n", generation, scores[idx[0]], scores[idx[populationSize / 2]], scores[idx[populationSize - 1]]);
 		System.out.printf("\n");

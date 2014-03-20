@@ -42,7 +42,7 @@ public class PlayerController implements KeyListener
 {
 	private GameContext context;
 	private long lastGravity = System.currentTimeMillis();
-	private Map<Integer, Boolean> keys = new HashMap<Integer, Boolean>();
+	private Map<Integer, Boolean> keys = new HashMap<>();
 
 	public PlayerController(GameContext context)
 	{
@@ -122,7 +122,7 @@ public class PlayerController implements KeyListener
 
 	private List<Integer> getKeys()
 	{
-		List<Integer> result = new LinkedList<Integer>();
+		List<Integer> result = new LinkedList<>();
 
 		for (Map.Entry<Integer, Boolean> entry : keys.entrySet()) {
 			if (entry.getValue()) {
