@@ -36,7 +36,7 @@ public class ClearCommand implements Command
 	private GameContext context;
 	private long lines;
 	private long score;
-	private SortedMap<Integer, Shape[]> map = new TreeMap<Integer, Shape[]>();
+	private SortedMap<Integer, Shape[]> map = new TreeMap<>();
 
 	public ClearCommand(GameContext context)
 	{
