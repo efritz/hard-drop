@@ -21,12 +21,11 @@
 
 package com.kauri.harddrop.command;
 
+import com.kauri.harddrop.GameContext;
+import com.kauri.harddrop.Shape;
 import java.util.Map.Entry;
 import java.util.SortedMap;
 import java.util.TreeMap;
-
-import com.kauri.harddrop.GameContext;
-import com.kauri.harddrop.Shape;
 
 /**
  * @author efritz

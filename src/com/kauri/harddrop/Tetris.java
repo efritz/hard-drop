@@ -21,6 +21,17 @@
 
 package com.kauri.harddrop;
 
+import com.kauri.harddrop.GameContext.State;
+import com.kauri.harddrop.ai.AI;
+import com.kauri.harddrop.ai.Evolution;
+import com.kauri.harddrop.ai.MoveEvaluator;
+import com.kauri.harddrop.ai.ScoringSystem;
+import com.kauri.harddrop.sequence.LinePieceSelector;
+import com.kauri.harddrop.sequence.PieceSelector;
+import com.kauri.harddrop.sequence.PieceSequence;
+import com.kauri.harddrop.sequence.SZPieceSelector;
+import com.kauri.harddrop.sequence.ShufflePieceSelector;
+import com.kauri.harddrop.sequence.WorstPieceSelector;
 import java.awt.BorderLayout;
 import java.awt.Canvas;
 import java.awt.Dimension;
@@ -30,7 +41,6 @@ import java.awt.event.KeyEvent;
 import java.awt.image.BufferStrategy;
 import java.util.HashMap;
 import java.util.Map;
-
 import javax.swing.ButtonGroup;
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JDialog;
@@ -43,18 +53,6 @@ import javax.swing.KeyStroke;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.WindowConstants;
-
-import com.kauri.harddrop.GameContext.State;
-import com.kauri.harddrop.ai.AI;
-import com.kauri.harddrop.ai.Evolution;
-import com.kauri.harddrop.ai.MoveEvaluator;
-import com.kauri.harddrop.ai.ScoringSystem;
-import com.kauri.harddrop.sequence.LinePieceSelector;
-import com.kauri.harddrop.sequence.PieceSelector;
-import com.kauri.harddrop.sequence.PieceSequence;
-import com.kauri.harddrop.sequence.SZPieceSelector;
-import com.kauri.harddrop.sequence.ShufflePieceSelector;
-import com.kauri.harddrop.sequence.WorstPieceSelector;
 
 /**
  * @author Eric Fritz

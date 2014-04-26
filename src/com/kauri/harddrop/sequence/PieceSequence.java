@@ -21,10 +21,9 @@
 
 package com.kauri.harddrop.sequence;
 
+import com.kauri.harddrop.Tetromino;
 import java.util.ArrayList;
 import java.util.List;
-
-import com.kauri.harddrop.Tetromino;
 
 /**
  * @author Eric Fritz

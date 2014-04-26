@@ -21,12 +21,11 @@
 
 package com.kauri.harddrop.sequence;
 
+import com.kauri.harddrop.Tetromino;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
-
-import com.kauri.harddrop.Tetromino;
 
 /**
  * @author Eric Fritz

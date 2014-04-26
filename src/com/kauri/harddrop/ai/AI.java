@@ -21,9 +21,6 @@
 
 package com.kauri.harddrop.ai;
 
-import java.util.LinkedList;
-import java.util.Queue;
-
 import com.kauri.harddrop.GameContext;
 import com.kauri.harddrop.command.Command;
 import com.kauri.harddrop.command.HardDropCommand;
@@ -31,6 +28,8 @@ import com.kauri.harddrop.command.MoveLeftCommand;
 import com.kauri.harddrop.command.MoveRightCommand;
 import com.kauri.harddrop.command.RotateClockwiseCommand;
 import com.kauri.harddrop.command.SoftDropCommand;
+import java.util.LinkedList;
+import java.util.Queue;
 
 /**
  * @author Eric Fritz

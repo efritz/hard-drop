@@ -21,19 +21,18 @@
 
 package com.kauri.harddrop;
 
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-
 import com.kauri.harddrop.command.HardDropCommand;
 import com.kauri.harddrop.command.MoveLeftCommand;
 import com.kauri.harddrop.command.MoveRightCommand;
 import com.kauri.harddrop.command.RotateClockwiseCommand;
 import com.kauri.harddrop.command.RotateCounterClockwiseCommand;
 import com.kauri.harddrop.command.SoftDropCommand;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author Eric Fritz

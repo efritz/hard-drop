@@ -21,6 +21,7 @@
 
 package com.kauri.harddrop;
 
+import com.kauri.harddrop.GameContext.State;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
@@ -30,8 +31,6 @@ import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
 import java.util.HashMap;
 import java.util.Map;
-
-import com.kauri.harddrop.GameContext.State;
 
 /**
  * @author efritz

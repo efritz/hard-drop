@@ -21,16 +21,15 @@
 
 package com.kauri.harddrop;
 
+import com.kauri.harddrop.command.Command;
+import com.kauri.harddrop.command.NewTetrominoCommand;
+import com.kauri.harddrop.sequence.PieceSequence;
+import com.kauri.harddrop.sequence.ShufflePieceSelector;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
 import java.util.Stack;
-
-import com.kauri.harddrop.command.Command;
-import com.kauri.harddrop.command.NewTetrominoCommand;
-import com.kauri.harddrop.sequence.PieceSequence;
-import com.kauri.harddrop.sequence.ShufflePieceSelector;
 
 /**
  * @author Eric Fritz
