@@ -1,22 +1,22 @@
 /*
  * This file is part of the tetris package.
  *
- * Copyright (C) 2012, Eric Fritz
- * 
- * Permission is hereby granted, free of charge, to any person obtaining a copy of this software 
- * and associated documentation files (the "Software"), to deal in the Software without 
- * restriction, including without limitation the rights to use, copy, modify, merge, publish, 
- * distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the 
- * Software is furnished to do so, subject to the following conditions: 
- * 
- * The above copyright notice and this permission notice shall be included in all copies or 
- * substantial portions of the Software. 
- * 
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING 
- * BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND 
- * NONINFRINGEMENT.  IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, 
- * DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, 
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. 
+ * Copyright (c) 2014 Eric Fritz
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy of this software
+ * and associated documentation files (the "Software"), to deal in the Software without
+ * restriction, including without limitation the rights to use, copy, modify, merge, publish,
+ * distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the
+ * Software is furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all copies or
+ * substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING
+ * BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+ * NONINFRINGEMENT.  IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+ * DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
 package com.kauri.harddrop;
@@ -25,10 +25,10 @@ import java.util.Arrays;
 
 /**
  * A board provides access to the state of the current pile.
- * 
+ *
  * @author Eric Fritz
  */
-public class Board 
+public class Board
 {
 	private int width;
 	private int height;
@@ -36,7 +36,7 @@ public class Board
 
 	/**
 	 * Creates a new Board.
-	 * 
+	 *
 	 * @param width
 	 *            The board width.
 	 * @param height
@@ -62,7 +62,7 @@ public class Board
 	/**
 	 * Clone the state of the board. If `fill` is non-null and has the same dimensions, the state
 	 * will be copied into that board instance. Otherwise, a new instance will be created.
-	 * 
+	 *
 	 * @param fill
 	 *            The board to modify, if possible.
 	 * @return The filled board.
@@ -96,12 +96,12 @@ public class Board
 
 	/**
 	 * Retrieves the block type at the given position.
-	 * 
+	 *
 	 * @param row
 	 *            The row index.
 	 * @param col
 	 *            The column index.
-	 * 
+	 *
 	 * @return The tetromino type.
 	 */
 	public Shape getShapeAt(int row, int col)
@@ -111,7 +111,7 @@ public class Board
 
 	/**
 	 * Determines if a tetromino can be placed at the given x and y-coordinates without collision.
-	 * 
+	 *
 	 * @param piece
 	 *            The tetromino.
 	 * @param xPos
@@ -140,7 +140,7 @@ public class Board
 
 	/**
 	 * Adds the blocks of a tetromino onto this board.
-	 * 
+	 *
 	 * @param piece
 	 *            The tetromino.
 	 * @param xPos
@@ -155,7 +155,7 @@ public class Board
 
 	/**
 	 * Removes the blocks of a tetromino from this board.
-	 * 
+	 *
 	 * @param piece
 	 *            The tetromino.
 	 * @param xPos
@@ -170,7 +170,7 @@ public class Board
 
 	/**
 	 * Determines if a row is filled horizontally.
-	 * 
+	 *
 	 * @param row
 	 *            The row index.
 	 * @return Whether the row is full.
@@ -188,7 +188,7 @@ public class Board
 
 	/**
 	 * Retrieve the shapes that compose a given row.
-	 * 
+	 *
 	 * @param row
 	 *            The row index.
 	 * @return An array of shapes.
@@ -207,7 +207,7 @@ public class Board
 	/**
 	 * Inserts a given row into the board. All rows that lie above this index will be pushed up by
 	 * one. The blocks in the highest row will be pushed off of the board.
-	 * 
+	 *
 	 * @param row
 	 *            The row index.
 	 * @param shapes
@@ -232,7 +232,7 @@ public class Board
 
 	/**
 	 * Remove a row by collapsing the rows above it down by one.
-	 * 
+	 *
 	 * @param row
 	 *            The row index.
 	 */
@@ -248,7 +248,7 @@ public class Board
 	/**
 	 * Determines the x-position of a piece as if it were spawning at the top of the board. This
 	 * attempts to center the piece horizontally on the board.
-	 * 
+	 *
 	 * @param piece
 	 *            The tetromino.
 	 * @return The x-position.
@@ -261,7 +261,7 @@ public class Board
 	/**
 	 * Determines the y-position of a piece as if it were spawning at the top of the board. This
 	 * attempts to place the piece so that all of its blocks are visible at the time of spawn.
-	 * 
+	 *
 	 * @param piece
 	 *            The tetromino.
 	 * @return The y-position.
@@ -274,7 +274,7 @@ public class Board
 	/**
 	 * Determines the column index where the given piece would come to rest if dropped straight
 	 * down. This method uses the top of the board as the starting y-position.
-	 * 
+	 *
 	 * @param piece
 	 *            The tetromino.
 	 * @param xPos
@@ -289,7 +289,7 @@ public class Board
 	/**
 	 * Determines the column index where the given piece would come to rest if dropped straight
 	 * down.
-	 * 
+	 *
 	 * @param piece
 	 *            The tetromino.
 	 * @param xPos
@@ -310,7 +310,7 @@ public class Board
 
 	/**
 	 * Determines if the piece can move straight down vertically.
-	 * 
+	 *
 	 * @param piece
 	 *            The tetromino.
 	 * @param xPos
@@ -326,7 +326,7 @@ public class Board
 
 	/**
 	 * Updates the block type at the given position.
-	 * 
+	 *
 	 * @param row
 	 *            The row index.
 	 * @param col
@@ -341,7 +341,7 @@ public class Board
 
 	/**
 	 * Fill the shape of a tetromino with the given shape at the given position.
-	 * 
+	 *
 	 * @param piece
 	 *            The tetromino.
 	 * @param xPos

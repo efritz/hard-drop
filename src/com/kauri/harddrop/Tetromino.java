@@ -1,22 +1,22 @@
 /*
  * This file is part of the tetris package.
  *
- * Copyright (C) 2012, Eric Fritz
- * 
- * Permission is hereby granted, free of charge, to any person obtaining a copy of this software 
- * and associated documentation files (the "Software"), to deal in the Software without 
- * restriction, including without limitation the rights to use, copy, modify, merge, publish, 
- * distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the 
- * Software is furnished to do so, subject to the following conditions: 
- * 
- * The above copyright notice and this permission notice shall be included in all copies or 
- * substantial portions of the Software. 
- * 
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING 
- * BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND 
- * NONINFRINGEMENT.  IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, 
- * DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, 
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. 
+ * Copyright (c) 2014 Eric Fritz
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy of this software
+ * and associated documentation files (the "Software"), to deal in the Software without
+ * restriction, including without limitation the rights to use, copy, modify, merge, publish,
+ * distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the
+ * Software is furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all copies or
+ * substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING
+ * BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+ * NONINFRINGEMENT.  IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+ * DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
 package com.kauri.harddrop;
@@ -30,10 +30,10 @@ import java.util.Map;
 
 /**
  * A tetromino is a geometric shape composed of four squares, connected orthogonally.
- * 
+ *
  * A tetromino is immutable and privately created. To reference a new tetromino, use the map of
  * pre-constructed one-sided {@link Tetromino#tetrominoes tetrominoes}.
- * 
+ *
  * @author Eric Fritz
  */
 public class Tetromino
@@ -72,7 +72,7 @@ public class Tetromino
 
 	/**
 	 * Creates a new Tetromino.
-	 * 
+	 *
 	 * @param shape
 	 *            The tetromino shape.
 	 * @param points
@@ -102,7 +102,7 @@ public class Tetromino
 
 	/**
 	 * Retrieves the x-position of the <tt>i</tt>th point.
-	 * 
+	 *
 	 * @param i
 	 *            The index of the point to retrieve.
 	 * @return The x-position.
@@ -114,7 +114,7 @@ public class Tetromino
 
 	/**
 	 * Retrieves the y-position of the <tt>i</tt>th point.
-	 * 
+	 *
 	 * @param i
 	 *            The index of the point to retrieve.
 	 * @return The y-position.
@@ -174,7 +174,7 @@ public class Tetromino
 
 	/**
 	 * Creates a tetromino which is a clockwise transformation of <tt>original</tt>.
-	 * 
+	 *
 	 * @param original
 	 *            The tetromino to transform.
 	 * @return A new tetromino.
@@ -201,7 +201,7 @@ public class Tetromino
 
 	/**
 	 * Creates a tetromino which is a counter-clockwise transformation of <tt>original</tt>.
-	 * 
+	 *
 	 * @param original
 	 *            The tetromino to transform.
 	 * @return A new tetromino.
@@ -252,7 +252,7 @@ public class Tetromino
 
 	/**
 	 * A Point represents a single (x, y) position.
-	 * 
+	 *
 	 * @author Eric Fritz
 	 */
 	private static class Point
