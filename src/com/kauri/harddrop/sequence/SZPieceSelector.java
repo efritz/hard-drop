@@ -32,8 +32,7 @@ public class SZPieceSelector implements PieceSelector
 	private int counter = 0;
 
 	@Override
-	public Tetromino getNextPiece()
-	{
+	public Tetromino getNextPiece() {
 		return Tetromino.tetrominoes.get(counter++ % 2 == 0 ? Shape.S : Shape.Z);
 	}
 }

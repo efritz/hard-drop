@@ -43,13 +43,11 @@ public class PlayerController implements KeyListener
 	private long lastGravity = System.currentTimeMillis();
 	private Map<Integer, Boolean> keys = new HashMap<>();
 
-	public PlayerController(GameContext context)
-	{
+	public PlayerController(GameContext context) {
 		this.context = context;
 	}
 
-	public void update()
-	{
+	public void update() {
 		if (checkGravityTimeout()) {
 			context.store(new SoftDropCommand(context));
 		}
@@ -84,8 +82,7 @@ public class PlayerController implements KeyListener
 		}
 	}
 
-	private boolean checkGravityTimeout()
-	{
+	private boolean checkGravityTimeout() {
 		long time = System.currentTimeMillis();
 		long wait = (long) (((11 - context.getLevel()) * 0.05) * 1000);
 
@@ -98,29 +95,24 @@ public class PlayerController implements KeyListener
 	}
 
 	@Override
-	public void keyPressed(KeyEvent ke)
-	{
+	public void keyPressed(KeyEvent ke) {
 		toggle(ke.getKeyCode(), true);
 	}
 
 	@Override
-	public void keyReleased(KeyEvent ke)
-	{
+	public void keyReleased(KeyEvent ke) {
 		toggle(ke.getKeyCode(), false);
 	}
 
 	@Override
-	public void keyTyped(KeyEvent ke)
-	{
+	public void keyTyped(KeyEvent ke) {
 	}
 
-	private void toggle(int keyCode, boolean down)
-	{
+	private void toggle(int keyCode, boolean down) {
 		keys.put(keyCode, down);
 	}
 
-	private List<Integer> getKeys()
-	{
+	private List<Integer> getKeys() {
 		List<Integer> result = new LinkedList<>();
 
 		for (Map.Entry<Integer, Boolean> entry : keys.entrySet()) {

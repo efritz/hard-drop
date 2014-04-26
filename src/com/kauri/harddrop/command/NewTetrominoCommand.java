@@ -35,14 +35,12 @@ public class NewTetrominoCommand implements Command
 	private int x;
 	private int y;
 
-	public NewTetrominoCommand(GameContext context)
-	{
+	public NewTetrominoCommand(GameContext context) {
 		this.context = context;
 	}
 
 	@Override
-	public void execute()
-	{
+	public void execute() {
 		current = context.getCurrent();
 		preview = context.getPreview();
 
@@ -58,8 +56,7 @@ public class NewTetrominoCommand implements Command
 	}
 
 	@Override
-	public void unexecute()
-	{
+	public void unexecute() {
 		context.setCurrent(current);
 		context.setPreview(preview);
 

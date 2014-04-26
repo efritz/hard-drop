@@ -31,13 +31,11 @@ abstract public class MovementCommand implements Command
 {
 	private GameContext context;
 
-	public MovementCommand(GameContext context)
-	{
+	public MovementCommand(GameContext context) {
 		this.context = context;
 	}
 
-	public boolean tryMove(Tetromino piece, int xPos, int yPos)
-	{
+	public boolean tryMove(Tetromino piece, int xPos, int yPos) {
 		if (context.getBoard().canMove(piece, xPos, yPos)) {
 			context.setX(xPos);
 			context.setY(yPos);

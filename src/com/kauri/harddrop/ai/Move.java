@@ -30,25 +30,21 @@ public class Move
 	private int rDelta = 0;
 	private int mDelta = 0;
 
-	public Move(double score, int rotationDelta, int movementDelta)
-	{
+	public Move(double score, int rotationDelta, int movementDelta) {
 		this.score = score;
 		this.rDelta = rotationDelta;
 		this.mDelta = movementDelta;
 	}
 
-	public double getScore()
-	{
+	public double getScore() {
 		return score;
 	}
 
-	public int getRotationDelta()
-	{
+	public int getRotationDelta() {
 		return rDelta;
 	}
 
-	public int getMovementDelta()
-	{
+	public int getMovementDelta() {
 		return mDelta;
 	}
 }

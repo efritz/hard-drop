@@ -26,7 +26,8 @@ package com.kauri.harddrop;
  *
  * @author Eric Fritz
  */
-public enum Shape {
+public enum Shape
+{
 	/**
 	 * Represents a <tt>null</tt> shape.
 	 */

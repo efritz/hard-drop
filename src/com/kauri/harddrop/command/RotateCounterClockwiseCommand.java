@@ -32,21 +32,18 @@ public class RotateCounterClockwiseCommand extends MovementCommand
 	private GameContext context;
 	private boolean success = false;
 
-	public RotateCounterClockwiseCommand(GameContext context)
-	{
+	public RotateCounterClockwiseCommand(GameContext context) {
 		super(context);
 		this.context = context;
 	}
 
 	@Override
-	public void execute()
-	{
+	public void execute() {
 		success = tryMove(Tetromino.rotateCounterClockwise(context.getCurrent()), context.getX(), context.getY());
 	}
 
 	@Override
-	public void unexecute()
-	{
+	public void unexecute() {
 		if (success) {
 			tryMove(Tetromino.rotateClockwise(context.getCurrent()), context.getX(), context.getY());
 		}

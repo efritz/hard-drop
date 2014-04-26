@@ -31,18 +31,15 @@ public class ScoringSystem
 {
 	private Weights weights;
 
-	public Weights getWeights()
-	{
+	public Weights getWeights() {
 		return weights;
 	}
 
-	public void setWeights(Weights weights)
-	{
+	public void setWeights(Weights weights) {
 		this.weights = weights;
 	}
 
-	public double score(Board board)
-	{
+	public double score(Board board) {
 		//
 		// TODO - modify line clears so that the board is not modified.
 		//
@@ -121,12 +118,11 @@ public class ScoringSystem
 	/**
 	 * Retrieves an array of each column's height.
 	 *
-	 * @param board
-	 *            The board.
+	 * @param board The board.
+	 *
 	 * @return An array of heights.
 	 */
-	private int[] getHeights(Board board)
-	{
+	private int[] getHeights(Board board) {
 		int[] heights = new int[board.getWidth()];
 
 		for (int col = 0; col < board.getWidth(); col++) {
@@ -139,14 +135,12 @@ public class ScoringSystem
 	/**
 	 * Gets the row index of the tallest block in a column.
 	 *
-	 * @param board
-	 *            The board.
-	 * @param col
-	 *            The column index.
+	 * @param board The board.
+	 * @param col   The column index.
+	 *
 	 * @return The height of the column.
 	 */
-	private int getColumnHeight(Board board, int col)
-	{
+	private int getColumnHeight(Board board, int col) {
 		int height = board.getHeight() - 1;
 
 		while (height > 0 && board.getShapeAt(height - 1, col) == Shape.NoShape) {

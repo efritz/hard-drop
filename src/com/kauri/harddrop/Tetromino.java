@@ -30,7 +30,7 @@ import java.util.Map;
 
 /**
  * A tetromino is a geometric shape composed of four squares, connected orthogonally.
- *
+ * <p>
  * A tetromino is immutable and privately created. To reference a new tetromino, use the map of
  * pre-constructed one-sided {@link Tetromino#tetrominoes tetrominoes}.
  *
@@ -73,13 +73,10 @@ public class Tetromino
 	/**
 	 * Creates a new Tetromino.
 	 *
-	 * @param shape
-	 *            The tetromino shape.
-	 * @param points
-	 *            The points composing the tetromino.
+	 * @param shape  The tetromino shape.
+	 * @param points The points composing the tetromino.
 	 */
-	private Tetromino(Shape shape, Point... points)
-	{
+	private Tetromino(Shape shape, Point... points) {
 		this.shape = shape;
 		this.points = Arrays.asList(points);
 	}
@@ -87,100 +84,89 @@ public class Tetromino
 	/**
 	 * @return The tetromino shape.
 	 */
-	public Shape getShape()
-	{
+	public Shape getShape() {
 		return shape;
 	}
 
 	/**
 	 * @return The number of points stored in the tetromino.
 	 */
-	public int getSize()
-	{
+	public int getSize() {
 		return points.size();
 	}
 
 	/**
 	 * Retrieves the x-position of the <tt>i</tt>th point.
 	 *
-	 * @param i
-	 *            The index of the point to retrieve.
+	 * @param i The index of the point to retrieve.
+	 *
 	 * @return The x-position.
 	 */
-	public int getX(int i)
-	{
+	public int getX(int i) {
 		return points.get(i).x;
 	}
 
 	/**
 	 * Retrieves the y-position of the <tt>i</tt>th point.
 	 *
-	 * @param i
-	 *            The index of the point to retrieve.
+	 * @param i The index of the point to retrieve.
+	 *
 	 * @return The y-position.
 	 */
-	public int getY(int i)
-	{
+	public int getY(int i) {
 		return points.get(i).y;
 	}
 
 	/**
 	 * @return The x-component value of the point with the smallest x-component.
 	 */
-	public int getMinX()
-	{
+	public int getMinX() {
 		return Collections.min(points, xComparator).x;
 	}
 
 	/**
 	 * @return The x-component value of the point with the largest x-component.
 	 */
-	public int getMaxX()
-	{
+	public int getMaxX() {
 		return Collections.max(points, xComparator).x;
 	}
 
 	/**
 	 * @return The y-component value of the point with the smallest y-component.
 	 */
-	public int getMinY()
-	{
+	public int getMinY() {
 		return Collections.min(points, yComparator).y;
 	}
 
 	/**
 	 * @return The y-component value of the point with the largest y-component.
 	 */
-	public int getMaxY()
-	{
+	public int getMaxY() {
 		return Collections.max(points, yComparator).y;
 	}
 
 	/**
 	 * @return The number of horizontal blocks the tetromino occupies.
 	 */
-	public int getWidth()
-	{
+	public int getWidth() {
 		return Math.abs(getMinX()) + Math.abs(getMaxX()) + 1;
 	}
 
 	/**
 	 * @return The number of vertical blocks the tetromino occupies.
 	 */
-	public int getHeight()
-	{
+	public int getHeight() {
 		return Math.abs(getMinY()) + Math.abs(getMaxY()) + 1;
 	}
 
 	/**
 	 * Creates a tetromino which is a clockwise transformation of <tt>original</tt>.
 	 *
-	 * @param original
-	 *            The tetromino to transform.
+	 * @param original The tetromino to transform.
+	 *
 	 * @return A new tetromino.
 	 */
-	public static Tetromino rotateClockwise(Tetromino original)
-	{
+	public static Tetromino rotateClockwise(Tetromino original) {
 		if (original.shape == Shape.O) {
 			return original;
 		}
@@ -202,18 +188,16 @@ public class Tetromino
 	/**
 	 * Creates a tetromino which is a counter-clockwise transformation of <tt>original</tt>.
 	 *
-	 * @param original
-	 *            The tetromino to transform.
+	 * @param original The tetromino to transform.
+	 *
 	 * @return A new tetromino.
 	 */
-	public static Tetromino rotateCounterClockwise(Tetromino original)
-	{
+	public static Tetromino rotateCounterClockwise(Tetromino original) {
 		return rotateClockwise(rotateClockwise(rotateClockwise(original)));
 	}
 
 	@Override
-	public int hashCode()
-	{
+	public int hashCode() {
 		int result = shape.hashCode();
 
 		for (int i = 0; i < this.getSize(); i++) {
@@ -225,8 +209,7 @@ public class Tetromino
 	}
 
 	@Override
-	public boolean equals(Object obj)
-	{
+	public boolean equals(Object obj) {
 		if (this == obj) {
 			return true;
 		}
@@ -260,8 +243,7 @@ public class Tetromino
 		public int x;
 		public int y;
 
-		public Point(int x, int y)
-		{
+		public Point(int x, int y) {
 			this.x = x;
 			this.y = y;
 		}

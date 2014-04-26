@@ -31,21 +31,18 @@ public class MoveRightCommand extends MovementCommand
 	private GameContext context;
 	private boolean success = false;
 
-	public MoveRightCommand(GameContext context)
-	{
+	public MoveRightCommand(GameContext context) {
 		super(context);
 		this.context = context;
 	}
 
 	@Override
-	public void execute()
-	{
+	public void execute() {
 		success = tryMove(context.getCurrent(), context.getX() + 1, context.getY());
 	}
 
 	@Override
-	public void unexecute()
-	{
+	public void unexecute() {
 		if (success) {
 			tryMove(context.getCurrent(), context.getX() - 1, context.getY());
 		}

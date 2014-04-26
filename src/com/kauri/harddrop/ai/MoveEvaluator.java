@@ -31,18 +31,15 @@ public class MoveEvaluator
 {
 	private ScoringSystem scoring;
 
-	public MoveEvaluator(ScoringSystem scoring)
-	{
+	public MoveEvaluator(ScoringSystem scoring) {
 		this.scoring = scoring;
 	}
 
-	public Move getNextMove(Board board, Tetromino current, int x1, int y1)
-	{
+	public Move getNextMove(Board board, Tetromino current, int x1, int y1) {
 		return getNextMove(board, current, x1, y1, null, 0, 0);
 	}
 
-	public Move getNextMove(Board board, Tetromino current, int x1, int y1, Tetromino preview, int x2, int y2)
-	{
+	public Move getNextMove(Board board, Tetromino current, int x1, int y1, Tetromino preview, int x2, int y2) {
 		double best = Double.NEGATIVE_INFINITY;
 		Move move = new Move(best, 0, 0);
 
@@ -60,8 +57,7 @@ public class MoveEvaluator
 		return move;
 	}
 
-	private Move getBestMoveForRotatedPiece(Board board, int rot, Tetromino current, int x1, int y1, Tetromino preview, int x2, int y2)
-	{
+	private Move getBestMoveForRotatedPiece(Board board, int rot, Tetromino current, int x1, int y1, Tetromino preview, int x2, int y2) {
 		double best = Double.NEGATIVE_INFINITY;
 		Move move = new Move(best, 0, 0);
 
@@ -85,8 +81,7 @@ public class MoveEvaluator
 		return move;
 	}
 
-	private int getMaxTranslationDeltaMagnitude(Board board, Tetromino current, int xPos, int yPos, int step)
-	{
+	private int getMaxTranslationDeltaMagnitude(Board board, Tetromino current, int xPos, int yPos, int step) {
 		int delta = 0;
 		while (board.canMove(current, xPos + delta + step, yPos)) {
 			delta += step;

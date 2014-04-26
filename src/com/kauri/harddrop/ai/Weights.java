@@ -28,19 +28,16 @@ public class Weights
 {
 	private double[] weights;
 
-	public Weights(double[] weights)
-	{
+	public Weights(double[] weights) {
 		this.weights = weights;
 	}
 
-	public double[] getWeights()
-	{
+	public double[] getWeights() {
 		return weights;
 	}
 
 	@Override
-	public String toString()
-	{
+	public String toString() {
 		StringBuilder sb = new StringBuilder();
 		for (int i = 0; i < weights.length; i++) {
 			if (i != 0) {

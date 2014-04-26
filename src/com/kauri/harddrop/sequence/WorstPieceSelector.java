@@ -34,15 +34,13 @@ public class WorstPieceSelector implements PieceSelector
 	private GameContext context;
 	private MoveEvaluator evaluator;
 
-	public WorstPieceSelector(GameContext context, MoveEvaluator evaluator)
-	{
+	public WorstPieceSelector(GameContext context, MoveEvaluator evaluator) {
 		this.context = context;
 		this.evaluator = evaluator;
 	}
 
 	@Override
-	public Tetromino getNextPiece()
-	{
+	public Tetromino getNextPiece() {
 		double worst = Double.POSITIVE_INFINITY;
 		Tetromino piece = null;
 

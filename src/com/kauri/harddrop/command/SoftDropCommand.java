@@ -32,15 +32,13 @@ public class SoftDropCommand extends MovementCommand
 	private Command subcommand;
 	private boolean success = false;
 
-	public SoftDropCommand(GameContext context)
-	{
+	public SoftDropCommand(GameContext context) {
 		super(context);
 		this.context = context;
 	}
 
 	@Override
-	public void execute()
-	{
+	public void execute() {
 		if (!context.getBoard().isFalling(context.getCurrent(), context.getX(), context.getY())) {
 			subcommand = new HardDropCommand(context);
 			subcommand.execute();
@@ -50,8 +48,7 @@ public class SoftDropCommand extends MovementCommand
 	}
 
 	@Override
-	public void unexecute()
-	{
+	public void unexecute() {
 		if (success) {
 			tryMove(context.getCurrent(), context.getX(), context.getY() + 1);
 		}

@@ -37,14 +37,12 @@ public class ClearCommand implements Command
 	private long score;
 	private SortedMap<Integer, Shape[]> map = new TreeMap<>();
 
-	public ClearCommand(GameContext context)
-	{
+	public ClearCommand(GameContext context) {
 		this.context = context;
 	}
 
 	@Override
-	public void execute()
-	{
+	public void execute() {
 		for (int row = context.getBoard().getHeight() - 1; row >= 0; row--) {
 			if (context.getBoard().isRowFull(row)) {
 				map.put(row, context.getBoard().getRow(row));
@@ -60,8 +58,7 @@ public class ClearCommand implements Command
 	}
 
 	@Override
-	public void unexecute()
-	{
+	public void unexecute() {
 		for (Entry<Integer, Shape[]> e : map.entrySet()) {
 			context.getBoard().addRow(e.getKey(), e.getValue());
 		}

@@ -36,8 +36,11 @@ import java.util.Stack;
  */
 public class GameContext
 {
-	public enum State {
-		PLAYING, PAUSED, GAMEOVER
+	public enum State
+	{
+		PLAYING,
+		PAUSED,
+		GAMEOVER
 	}
 
 	private final int MAX_HISTORY = 5000;
@@ -59,12 +62,12 @@ public class GameContext
 
 	private Queue<Command> queue = new LinkedList<>();
 
-	private Stack<Command> history = new Stack<Command>() {
+	private Stack<Command> history = new Stack<Command>()
+	{
 		private static final long serialVersionUID = 1L;
 
 		@Override
-		public boolean add(Command element)
-		{
+		public boolean add(Command element) {
 			if (this.size() > MAX_HISTORY - 1) {
 				this.remove(0);
 			}
@@ -79,89 +82,73 @@ public class GameContext
 	//
 	// General Game Settings
 
-	boolean isAutoRestart()
-	{
+	boolean isAutoRestart() {
 		return autoRestart;
 	}
 
-	void setAutoRestart(boolean autoRestart)
-	{
+	void setAutoRestart(boolean autoRestart) {
 		this.autoRestart = autoRestart;
 	}
 
-	public Board getBoard()
-	{
+	public Board getBoard() {
 		return board;
 	}
 
-	public void setBoard(Board board)
-	{
+	public void setBoard(Board board) {
 		this.board = board;
 	}
 
-	public PieceSequence getSequence()
-	{
+	public PieceSequence getSequence() {
 		return sequence;
 	}
 
-	public void setSequence(PieceSequence sequence)
-	{
+	public void setSequence(PieceSequence sequence) {
 		this.sequence = sequence;
 	}
 
 	//
 	// Current Piece State
 
-	public int getX()
-	{
+	public int getX() {
 		return xPos;
 	}
 
-	public void setX(int xPos)
-	{
+	public void setX(int xPos) {
 		this.xPos = xPos;
 	}
 
-	public int getY()
-	{
+	public int getY() {
 		return yPos;
 	}
 
-	public void setY(int yPos)
-	{
+	public void setY(int yPos) {
 		this.yPos = yPos;
 	}
 
-	public Tetromino getCurrent()
-	{
+	public Tetromino getCurrent() {
 		return current;
 	}
 
-	public void setCurrent(Tetromino current)
-	{
+	public void setCurrent(Tetromino current) {
 		this.current = current;
 	}
 
-	public Tetromino getPreview()
-	{
+	public Tetromino getPreview() {
 		return preview;
 	}
 
-	public void setPreview(Tetromino preview)
-	{
+	public void setPreview(Tetromino preview) {
 		this.preview = preview;
 	}
 
 	//
 	// Score State
 
-	public State getState()
-	{
+	public State getState() {
 		return state;
 	}
 
-	public void setState(State state)
-	{
+	public void setState(State state) {
 		this.state = state;
 	}
 
@@ -173,46 +160,38 @@ public class GameContext
 		state = pause ? State.PAUSED : State.PLAYING;
 	}
 
-	public long getScore()
-	{
+	public long getScore() {
 		return score;
 	}
 
-	public void setScore(long score)
-	{
+	public void setScore(long score) {
 		this.score = score;
 	}
 
-	public int getLevel()
-	{
+	public int getLevel() {
 		return (int) Math.min(10, ((lines - 1) / 10) + 1);
 	}
 
-	public long getLines()
-	{
+	public long getLines() {
 		return lines;
 	}
 
-	public void setLines(long lines)
-	{
+	public void setLines(long lines) {
 		this.lines = lines;
 	}
 
-	public long getDrops()
-	{
+	public long getDrops() {
 		return drops;
 	}
 
-	public void setDrops(long drops)
-	{
+	public void setDrops(long drops) {
 		this.drops = drops;
 	}
 
 	//
 	// Command Execution
 
-	public void newGame()
-	{
+	public void newGame() {
 		this.score = 0;
 		this.lines = 0;
 		this.drops = 0;
@@ -231,23 +210,19 @@ public class GameContext
 		}
 	}
 
-	public void registerNewGameListener(NewGameListener listener)
-	{
+	public void registerNewGameListener(NewGameListener listener) {
 		newGameListeners.add(listener);
 	}
 
-	public void registerEndGameListener(EndGameListener listener)
-	{
+	public void registerEndGameListener(EndGameListener listener) {
 		endGameListeners.add(listener);
 	}
 
-	public void store(Command command)
-	{
+	public void store(Command command) {
 		queue.add(command);
 	}
 
-	public void execute()
-	{
+	public void execute() {
 		for (Command command : queue) {
 			if (state == State.GAMEOVER) {
 				break;
@@ -268,13 +243,11 @@ public class GameContext
 		queue.clear();
 	}
 
-	public void undo()
-	{
+	public void undo() {
 		undo(1);
 	}
 
-	public void undo(int turns)
-	{
+	public void undo(int turns) {
 		while (turns-- > 0 && history.size() > 0) {
 			history.pop().unexecute();
 		}

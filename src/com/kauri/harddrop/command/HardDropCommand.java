@@ -35,15 +35,13 @@ public class HardDropCommand extends MovementCommand
 	private Command subcommand1;
 	private Command subcommand2;
 
-	public HardDropCommand(GameContext context)
-	{
+	public HardDropCommand(GameContext context) {
 		super(context);
 		this.context = context;
 	}
 
 	@Override
-	public void execute()
-	{
+	public void execute() {
 		y = context.getY();
 
 		success = tryMove(context.getCurrent(), context.getX(), context.getBoard().dropHeight(context.getCurrent(), context.getX(), y));
@@ -66,8 +64,7 @@ public class HardDropCommand extends MovementCommand
 	}
 
 	@Override
-	public void unexecute()
-	{
+	public void unexecute() {
 		if (success) {
 			subcommand2.unexecute();
 			subcommand1.unexecute();

@@ -33,14 +33,12 @@ public class AddJunkCommand implements Command
 	private Shape[] overflow;
 	private Command subcommand;
 
-	public AddJunkCommand(GameContext context)
-	{
+	public AddJunkCommand(GameContext context) {
 		this.context = context;
 	}
 
 	@Override
-	public void execute()
-	{
+	public void execute() {
 		overflow = context.getBoard().getRow(context.getBoard().getHeight() - 1);
 
 		Shape[] line = new Shape[context.getBoard().getWidth()];
@@ -69,8 +67,7 @@ public class AddJunkCommand implements Command
 	}
 
 	@Override
-	public void unexecute()
-	{
+	public void unexecute() {
 		context.getBoard().removeRow(0);
 
 		if (subcommand != null) {

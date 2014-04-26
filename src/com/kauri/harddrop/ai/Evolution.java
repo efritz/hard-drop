@@ -51,8 +51,7 @@ public class Evolution
 	/**
 	 * Creates a new Evolution.
 	 */
-	public Evolution(ScoringSystem scoring)
-	{
+	public Evolution(ScoringSystem scoring) {
 		this.scoring = scoring;
 
 		try (Scanner scanner = new Scanner(new BufferedReader(new FileReader(filename)))) {
@@ -84,19 +83,16 @@ public class Evolution
 	/**
 	 * Apply the next chromosome to the scoring system.
 	 */
-	public void updateScoring()
-	{
+	public void updateScoring() {
 		scoring.setWeights(population[current]);
 	}
 
 	/**
 	 * Records the score of the game played with the current weights.
 	 *
-	 * @param score
-	 *            The number of lines cleared on the last game with the current weights.
+	 * @param score The number of lines cleared on the last game with the current weights.
 	 */
-	public void submit(long score)
-	{
+	public void submit(long score) {
 		System.out.printf("Generation %-2d - Candidate %-2d: score = %d\n", generation, current + 1, score);
 
 		scores[current++] = score;
@@ -109,8 +105,7 @@ public class Evolution
 	/**
 	 * Create a new generation based off of the success of the last generation.
 	 */
-	private void newGeneration()
-	{
+	private void newGeneration() {
 		Integer[] idx = new Integer[populationSize];
 
 		for (int i = 0; i < populationSize; i++) {

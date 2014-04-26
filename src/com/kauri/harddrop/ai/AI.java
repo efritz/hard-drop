@@ -46,14 +46,12 @@ public class AI
 	private boolean training = false;
 	private MoveEvaluator evaluator;
 
-	public AI(GameContext context, MoveEvaluator evaluator)
-	{
+	public AI(GameContext context, MoveEvaluator evaluator) {
 		this.context = context;
 		this.evaluator = evaluator;
 	}
 
-	public void update()
-	{
+	public void update() {
 		long time = System.currentTimeMillis();
 
 		if (time - delay >= lastUpdate) {
@@ -99,8 +97,7 @@ public class AI
 		}
 	}
 
-	private void animate()
-	{
+	private void animate() {
 		if (commands.size() > 0) {
 			do {
 				context.store(commands.remove());
@@ -108,28 +105,23 @@ public class AI
 		}
 	}
 
-	public boolean isEnabled()
-	{
+	public boolean isEnabled() {
 		return enabled;
 	}
 
-	public void setEnabled(boolean enabled)
-	{
+	public void setEnabled(boolean enabled) {
 		this.enabled = enabled;
 	}
 
-	public boolean isTraining()
-	{
+	public boolean isTraining() {
 		return training;
 	}
 
-	public void setTraining(boolean training)
-	{
+	public void setTraining(boolean training) {
 		this.training = training;
 	}
 
-	public void setDelay(int delay)
-	{
+	public void setDelay(int delay) {
 		this.delay = delay;
 	}
 }

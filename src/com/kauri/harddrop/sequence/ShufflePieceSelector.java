@@ -35,19 +35,16 @@ public class ShufflePieceSelector implements PieceSelector
 	private Random random;
 	private List<Tetromino> bag = new LinkedList<>();
 
-	public ShufflePieceSelector()
-	{
+	public ShufflePieceSelector() {
 		this(System.nanoTime());
 	}
 
-	public ShufflePieceSelector(long seed)
-	{
+	public ShufflePieceSelector(long seed) {
 		random = new Random(seed);
 	}
 
 	@Override
-	public Tetromino getNextPiece()
-	{
+	public Tetromino getNextPiece() {
 		if (bag.size() == 0) {
 			bag.addAll(Tetromino.tetrominoes.values());
 			Collections.shuffle(bag, random);

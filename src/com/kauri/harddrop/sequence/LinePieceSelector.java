@@ -30,8 +30,7 @@ import com.kauri.harddrop.Tetromino;
 public class LinePieceSelector implements PieceSelector
 {
 	@Override
-	public Tetromino getNextPiece()
-	{
+	public Tetromino getNextPiece() {
 		return Tetromino.tetrominoes.get(Shape.I);
 	}
 }
