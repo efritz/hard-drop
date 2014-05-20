@@ -61,11 +61,11 @@ public class Tetromino
 	/**
 	 * Point comparator for x-values.
 	 */
-	private static Comparator<Point> xComparator = (p1, p2) -> p1.x == p2.x ? 0 : (p1.x < p2.x ? -1 : 1);
+	private static Comparator<Point> xComparator = (p1, p2) -> p1.x - p2.x;
 	/**
 	 * Point comparator for y-values.
 	 */
-	private static Comparator<Point> yComparator = (p1, p2) -> p1.y == p2.y ? 0 : (p1.y < p2.y ? -1 : 1);
+	private static Comparator<Point> yComparator = (p1, p2) -> p1.y - p2.y;
 
 	private Shape shape;
 	private List<Point> points;
