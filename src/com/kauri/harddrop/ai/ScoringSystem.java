@@ -40,10 +40,6 @@ public class ScoringSystem
 	}
 
 	public double score(Board board) {
-		//
-		// TODO - modify line clears so that the board is not modified.
-		//
-
 		int clears = 0;
 		for (int row = board.getHeight() - 1; row >= 0; row--) {
 			board = board.tryClone(null);

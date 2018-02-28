@@ -1,6 +1,8 @@
 bin/
 lib/
 target/
+out/
+aiscores.txt
 
 # Eclipse
 target
