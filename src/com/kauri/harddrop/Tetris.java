@@ -165,7 +165,6 @@ public class Tetris extends Canvas implements Runnable
 		menuBar.add(buildGameMenu());
 		menuBar.add(buildViewMenu());
 		menuBar.add(buildAiMenu());
-		menuBar.add(buildHelpMenu());
 
 		frame.setJMenuBar(menuBar);
 	}
@@ -252,26 +251,6 @@ public class Tetris extends Canvas implements Runnable
 		menu.add(buildSpeedMenu());
 
 		return menu;
-	}
-
-	private JMenu buildHelpMenu() {
-		JMenuItem aboutItem;
-
-		aboutItem = new JMenuItem();
-		aboutItem.setText("About Tetris");
-		aboutItem.addActionListener((e) -> {
-			JDialog dialog = new JDialog(frame);
-			dialog.setTitle("About Tetris");
-
-			dialog.setSize(200, 100);
-			dialog.setLocationRelativeTo(frame);
-			dialog.setVisible(true);
-		});
-
-		JMenu helpMenu = new JMenu("Help");
-		helpMenu.add(aboutItem);
-
-		return helpMenu;
 	}
 
 	private JMenu buildBoardSizeMenu() {
