@@ -21,12 +21,8 @@
 
 package com.kauri.harddrop;
 
-import com.kauri.harddrop.command.HardDropCommand;
-import com.kauri.harddrop.command.MoveLeftCommand;
-import com.kauri.harddrop.command.MoveRightCommand;
-import com.kauri.harddrop.command.RotateClockwiseCommand;
-import com.kauri.harddrop.command.RotateCounterClockwiseCommand;
-import com.kauri.harddrop.command.SoftDropCommand;
+import com.kauri.harddrop.command.*;
+
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.util.HashMap;
@@ -77,6 +73,10 @@ public class PlayerController implements KeyListener
 
 				case KeyEvent.VK_SPACE:
 					context.store(new HardDropCommand(context));
+					break;
+
+				case KeyEvent.VK_J:
+					context.store(new AddJunkCommand(context));
 					break;
 			}
 		}
