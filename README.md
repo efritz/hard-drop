@@ -12,7 +12,7 @@ and the game continues. The score of the board is determined by summing each
 of the following properties multiplied by its associated weight.
 
 | Name           | Description |
-+----------------+-------------+
+| -------------- | ----------- |
 | Sum Height     | The sum of each column's height. |
 | Max Height     | The height of the tallest column. |
 | Height Delta   | The difference between teh tallest and shortest column. |
